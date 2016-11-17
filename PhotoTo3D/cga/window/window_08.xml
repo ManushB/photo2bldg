@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+	<attr name="offset_size" value="0.05" range="0.02,0.15"/>
+	<attr name="window_top_ratio" value="0.23" range="0.1,0.5"/>
+
+	<rule name="Window">
+		<extrude height="-0.1"/>
+		<comp>
+			<param name="side" value="Wall"/>
+			<param name="top" value="WindowTop_08"/>
+		</comp>
+	</rule>
+	<rule name="WindowTop_08">
+		<offset offsetDistance="-offset_size" inside="WindowTopInside_08" border="Wall"/>
+	</rule>
+	<rule name="WindowTopInside_08">
+		<split splitAxis="y">
+			<param type="relative" value="1-window_top_ratio" name="WindowTopInsideMain_08"/>
+			<param type="relative" value="window_top_ratio" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="WindowTopInsideMain_08">
+		<extrude height="-0.1"/>
+		<comp>
+			<param name="side" value="Wall"/>
+			<param name="top" value="WindowGlass"/>
+		</comp>
+	</rule>
+	
+	<!-- material -->
+	<rule name="WindowGlass">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<texture texturePath="material/window.9.tif"/>
+	</rule>
+</grammar>

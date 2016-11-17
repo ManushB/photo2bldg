@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<grammar version="1.0" author="Gen Nishida">
+	<!-- parameters -->
+	<attr name="00_num_floors" value="5" range="1,20"/>
+	<attr name="01_num_columns" value="6" range="1,20"/>
+	<attr name="02_window_width" value="0.4" range="0,1"/>
+	<attr name="03_window_height" value="0.4" range="0,1"/>
+	<attr name="04_tile_side_margin" value="0.3" range="0,1"/>
+	<attr name="05_tile_top_margin" value="0.3" range="0,1"/>
+	<attr name="06_tile_bottom_margin" value="0.3" range="0,1"/>
+	<attr name="07_window_width2" value="0.3" range="0,1"/>
+	<attr name="08_window_height2" value="0.3" range="0,1"/>
+	<attr name="09_tile_side_margin2" value="0.3" range="0,1"/>
+	<attr name="10_tile_top_margin2" value="0.3" range="0,1"/>
+	<attr name="11_tile_bottom_margin2" value="0.3" range="0,1"/>
+	<attr name="12_floor_side" value="0.1" range="0,1"/>
+	<attr name="13_tile_width" value="0.1" range="0,1"/>
+	<attr name="14_top_wall_height" value="0.1" range="0,1"/>
+	<attr name="15_floor_height" value="0.1" range="0,1"/>
+	<attr name="16_floor_height2" value="0.1" range="0,1"/>
+	<attr name="17_ground_height" value="0.1" range="0,1"/>
+	<attr name="18_door_type" value="5" range="1,5"/>
+	<attr name="19_door_top" value="0.5" range="0,1"/>
+	<attr name="20_door_height" value="0.5" range="0,1"/>
+	<attr name="21_door_width" value="0.5" range="0,1"/>
+	<attr name="22_door_side" value="0.5" range="0,1"/>
+
+	<!-- facade -->
+	<rule name="Facade">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="absolute" value="5"/>
+			<param name="texHeight" type="absolute" value="5"/>
+		</setupProjection>
+		<split splitAxis="y">
+			<param type="floating" value="17_ground_height" name="GroundFloor"/>
+			<param type="floating" value="16_floor_height2" name="SecondFloor"/>
+			<param type="floating" value="15_floor_height" name="Floor" repeat="true"/>
+			<param type="floating" value="14_top_wall_height" name="Wall" />
+		</split>
+	</rule>
+	<rule name="GroundFloor">
+		<split splitAxis="x">
+			<param type="floating" value="12_floor_side" name="Wall"/>
+			<param type="floating" value="13_tile_width" name="GroundTile" repeat="true"/>
+			<param type="floating" value="12_floor_side" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="GroundTile">
+		<split splitAxis="y">
+			<param type="floating" value="20_door_height" name="GroundTile2"/>
+			<param type="floating" value="19_door_top" name="Wall" />
+		</split>
+	</rule>
+	<rule name="GroundTile2">
+		<split splitAxis="x">
+			<param type="floating" value="22_door_side" name="Wall"/>
+			<param type="floating" value="21_door_width" name="Door"/>
+			<param type="floating" value="22_door_side" name="Wall" />
+		</split>
+	</rule>
+	<rule name="SecondFloor">
+		<split splitAxis="x">
+			<param type="floating" value="12_floor_side" name="Wall"/>
+			<param type="floating" value="13_tile_width" name="SecondTile" repeat="true"/>
+			<param type="floating" value="12_floor_side" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="SecondTile">
+		<split splitAxis="y">
+			<param type="floating" value="11_tile_bottom_margin2" name="Wall"/>
+			<param type="floating" value="08_window_height2" name="SecondTile2"/>
+			<param type="floating" value="10_tile_top_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="SecondTile2">
+		<split splitAxis="x">
+			<param type="floating" value="09_tile_side_margin2" name="Wall"/>
+			<param type="floating" value="07_window_width2" name="Window"/>
+			<param type="floating" value="09_tile_side_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="Floor">
+		<split splitAxis="x">
+			<param type="floating" value="12_floor_side" name="Wall"/>
+			<param type="floating" value="13_tile_width" name="Tile" repeat="true"/>
+			<param type="floating" value="12_floor_side" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="Tile">
+		<split splitAxis="y">
+			<param type="floating" value="06_tile_bottom_margin" name="Wall"/>
+			<param type="floating" value="03_window_height" name="Tile2"/>
+			<param type="floating" value="05_tile_top_margin" name="Wall" />
+		</split>
+	</rule>
+	<rule name="Tile2">
+		<split splitAxis="x">
+			<param type="floating" value="04_tile_side_margin" name="Wall"/>
+			<param type="floating" value="02_window_width" name="Window"/>
+			<param type="floating" value="04_tile_side_margin" name="Wall" />
+		</split>
+	</rule>
+	
+	<!-- material -->
+	<rule name="Wall">
+		<texture texturePath="material/wall_paris.png"/>
+	</rule>
+</grammar>

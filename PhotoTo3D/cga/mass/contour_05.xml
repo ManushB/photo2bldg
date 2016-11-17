@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<grammar version="1.0" author="Gen Nishida">
+	<!-- parameters -->
+	<attr name="width1" value="10" range="10,20"/>
+	<attr name="width2" value="10" range="4,30"/>
+	<attr name="depth1" value="10" range="1,20"/>
+	<attr name="depth2" value="10" range="10,30"/>
+	<attr name="height" value="10" range="4,40"/>
+
+	<!-- building mass -->
+	<rule name="Start">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="-(width1+width2)*0.5"/>
+			<param name="y" type="absolute" value="-(depth1+depth2)*0.5"/>
+			<param name="z" type="absolute" value="0"/>
+		</translate>
+		<size>
+			<param name="xSize" type="absolute" value="width1+width2"/>
+			<param name="ySize" type="absolute" value="depth1+depth2"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<shapeL>
+			<param name="frontWidth" type="absolute" value="width1"/>
+			<param name="rightWidth" type="absolute" value="depth2"/>
+		</shapeL>
+		<extrude height="height"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="Roof"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	
+	<!-- material -->
+	<rule name="Roof">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<texture texturePath="material/roof.tif"/>
+	</rule>
+</grammar>

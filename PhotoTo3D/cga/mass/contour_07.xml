@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<grammar version="1.0" author="Gen Nishida">
+	<!-- parameters -->
+	<attr name="width" value="12" range="4,50"/>
+	<attr name="depth" value="10" range="4,50"/>
+	<attr name="height" value="10" range="4,50"/>
+	<attr name="roof_overhang" value="0.5" range="0.5,1"/>
+	<attr name="roof_slope" value="30" range="20,30"/>
+	
+	<!-- building mass -->
+	<rule name="Start">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="0"/>
+			<param name="y" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="0"/>
+		</translate>
+		<size centered="true">
+			<param name="xSize" type="absolute" value="width"/>
+			<param name="ySize" type="absolute" value="depth"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="height"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="Roof"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	
+	<!-- roof -->
+	<rule name="Roof">
+		<offset offsetDistance="roof_overhang" inside="TopFaceOffset"/>
+	</rule>
+	<rule name="TopFaceOffset">
+		<extrude height="0.6"/>
+		<comp>
+			<param name="side" value="RoofLedge"/>
+			<param name="top" value="TopFaceOffsetTop"/>
+			<param name="bottom" value="RoofLedge"/>
+		</comp>
+	</rule>
+	<rule name="TopFaceOffsetTop">
+		<offset offsetDistance="-roof_overhang*0.2" inside="TopFaceOffsetTopInside"/>
+	</rule>
+	<rule name="TopFaceOffsetTopInside">
+		<roofHip angle="roof_slope"/>
+		<comp>
+			<param name="top" value="RoofTop"/>
+		</comp>
+	</rule>
+
+	<!-- material -->
+	<rule name="RoofTop">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<texture texturePath="material/roof.tif"/>
+	</rule>
+	<rule name="RoofLedge">
+		<color s="#dfe0db"/>
+	</rule>
+</grammar>

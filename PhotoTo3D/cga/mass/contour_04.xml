@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<grammar type="building" version="1.0" author="Gen Nishida">
+	<!-- parameters -->
+	<attr name="width" value="15" range="15,40"/>
+	<attr name="depth" value="15" range="15,40"/>
+	<attr name="height" value="10" range="8,40"/>
+	<attr name="corner_cut_length" value="4" range="1,10"/>
+	
+	<rule name="Start">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="0"/>
+			<param name="y" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="0"/>
+		</translate>
+		<size centered="true">
+			<param name="xSize" type="absolute" value="width"/>
+			<param name="ySize" type="absolute" value="depth"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<cornerCut type="curve" length="corner_cut_length"/>
+		<extrude height="height"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="Roof"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	
+	<!-- material -->
+	<rule name="Roof">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<texture texturePath="material/roof.tif"/>
+	</rule>
+</rules>

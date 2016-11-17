@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<grammar version="1.0" author="Gen Nishida">
+	<!-- parameters -->
+	<attr name="width1" value="20" range="20,45"/>
+	<attr name="width2" value="5" range="2,10"/>
+	<attr name="depth1" value="20" range="20,45"/>
+	<attr name="depth2" value="5" range="2,10"/>
+	<attr name="height1" value="20" range="8,30"/>
+	<attr name="height2" value="5" range="1,15"/>
+
+	<!-- building mass -->
+	<rule name="Start">
+		<copy name="Start2"/>
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="-(width1+0.4)*0.5"/>
+			<param name="y" type="absolute" value="-(depth1+0.4)*0.5+0.4"/>
+			<param name="z" type="absolute" value="0"/>
+		</translate>
+		<size>
+			<param name="xSize" type="absolute" value="width1"/>
+			<param name="ySize" type="absolute" value="depth1"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="height1"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="RoofTop"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	
+	<rule name="Start2">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="(width1+0.4)*0.5-width2"/>
+			<param name="y" type="absolute" value="-(depth1+0.4)*0.5"/>
+			<param name="z" type="absolute" value="0"/>
+		</translate>
+		<size>
+			<param name="xSize" type="absolute" value="width2"/>
+			<param name="ySize" type="absolute" value="depth2"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="height1+height2"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="Roof"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	
+	<!-- roof -->
+	<rule name="Roof">
+		<offset offsetDistance="0.3" inside="TopFaceOffset"/>
+	</rule>
+	<rule name="TopFaceOffset">
+		<extrude height="0.4"/>
+		<comp>
+			<param name="side" value="RoofLedge"/>
+			<param name="top" value="RoofTop"/>
+			<param name="bottom" value="RoofLedge"/>
+		</comp>
+	</rule>
+	
+	<!-- material -->
+	<rule name="RoofTop">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<texture texturePath="material/roof.tif"/>
+	</rule>
+	<rule name="RoofLedge">
+		<color s="#dfe0db"/>
+	</rule>
+</grammar>
