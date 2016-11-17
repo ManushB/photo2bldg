@@ -675,14 +675,18 @@ void GLWidget3D::facadeReconstruction() {
 	cv::Mat imageMat = cv::Mat(image.height(), image.width(), CV_8UC4, const_cast<uchar*>(image.bits()), image.bytesPerLine()).clone();
 	cv::cvtColor(imageMat, imageMat, cv::COLOR_BGRA2BGR);
 
+	cv::Mat max_facade;
+	float max_facade_area = 0;
+	glm::vec2 max_geometric_size;
+
 	// rectify the facade image
-	std::map<float, cv::Mat> textureImgs;
 	for (int fi = 0; fi < faces.size(); ++fi) {
 		// non-quadratic face is not supported.
 		if (faces[fi]->vertices.size() % 6 != 0) continue;
 
 		std::vector<cv::Mat> rectified_images;
 		std::vector<bool> visibilities;
+		std::vector<glm::vec2> face_sizes;
 		bool visible = false;
 
 		// we create a texture for each quad because the face might be curved
@@ -700,7 +704,7 @@ void GLWidget3D::facadeReconstruction() {
 				glm::vec2 pp = utils::projectPoint(width(), height(), faces[fi]->vertices[vi].position, camera.mvpMatrix);
 				pts.push_back(cv::Point2f(pp.x, pp.y));
 			}
-
+			
 			// check if the quad is visible
 			glm::vec3 normal = glm::cross(pts3d[1] - pts3d[0], pts3d[2] - pts3d[1]);
 			normal = glm::vec3(camera.mvMatrix * glm::vec4(normal, 0));
@@ -720,6 +724,9 @@ void GLWidget3D::facadeReconstruction() {
 				visibilities.push_back(false);
 				rectified_images.push_back(cv::Mat(glm::length(pts3d[2] - pts3d[1]) * 100, glm::length(pts3d[1] - pts3d[0]) * 100, CV_8UC3));
 			}
+
+			// set the size
+			face_sizes.push_back(glm::vec2(glm::length(pts3d[1] - pts3d[0]), glm::length(pts3d[2] - pts3d[1])));
 		}
 
 		// save the texture image
@@ -758,37 +765,46 @@ void GLWidget3D::facadeReconstruction() {
 				offset += width;
 			}
 
-			textureImgs[textureImg.rows * textureImg.cols] = textureImg.clone();
+			if (textureImg.rows * textureImg.cols > max_facade_area) {
+				max_facade_area = textureImg.rows * textureImg.cols;
+				max_facade = textureImg;
+
+				// compute the geometric size of the face
+				max_geometric_size.x = 0;
+				for (int i = 0; i < face_sizes.size(); ++i) {
+					max_geometric_size.x += face_sizes[i].x;
+				}
+				max_geometric_size.y = face_sizes[0].y;
+			}
 		}
 	}
 
 	// get the largest facade image
-	cv::Mat facade = textureImgs.rbegin()->second;
-	cv::imwrite("facade.png", facade);
+	cv::imwrite("facade.png", max_facade);
 
 	// extract windows
 	std::vector<float> x_split;
 	std::vector<float> y_split;
 	std::vector<std::vector<fs::WindowPos>> win_rects;
-	fs::subdivideFacade(facade, false, y_split, x_split, win_rects);
+	fs::subdivideFacade(max_facade, false, y_split, x_split, win_rects);
 
 	// resize the window coordinates
 	for (int i = 0; i < win_rects.size(); ++i) {
 		for (int j = 0; j < win_rects[i].size(); ++j) {
-			win_rects[i][j].left = win_rects[i][j].left * 227.0f / facade.cols;
-			win_rects[i][j].right = win_rects[i][j].right * 227.0f / facade.cols;
-			win_rects[i][j].top = win_rects[i][j].top * 227.0f / facade.rows;
-			win_rects[i][j].bottom = win_rects[i][j].bottom * 227.0f / facade.rows;
+			win_rects[i][j].left = win_rects[i][j].left * 227.0f / max_facade.cols;
+			win_rects[i][j].right = win_rects[i][j].right * 227.0f / max_facade.cols;
+			win_rects[i][j].top = win_rects[i][j].top * 227.0f / max_facade.rows;
+			win_rects[i][j].bottom = win_rects[i][j].bottom * 227.0f / max_facade.rows;
 		}
 	}
 	for (int i = 0; i < x_split.size(); ++i) {
-		x_split[i] = x_split[i] * 227.0f / facade.cols;
+		x_split[i] = x_split[i] * 227.0f / max_facade.cols;
 	}
 	for (int i = 0; i < y_split.size(); ++i) {
-		y_split[i] = y_split[i] * 227.0f / facade.rows;
+		y_split[i] = y_split[i] * 227.0f / max_facade.rows;
 	}
 
-	// generate window imagetextureImgs
+	// generate window image
 	cv::Mat input_img(227, 227, CV_8UC3, cv::Scalar(255, 255, 255));
 	for (int i = 0; i < y_split.size() - 1; ++i) {
 		for (int j = 0; j < x_split.size() - 1; ++j) {
@@ -808,13 +824,13 @@ void GLWidget3D::facadeReconstruction() {
 	std::cout << grammar_ids["facade"] << std::endl;
 
 	// parameter estimation
-	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img);
+	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y);
+	utils::output_vector(params);
 
 	// set PM parameter values
 	pm_params["facade"] = params;
 
-	std::cout << "update geometry..." << std::endl;
-	updateGeometry();// GRAMMAR_TYPE_FACADE, &grammars["mass"][grammar_ids["mass"]], &pm_params["mass"], &grammars["facade"][grammar_ids["facade"]], &pm_params["facade"]);
+	updateGeometry();
 
 	updateStatusBar();
 	update();
@@ -954,10 +970,6 @@ std::vector<boost::shared_ptr<glutils::Face>> GLWidget3D::updateGeometry(int gra
  * @param pm_params		PM parameter values
  */
 void GLWidget3D::updateGeometry() {
-	std::cout << "mass: " << grammars["mass"][grammar_ids["mass"]].attrs.size() << std::endl;
-	std::cout << "facade: " << grammars["facade"][grammar_ids["facade"]].attrs.size() << std::endl;
-
-
 	// set param values
 	cga::setParamValues(grammars["mass"][grammar_ids["mass"]], pm_params["mass"]);
 	if (grammar_type == GRAMMAR_TYPE_FACADE) {
@@ -978,10 +990,6 @@ void GLWidget3D::updateGeometry() {
 	if (grammar_type == GRAMMAR_TYPE_FACADE) {
 		grammar_list.push_back(&grammars["facade"][grammar_ids["facade"]]);
 		grammar_list.push_back(&grammars["window"][0]);
-	}
-
-	for (int i = 0; i < grammar_list.size(); ++i) {
-		std::cout << "#attrs: " << grammar_list[i]->attrs.size() << std::endl;
 	}
 
 	// generate 3d model

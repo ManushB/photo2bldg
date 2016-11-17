@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <grammar version="1.0" author="Gen Nishida">
 	<!-- parameters -->
-	<attr name="00_num_floors" value="5" range="1,20"/>
-	<attr name="01_num_columns" value="6" range="1,20"/>
-	<attr name="02_window_width" value="0.4" range="0,1"/>
-	<attr name="03_window_height" value="0.4" range="0,1"/>
-	<attr name="04_tile_side_margin" value="0.3" range="0,1"/>
-	<attr name="05_tile_top_margin" value="0.3" range="0,1"/>
-	<attr name="06_tile_bottom_margin" value="0.3" range="0,1"/>
-	<attr name="07_floor_side" value="0.1" range="0,1"/>
-	<attr name="08_tile_width" value="0.1" range="0,1"/>
-	<attr name="09_top_wall_height" value="0.1" range="0,1"/>
-	<attr name="10_floor_height" value="0.1" range="0,1"/>
-	<attr name="11_base_height" value="0.1" range="0,1"/>
+	<attr name="p00_num_floors" value="5" range="0,100"/>
+	<attr name="p01_num_columns" value="6" range="0,100"/>
+	<attr name="p02_window_width" value="0.4" range="0,100"/>
+	<attr name="p03_window_height" value="0.4" range="0,100"/>
+	<attr name="p04_tile_side_margin" value="0.3" range="0,100"/>
+	<attr name="p05_tile_top_margin" value="0.3" range="0,100"/>
+	<attr name="p06_tile_bottom_margin" value="0.3" range="0,100"/>
+	<attr name="p07_floor_side" value="0.1" range="0,100"/>
+	<attr name="p08_tile_width" value="0.1" range="0,100"/>
+	<attr name="p09_top_wall_height" value="0.1" range="0,100"/>
+	<attr name="p10_floor_height" value="0.1" range="0,100"/>
+	<attr name="p11_base_height" value="0.1" range="0,100"/>
 
 	<!-- facade -->
 	<rule name="Facade">
@@ -21,30 +21,30 @@
 			<param name="texHeight" type="absolute" value="5"/>
 		</setupProjection>
 		<split splitAxis="y">
-			<param type="floating" value="11_base_height" name="Wall"/>
-			<param type="floating" value="10_floor_height" name="Floor" repeat="true"/>
-			<param type="floating" value="09_top_wall_height" name="Wall" />
+			<param type="floating" value="p11_base_height" name="Wall"/>
+			<param type="floating" value="p10_floor_height" name="Floor" repeat="true"/>
+			<param type="floating" value="p09_top_wall_height" name="Wall" />
 		</split>
 	</rule>
 	<rule name="Floor">
 		<split splitAxis="x">
-			<param type="floating" value="07_floor_side" name="Wall"/>
-			<param type="floating" value="08_tile_width" name="Tile" repeat="true"/>
-			<param type="floating" value="07_floor_side" name="Wall"/>
+			<param type="floating" value="p07_floor_side" name="Wall"/>
+			<param type="floating" value="p08_tile_width" name="Tile" repeat="true"/>
+			<param type="floating" value="p07_floor_side" name="Wall"/>
 		</split>
 	</rule>
 	<rule name="Tile">
 		<split splitAxis="y">
-			<param type="floating" value="06_tile_bottom_margin" name="Wall"/>
-			<param type="floating" value="03_window_height" name="Tile2"/>
-			<param type="floating" value="05_tile_top_margin" name="Wall" />
+			<param type="floating" value="p06_tile_bottom_margin" name="Wall"/>
+			<param type="floating" value="p03_window_height" name="Tile2"/>
+			<param type="floating" value="p05_tile_top_margin" name="Wall" />
 		</split>
 	</rule>
 	<rule name="Tile2">
 		<split splitAxis="x">
-			<param type="floating" value="04_tile_side_margin" name="Wall"/>
-			<param type="floating" value="02_window_width" name="Window"/>
-			<param type="floating" value="04_tile_side_margin" name="Wall" />
+			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
+			<param type="floating" value="p02_window_width" name="Window"/>
+			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
 	</rule>
 	
