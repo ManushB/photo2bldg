@@ -96,11 +96,15 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	}
 
 	{
-		grammars["facade"].resize(4);
+		grammars["facade"].resize(8);
 		cga::parseGrammar("cga/facade/facade_01.xml", grammars["facade"][0]);
 		cga::parseGrammar("cga/facade/facade_02.xml", grammars["facade"][1]);
 		cga::parseGrammar("cga/facade/facade_03.xml", grammars["facade"][2]);
 		cga::parseGrammar("cga/facade/facade_04.xml", grammars["facade"][3]);
+		cga::parseGrammar("cga/facade/facade_05.xml", grammars["facade"][4]);
+		cga::parseGrammar("cga/facade/facade_06.xml", grammars["facade"][5]);
+		cga::parseGrammar("cga/facade/facade_07.xml", grammars["facade"][6]);
+		cga::parseGrammar("cga/facade/facade_08.xml", grammars["facade"][7]);
 
 		grammars["window"].resize(9);
 		cga::parseGrammar("cga/window/window_01.xml", grammars["window"][0]);
@@ -788,6 +792,21 @@ void GLWidget3D::facadeReconstruction() {
 	std::vector<std::vector<fs::WindowPos>> win_rects;
 	fs::subdivideFacade(max_facade, false, y_split, x_split, win_rects);
 
+	// DEBUG: generate window image of the original size
+	cv::Mat window_img(max_facade.rows, max_facade.cols, CV_8UC3, cv::Scalar(255, 255, 255));
+	for (int i = 0; i < y_split.size() - 1; ++i) {
+		for (int j = 0; j < x_split.size() - 1; ++j) {
+			if (win_rects[i][j].valid == fs::WindowPos::VALID) {
+				int x1 = std::round(x_split[j] + win_rects[i][j].left);
+				int y1 = std::round(y_split[i] + win_rects[i][j].top);
+				int x2 = std::round(x_split[j + 1] - 1 - win_rects[i][j].right);
+				int y2 = std::round(y_split[i + 1] - 1 - win_rects[i][j].bottom);
+				cv::rectangle(window_img, cv::Rect(x1, y1, x2 - x1 + 1, y2 - y1 + 1), cv::Scalar(0, 0, 0), 1);
+			}
+		}
+	}
+	cv::imwrite("window.png", window_img);
+
 	// resize the window coordinates
 	for (int i = 0; i < win_rects.size(); ++i) {
 		for (int j = 0; j < win_rects[i].size(); ++j) {
@@ -804,7 +823,7 @@ void GLWidget3D::facadeReconstruction() {
 		y_split[i] = y_split[i] * 227.0f / max_facade.rows;
 	}
 
-	// generate window image
+	// generate window image with size of 227x227
 	cv::Mat input_img(227, 227, CV_8UC3, cv::Scalar(255, 255, 255));
 	for (int i = 0; i < y_split.size() - 1; ++i) {
 		for (int j = 0; j < x_split.size() - 1; ++j) {
@@ -817,11 +836,11 @@ void GLWidget3D::facadeReconstruction() {
 			}
 		}
 	}
-	cv::imwrite("window.png", input_img);
+	cv::imwrite("window227.png", input_img);
 
 	// recognize the grammar id
 	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img);
-	std::cout << grammar_ids["facade"] << std::endl;
+	std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
 
 	// parameter estimation
 	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y);

@@ -284,6 +284,30 @@
     <ClCompile Include="FacadeReconstruction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="facadeA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeG.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facadeH.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.h">
@@ -526,6 +550,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FacadeReconstruction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeG.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="facadeH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
