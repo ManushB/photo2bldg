@@ -39,7 +39,7 @@ MassReconstructionDialog::MassReconstructionDialog(QWidget *parent) : QDialog(pa
 	ui.lineEditImageBlurSize->setEnabled(false);
 	ui.lineEditImageBlurSize->setText("5");
 	ui.checkBoxRefinement->setChecked(false);
-	ui.lineEditIterations->setText("30");
+	ui.lineEditIterations->setText("3000");
 	ui.lineEditIterations->setEnabled(ui.checkBoxRefinement->isChecked());
 	ui.radioButtonRefinementBobyqa->setChecked(true);
 	ui.radioButtonRefinementBobyqa->setEnabled(ui.checkBoxRefinement->isChecked());
