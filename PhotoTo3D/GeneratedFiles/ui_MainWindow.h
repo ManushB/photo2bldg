@@ -146,7 +146,6 @@ public:
         menuOption->addAction(actionMassReconstruction);
         menuOption->addAction(actionAutoTest);
         menuOption->addSeparator();
-        menuOption->addAction(actionTextureMapping);
         menuOption->addAction(actionFacadeReconstruction);
         menuOption->addSeparator();
         menuOption->addAction(actionOption);

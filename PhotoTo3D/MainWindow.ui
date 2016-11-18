@@ -45,7 +45,6 @@
     <addaction name="actionMassReconstruction"/>
     <addaction name="actionAutoTest"/>
     <addaction name="separator"/>
-    <addaction name="actionTextureMapping"/>
     <addaction name="actionFacadeReconstruction"/>
     <addaction name="separator"/>
     <addaction name="actionOption"/>

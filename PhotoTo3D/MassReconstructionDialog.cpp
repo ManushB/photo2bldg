@@ -16,7 +16,6 @@ MassReconstructionDialog::MassReconstructionDialog(QWidget *parent) : QDialog(pa
 	ui.lineEditGrammarSnippet->setEnabled(!ui.checkBoxAutomaticRecognition->isChecked());
 	ui.lineEditImageSize->setText("227");
 	ui.lineEditCameraDistance->setText("25");
-	// all
 	ui.lineEditXrotMin->setText("-40");
 	ui.lineEditXrotMax->setText("0");
 	ui.lineEditYrotMin->setText("-70");
