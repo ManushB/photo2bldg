@@ -43,7 +43,6 @@ public:
     QLineEdit *lineEditOYMax;
     QLineEdit *lineEditIterations;
     QLineEdit *lineEditYrotMin;
-    QLineEdit *lineEditImageBlurSize;
     QLineEdit *lineEditFovMin;
     QLineEdit *lineEditZrotMin;
     QLabel *label_10;
@@ -63,7 +62,6 @@ public:
     QLabel *label_27;
     QLineEdit *lineEditYrotMax;
     QLineEdit *lineEditCameraDistance;
-    QCheckBox *checkBoxImageBlur;
     QLineEdit *lineEditFovMax;
     QLabel *label_30;
     QLabel *label_11;
@@ -84,7 +82,7 @@ public:
     {
         if (MassReconstructionDialog->objectName().isEmpty())
             MassReconstructionDialog->setObjectName(QStringLiteral("MassReconstructionDialog"));
-        MassReconstructionDialog->resize(582, 520);
+        MassReconstructionDialog->resize(582, 493);
         lineEditGrammarSnippet = new QLineEdit(MassReconstructionDialog);
         lineEditGrammarSnippet->setObjectName(QStringLiteral("lineEditGrammarSnippet"));
         lineEditGrammarSnippet->setGeometry(QRect(250, 10, 31, 20));
@@ -140,13 +138,10 @@ public:
         lineEditOYMax->setGeometry(QRect(198, 260, 61, 20));
         lineEditIterations = new QLineEdit(MassReconstructionDialog);
         lineEditIterations->setObjectName(QStringLiteral("lineEditIterations"));
-        lineEditIterations->setGeometry(QRect(300, 420, 91, 20));
+        lineEditIterations->setGeometry(QRect(280, 390, 91, 20));
         lineEditYrotMin = new QLineEdit(MassReconstructionDialog);
         lineEditYrotMin->setObjectName(QStringLiteral("lineEditYrotMin"));
         lineEditYrotMin->setGeometry(QRect(110, 140, 61, 20));
-        lineEditImageBlurSize = new QLineEdit(MassReconstructionDialog);
-        lineEditImageBlurSize->setObjectName(QStringLiteral("lineEditImageBlurSize"));
-        lineEditImageBlurSize->setGeometry(QRect(200, 390, 61, 20));
         lineEditFovMin = new QLineEdit(MassReconstructionDialog);
         lineEditFovMin->setObjectName(QStringLiteral("lineEditFovMin"));
         lineEditFovMin->setGeometry(QRect(110, 200, 61, 20));
@@ -176,13 +171,13 @@ public:
         lineEditZrotMax->setGeometry(QRect(200, 170, 61, 20));
         checkBoxRefinement = new QCheckBox(MassReconstructionDialog);
         checkBoxRefinement->setObjectName(QStringLiteral("checkBoxRefinement"));
-        checkBoxRefinement->setGeometry(QRect(110, 420, 91, 17));
+        checkBoxRefinement->setGeometry(QRect(110, 390, 91, 17));
         pushButtonOK = new QPushButton(MassReconstructionDialog);
         pushButtonOK->setObjectName(QStringLiteral("pushButtonOK"));
-        pushButtonOK->setGeometry(QRect(370, 480, 91, 31));
+        pushButtonOK->setGeometry(QRect(370, 450, 91, 31));
         radioButtonRefinementRandom = new QRadioButton(MassReconstructionDialog);
         radioButtonRefinementRandom->setObjectName(QStringLiteral("radioButtonRefinementRandom"));
-        radioButtonRefinementRandom->setGeometry(QRect(230, 450, 82, 17));
+        radioButtonRefinementRandom->setGeometry(QRect(200, 420, 82, 17));
         lineEditXrotMin = new QLineEdit(MassReconstructionDialog);
         lineEditXrotMin->setObjectName(QStringLiteral("lineEditXrotMin"));
         lineEditXrotMin->setGeometry(QRect(110, 110, 61, 20));
@@ -212,9 +207,6 @@ public:
         lineEditCameraDistance = new QLineEdit(MassReconstructionDialog);
         lineEditCameraDistance->setObjectName(QStringLiteral("lineEditCameraDistance"));
         lineEditCameraDistance->setGeometry(QRect(110, 80, 61, 20));
-        checkBoxImageBlur = new QCheckBox(MassReconstructionDialog);
-        checkBoxImageBlur->setObjectName(QStringLiteral("checkBoxImageBlur"));
-        checkBoxImageBlur->setGeometry(QRect(110, 390, 70, 17));
         lineEditFovMax = new QLineEdit(MassReconstructionDialog);
         lineEditFovMax->setObjectName(QStringLiteral("lineEditFovMax"));
         lineEditFovMax->setGeometry(QRect(200, 200, 61, 20));
@@ -228,7 +220,7 @@ public:
         label_11->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         radioButtonRefinementBobyqa = new QRadioButton(MassReconstructionDialog);
         radioButtonRefinementBobyqa->setObjectName(QStringLiteral("radioButtonRefinementBobyqa"));
-        radioButtonRefinementBobyqa->setGeometry(QRect(130, 450, 82, 17));
+        radioButtonRefinementBobyqa->setGeometry(QRect(110, 420, 82, 17));
         label_14 = new QLabel(MassReconstructionDialog);
         label_14->setObjectName(QStringLiteral("label_14"));
         label_14->setGeometry(QRect(173, 140, 16, 20));
@@ -247,10 +239,10 @@ public:
         label_28->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         pushButtonCancel = new QPushButton(MassReconstructionDialog);
         pushButtonCancel->setObjectName(QStringLiteral("pushButtonCancel"));
-        pushButtonCancel->setGeometry(QRect(470, 480, 91, 31));
+        pushButtonCancel->setGeometry(QRect(470, 450, 91, 31));
         label = new QLabel(MassReconstructionDialog);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(230, 420, 71, 20));
+        label->setGeometry(QRect(210, 390, 71, 20));
         lineEditOXMax = new QLineEdit(MassReconstructionDialog);
         lineEditOXMax->setObjectName(QStringLiteral("lineEditOXMax"));
         lineEditOXMax->setGeometry(QRect(198, 230, 61, 20));
@@ -287,9 +279,7 @@ public:
         QWidget::setTabOrder(lineEditYMin, lineEditYMax);
         QWidget::setTabOrder(lineEditYMax, radioButtonSilhouetteLine8);
         QWidget::setTabOrder(radioButtonSilhouetteLine8, radioButtonSilhouetteLineAA);
-        QWidget::setTabOrder(radioButtonSilhouetteLineAA, checkBoxImageBlur);
-        QWidget::setTabOrder(checkBoxImageBlur, lineEditImageBlurSize);
-        QWidget::setTabOrder(lineEditImageBlurSize, checkBoxRefinement);
+        QWidget::setTabOrder(radioButtonSilhouetteLineAA, checkBoxRefinement);
         QWidget::setTabOrder(checkBoxRefinement, lineEditIterations);
         QWidget::setTabOrder(lineEditIterations, radioButtonRefinementBobyqa);
         QWidget::setTabOrder(radioButtonRefinementBobyqa, radioButtonRefinementRandom);
@@ -305,7 +295,7 @@ public:
     {
         MassReconstructionDialog->setWindowTitle(QApplication::translate("MassReconstructionDialog", "MassReconstructionDialog", 0));
         label_13->setText(QApplication::translate("MassReconstructionDialog", "~", 0));
-        label_16->setText(QApplication::translate("MassReconstructionDialog", "(1 - 14)", 0));
+        label_16->setText(QApplication::translate("MassReconstructionDialog", "(1 - 10)", 0));
         label_15->setText(QApplication::translate("MassReconstructionDialog", "Grammar snippet:", 0));
         label_26->setText(QApplication::translate("MassReconstructionDialog", "O x:", 0));
         radioButtonSilhouetteLineAA->setText(QApplication::translate("MassReconstructionDialog", "Line AA", 0));
@@ -316,7 +306,7 @@ public:
         label_10->setText(QApplication::translate("MassReconstructionDialog", "Field of view:", 0));
         label_23->setText(QApplication::translate("MassReconstructionDialog", "Y pos:", 0));
         label_31->setText(QApplication::translate("MassReconstructionDialog", "Silhouette:", 0));
-        checkBoxRefinement->setText(QApplication::translate("MassReconstructionDialog", "Refinement", 0));
+        checkBoxRefinement->setText(QApplication::translate("MassReconstructionDialog", "Yes", 0));
         pushButtonOK->setText(QApplication::translate("MassReconstructionDialog", "OK", 0));
         radioButtonRefinementRandom->setText(QApplication::translate("MassReconstructionDialog", "Random walk", 0));
         label_24->setText(QApplication::translate("MassReconstructionDialog", "~", 0));
@@ -324,8 +314,7 @@ public:
         label_20->setText(QApplication::translate("MassReconstructionDialog", "~", 0));
         label_6->setText(QApplication::translate("MassReconstructionDialog", "Xrot:", 0));
         label_27->setText(QApplication::translate("MassReconstructionDialog", "~", 0));
-        checkBoxImageBlur->setText(QApplication::translate("MassReconstructionDialog", "Blur", 0));
-        label_30->setText(QApplication::translate("MassReconstructionDialog", "Modify Image:", 0));
+        label_30->setText(QApplication::translate("MassReconstructionDialog", "Refinement:", 0));
         label_11->setText(QApplication::translate("MassReconstructionDialog", "~", 0));
         radioButtonRefinementBobyqa->setText(QApplication::translate("MassReconstructionDialog", "Bobyqa", 0));
         label_14->setText(QApplication::translate("MassReconstructionDialog", "~", 0));

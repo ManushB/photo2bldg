@@ -42,12 +42,23 @@
     <property name="title">
      <string>Tool</string>
     </property>
+    <widget class="QMenu" name="menuRendering">
+     <property name="title">
+      <string>Rendering</string>
+     </property>
+     <addaction name="actionLineRendering"/>
+     <addaction name="actionHatchingRendering"/>
+     <addaction name="actionSSAORendering"/>
+    </widget>
+    <addaction name="actionBuildingReconstruction"/>
+    <addaction name="separator"/>
     <addaction name="actionMassReconstruction"/>
     <addaction name="actionAutoTest"/>
     <addaction name="separator"/>
     <addaction name="actionFacadeReconstruction"/>
     <addaction name="separator"/>
     <addaction name="actionOption"/>
+    <addaction name="menuRendering"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -202,6 +213,35 @@
   <action name="actionTextureMapping">
    <property name="text">
     <string>Texture Mapping</string>
+   </property>
+  </action>
+  <action name="actionLineRendering">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Line Rendering</string>
+   </property>
+  </action>
+  <action name="actionSSAORendering">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>SSAO</string>
+   </property>
+  </action>
+  <action name="actionHatchingRendering">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hatching</string>
+   </property>
+  </action>
+  <action name="actionBuildingReconstruction">
+   <property name="text">
+    <string>Building Reconstruction</string>
    </property>
   </action>
  </widget>

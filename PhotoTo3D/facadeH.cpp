@@ -12,7 +12,7 @@ cv::Mat generateFacadeH(int width, int height, int thickness, std::pair<int, int
 	if (NF < range_NF.first) NF = range_NF.first;
 	int NC = std::round(params[1] * (range_NC.second - range_NC.first) + range_NC.first);
 	if (NC < range_NC.first) NC = range_NC.first;
-	if (NC % 3 != 0) NC = ((int)(NC / 3)) * 3;
+	if (NC % 3 != 0) NC = std::round((float)NC / 3.0f) * 3;
 
 	float BS = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[7];
 	float TW = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[8];

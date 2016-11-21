@@ -4,6 +4,7 @@
 #include <dlib/optimization.h>
 #include "CGA.h"
 #include "VanishingPoint.h"
+#include "Classifier.h"
 
 class GLWidget3D;
 
@@ -38,7 +39,8 @@ namespace massrec {
 		float yMax;
 	};
 
-	std::vector<float> parameterEstimation(GLWidget3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool imageBlur, int imageBlurSize, bool refinement, int maxIters, int refinement_method);
+	int recognition(boost::shared_ptr<Classifier> classifier, int image_size, int screen_width, int screen_height, std::vector<vp::VanishingLine> silhouette);
+	std::vector<float> parameterEstimation(GLWidget3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method);
 
 }
 

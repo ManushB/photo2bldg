@@ -6,9 +6,10 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 
-	QActionGroup* group = new QActionGroup(this);
-	group->addAction(ui.actionPenVanishingLine);
-	group->addAction(ui.actionPenSilhouette);
+	QActionGroup* groupRendering = new QActionGroup(this);
+	groupRendering->addAction(ui.actionLineRendering);
+	groupRendering->addAction(ui.actionHatchingRendering);
+	groupRendering->addAction(ui.actionSSAORendering);
 
 	ui.actionPenVanishingLine->setChecked(true);
 
@@ -20,11 +21,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.actionOpenCGA, SIGNAL(triggered()), this, SLOT(onOpenCGA()));
 	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(onUndo()));
+	connect(ui.actionBuildingReconstruction, SIGNAL(triggered()), this, SLOT(onBuildingReconstruction()));
 	connect(ui.actionMassReconstruction, SIGNAL(triggered()), this, SLOT(onMassReconstruction()));
 	connect(ui.actionAutoTest, SIGNAL(triggered()), this, SLOT(onAutoTest()));
-	connect(ui.actionTextureMapping, SIGNAL(triggered()), this, SLOT(onTextureMapping()));
 	connect(ui.actionFacadeReconstruction, SIGNAL(triggered()), this, SLOT(onFacadeReconstruction()));
 	connect(ui.actionOption, SIGNAL(triggered()), this, SLOT(onOption()));
+	connect(ui.actionLineRendering, SIGNAL(triggered()), this, SLOT(onRenderingChanged()));
+	connect(ui.actionSSAORendering, SIGNAL(triggered()), this, SLOT(onRenderingChanged()));
 
 	glWidget = new GLWidget3D(this);
 	this->setCentralWidget(glWidget);
@@ -79,9 +82,17 @@ void MainWindow::onUndo() {
 	glWidget->undo();
 }
 
-/**
-* This is called when the user clickes [Tool] -> [Predict]
-*/
+void MainWindow::onBuildingReconstruction() {
+	glWidget->massReconstruction(true, 0, 227, 25, -40, 0, -70, -20, -10, 10, 20, 90, -0.8, 0.8, -0.8, 0.8, -15, 15, -15, 15, 1, true, 3000, 0);
+	glWidget->grammar_type = GLWidget3D::GRAMMAR_TYPE_FACADE;
+	glWidget->facadeReconstruction();
+
+	glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_SSAO;
+	glWidget->clearBackground();
+	glWidget->clearSilhouette();
+	glWidget->update();
+}
+
 void MainWindow::onMassReconstruction() {
 	MassReconstructionDialog dlg;
 	if (dlg.exec()) {
@@ -106,13 +117,11 @@ void MainWindow::onMassReconstruction() {
 		float yMin = dlg.ui.lineEditYMin->text().toFloat();
 		float yMax = dlg.ui.lineEditYMax->text().toFloat();
 		int silhouette_line_type = dlg.ui.radioButtonSilhouetteLine8->isChecked() ? 0 : 1;
-		bool imageBlur = dlg.ui.checkBoxImageBlur->isChecked();
-		int imageBlurSize = dlg.ui.lineEditImageBlurSize->text().toInt();
 		bool refinement = dlg.ui.checkBoxRefinement->isChecked();
 		int maxIters = dlg.ui.lineEditIterations->text().toInt();
 		int refinement_method = dlg.ui.radioButtonRefinementBobyqa->isChecked() ? 0 : 1;
 
-		glWidget->massReconstruction(automaticRecognition, grammarSnippetId, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, imageBlur, imageBlurSize, refinement, maxIters, refinement_method);
+		glWidget->massReconstruction(automaticRecognition, grammarSnippetId, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, refinement, maxIters, refinement_method);
 	}
 }
 
@@ -140,27 +149,17 @@ void MainWindow::onAutoTest() {
 		float yMin = dlg.ui.lineEditYMin->text().toFloat();
 		float yMax = dlg.ui.lineEditYMax->text().toFloat();
 		int silhouette_line_type = dlg.ui.radioButtonSilhouetteLine8->isChecked() ? 0 : 1;
-		bool imageBlur = dlg.ui.checkBoxImageBlur->isChecked();
-		int imageBlurSize = dlg.ui.lineEditImageBlurSize->text().toInt();
 		bool refinement = dlg.ui.checkBoxRefinement->isChecked();
 		int maxIters = dlg.ui.lineEditIterations->text().toInt();
 
-		glWidget->autoTest(grammarSnippetId, image_size, "params_multi10.txt", xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, imageBlur, imageBlurSize, refinement);
+		glWidget->autoTest(grammarSnippetId, image_size, "params_multi10.txt", xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, refinement);
 	}
-}
-
-void MainWindow::onTextureMapping() {
-	glWidget->textureMapping();
 }
 
 void MainWindow::onFacadeReconstruction() {
 	glWidget->grammar_type = GLWidget3D::GRAMMAR_TYPE_FACADE;
-
-
+	
 	glWidget->facadeReconstruction();
-
-
-	glWidget->updateGeometry();
 	glWidget->update();
 }
 
@@ -173,4 +172,17 @@ void MainWindow::onOption() {
 		glWidget->silhouetteWidth = dlg.getSilhouetteWidth();
 		glWidget->silhouetteColor = dlg.getSilhouetteColor();
 	}
+}
+
+void MainWindow::onRenderingChanged() {
+	if (ui.actionLineRendering->isChecked()) {
+		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_LINE;
+	}
+	else if (ui.actionHatchingRendering->isChecked()) {
+		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_HATCHING;
+	}
+	else if (ui.actionSSAORendering->isChecked()) {
+		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_SSAO;
+	}
+	glWidget->update();
 }

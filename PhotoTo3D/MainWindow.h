@@ -27,11 +27,12 @@ public slots:
 	void onSaveSilhouette();
 	void onOpenCGA();
 	void onUndo();
+	void onBuildingReconstruction();
 	void onMassReconstruction();
 	void onAutoTest();
-	void onTextureMapping();
 	void onFacadeReconstruction();
 	void onOption();
+	void onRenderingChanged();
 };
 
 #endif // MAINWINDOW_H

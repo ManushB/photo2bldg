@@ -19,6 +19,8 @@
 #include "MassReconstruction.h"
 #include "FacadeSegmentation.h"
 #include "FacadeReconstruction.h"
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
 
 GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent) {
 	mainWin = (MainWindow*)parent;
@@ -48,7 +50,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Building mass
 
-	//classifier = boost::shared_ptr<Classifier>(new Classifier("models/deploy.prototxt", "models/train_iter_20000.caffemodel", "models/contour_mean.binaryproto"));
+	classifiers["mass"] = boost::shared_ptr<Classifier>(new Classifier("models/mass/deploy.prototxt", "models/mass/train_iter_40000.caffemodel", "models/mass/mean.binaryproto"));
 
 	// caffe modelを読み込む
 	{
@@ -81,10 +83,9 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Facade
-
-	classifiers["facade"] = boost::shared_ptr<Classifier>(new Classifier("models/facade/deploy.prototxt", "models/facade/train_iter_40000.caffemodel", "models/facade/mean.binaryproto"));
-
 	{
+		classifiers["facade"] = boost::shared_ptr<Classifier>(new Classifier("models/facade/deploy.prototxt", "models/facade/train_iter_40000.caffemodel", "models/facade/mean.binaryproto"));
+
 		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_01.prototxt", "models/facade/train_01_iter_40000.caffemodel")));
 		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_02.prototxt", "models/facade/train_02_iter_40000.caffemodel")));
 		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_03.prototxt", "models/facade/train_03_iter_40000.caffemodel")));
@@ -93,9 +94,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_06.prototxt", "models/facade/train_06_iter_40000.caffemodel")));
 		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_07.prototxt", "models/facade/train_07_iter_40000.caffemodel")));
 		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_08.prototxt", "models/facade/train_08_iter_40000.caffemodel")));
-	}
 
-	{
 		grammars["facade"].resize(8);
 		cga::parseGrammar("cga/facade/facade_01.xml", grammars["facade"][0]);
 		cga::parseGrammar("cga/facade/facade_02.xml", grammars["facade"][1]);
@@ -105,17 +104,20 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 		cga::parseGrammar("cga/facade/facade_06.xml", grammars["facade"][5]);
 		cga::parseGrammar("cga/facade/facade_07.xml", grammars["facade"][6]);
 		cga::parseGrammar("cga/facade/facade_08.xml", grammars["facade"][7]);
+	}
 
-		grammars["window"].resize(9);
-		cga::parseGrammar("cga/window/window_01.xml", grammars["window"][0]);
-		cga::parseGrammar("cga/window/window_02.xml", grammars["window"][1]);
-		cga::parseGrammar("cga/window/window_03.xml", grammars["window"][2]);
-		cga::parseGrammar("cga/window/window_04.xml", grammars["window"][3]);
-		cga::parseGrammar("cga/window/window_05.xml", grammars["window"][4]);
-		cga::parseGrammar("cga/window/window_06.xml", grammars["window"][5]);
-		cga::parseGrammar("cga/window/window_07.xml", grammars["window"][6]);
-		cga::parseGrammar("cga/window/window_08.xml", grammars["window"][7]);
-		cga::parseGrammar("cga/window/window_09.xml", grammars["window"][8]);
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Material
+	{
+		grammars["material"].resize(8);
+		cga::parseGrammar("cga/material/bldg2.xml", grammars["material"][0]);
+		cga::parseGrammar("cga/material/bldg3.xml", grammars["material"][1]);
+		cga::parseGrammar("cga/material/bldg7.xml", grammars["material"][2]);
+		cga::parseGrammar("cga/material/bldg8.xml", grammars["material"][3]);
+		cga::parseGrammar("cga/material/bldg11.xml", grammars["material"][4]);
+		cga::parseGrammar("cga/material/bldg14.xml", grammars["material"][5]);
+		cga::parseGrammar("cga/material/bldg29.xml", grammars["material"][6]);
+		cga::parseGrammar("cga/material/bldg35.xml", grammars["material"][7]);
 	}
 
 	// default grammar and pm values
@@ -124,8 +126,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	pm_params["mass"].resize(grammars["mass"][0].attrs.size(), 0.5);
 	grammar_ids["facade"] = 0;
 	pm_params["facade"].resize(grammars["facade"][0].attrs.size(), 0.5);
-	grammar_ids["window"] = 0;
-	pm_params["window"].resize(grammars["window"][0].attrs.size(), 0.5);
+	grammar_ids["material"] = 7;
 }
 
 /**
@@ -500,15 +501,22 @@ void GLWidget3D::undo() {
  * Use the silhouette as an input to the pretrained network, and obtain the probabilities as output.
  * Then, display the options ordered by the probabilities.
  */
-void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool imageBlur, int imageBlurSize, bool refinement, int maxIters, int refinement_method) {
+void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
 	// adjust the original background image such that the ratio of width to height is equal to the ratio of the window
 	float imageScale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
 	resizeImageCanvasSize(imageOrig, width() / imageScale, height() / imageScale);
 
+	// recognition
+	if (automaticRecognition) {
+		grammarSnippetId = massrec::recognition(classifiers["mass"], image_size, width(), height(), silhouette);
+	}
+
 	// grammar id
 	grammar_ids["mass"] = grammarSnippetId;
 
-	std::vector<float> params = massrec::parameterEstimation(this, regressions["mass"][grammar_ids["mass"]], &grammars["mass"][grammar_ids["mass"]], silhouette, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, imageBlur, imageBlurSize, refinement, maxIters, refinement_method);
+	std::cout << "Mass grammar: #" << grammar_ids["mass"] + 1 << std::endl;
+
+	std::vector<float> params = massrec::parameterEstimation(this, regressions["mass"][grammar_ids["mass"]], &grammars["mass"][grammar_ids["mass"]], silhouette, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, refinement, maxIters, refinement_method);
 
 	// set the camera
 	setupCamera(params, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
@@ -523,7 +531,7 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	update();
 }
 
-void GLWidget3D::autoTest(int grammar_id, int image_size, const QString& param_filename, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool imageBlur, int imageBlurSize, bool refinement) {
+void GLWidget3D::autoTest(int grammar_id, int image_size, const QString& param_filename, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement) {
 	QFile param_file(param_filename);
 	param_file.open(QIODevice::ReadOnly);
 	QTextStream param_in(&param_file);
@@ -583,10 +591,6 @@ void GLWidget3D::autoTest(int grammar_id, int image_size, const QString& param_f
 			else {
 				cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_AA);
 			}
-		}
-
-		if (imageBlur) {
-			cv::blur(input, input, cv::Size(imageBlurSize, imageBlurSize));
 		}
 
 		// estimate paramter values by CNN
@@ -687,6 +691,9 @@ void GLWidget3D::facadeReconstruction() {
 	for (int fi = 0; fi < faces.size(); ++fi) {
 		// non-quadratic face is not supported.
 		if (faces[fi]->vertices.size() % 6 != 0) continue;
+
+		// if the non-terminal name is not "Facade", skip it
+		if (!boost::starts_with(faces[fi]->name, "Facade")) continue;
 
 		std::vector<cv::Mat> rectified_images;
 		std::vector<bool> visibilities;
@@ -993,7 +1000,6 @@ void GLWidget3D::updateGeometry() {
 	cga::setParamValues(grammars["mass"][grammar_ids["mass"]], pm_params["mass"]);
 	if (grammar_type == GRAMMAR_TYPE_FACADE) {
 		cga::setParamValues(grammars["facade"][grammar_ids["facade"]], pm_params["facade"]);
-		cga::setParamValues(grammars["window"][0], pm_params["window"]);
 	}
 
 	// setup CGA
@@ -1008,7 +1014,7 @@ void GLWidget3D::updateGeometry() {
 	grammar_list.push_back(&grammars["mass"][grammar_ids["mass"]]);
 	if (grammar_type == GRAMMAR_TYPE_FACADE) {
 		grammar_list.push_back(&grammars["facade"][grammar_ids["facade"]]);
-		grammar_list.push_back(&grammars["window"][0]);
+		grammar_list.push_back(&grammars["material"][grammar_ids["material"]]);
 	}
 
 	// generate 3d model

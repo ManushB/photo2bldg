@@ -18,7 +18,6 @@ public:
 	
 	public slots:
 	void onAutomaticRecognition();
-	void onImageBlur();
 	void onRefinement();
 	void onOK();
 	void onCancel();

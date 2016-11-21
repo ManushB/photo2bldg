@@ -49,10 +49,15 @@ public:
     QAction *actionAutoTest;
     QAction *actionFacadeReconstruction;
     QAction *actionTextureMapping;
+    QAction *actionLineRendering;
+    QAction *actionSSAORendering;
+    QAction *actionHatchingRendering;
+    QAction *actionBuildingReconstruction;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuOption;
+    QMenu *menuRendering;
     QMenu *menuEdit;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -110,6 +115,17 @@ public:
         actionFacadeReconstruction->setObjectName(QStringLiteral("actionFacadeReconstruction"));
         actionTextureMapping = new QAction(MainWindowClass);
         actionTextureMapping->setObjectName(QStringLiteral("actionTextureMapping"));
+        actionLineRendering = new QAction(MainWindowClass);
+        actionLineRendering->setObjectName(QStringLiteral("actionLineRendering"));
+        actionLineRendering->setCheckable(true);
+        actionSSAORendering = new QAction(MainWindowClass);
+        actionSSAORendering->setObjectName(QStringLiteral("actionSSAORendering"));
+        actionSSAORendering->setCheckable(true);
+        actionHatchingRendering = new QAction(MainWindowClass);
+        actionHatchingRendering->setObjectName(QStringLiteral("actionHatchingRendering"));
+        actionHatchingRendering->setCheckable(true);
+        actionBuildingReconstruction = new QAction(MainWindowClass);
+        actionBuildingReconstruction->setObjectName(QStringLiteral("actionBuildingReconstruction"));
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindowClass->setCentralWidget(centralWidget);
@@ -120,6 +136,8 @@ public:
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOption = new QMenu(menuBar);
         menuOption->setObjectName(QStringLiteral("menuOption"));
+        menuRendering = new QMenu(menuOption);
+        menuRendering->setObjectName(QStringLiteral("menuRendering"));
         menuEdit = new QMenu(menuBar);
         menuEdit->setObjectName(QStringLiteral("menuEdit"));
         MainWindowClass->setMenuBar(menuBar);
@@ -143,12 +161,18 @@ public:
         menuFile->addAction(actionOpenCGA);
         menuFile->addSeparator();
         menuFile->addAction(actionExit);
+        menuOption->addAction(actionBuildingReconstruction);
+        menuOption->addSeparator();
         menuOption->addAction(actionMassReconstruction);
         menuOption->addAction(actionAutoTest);
         menuOption->addSeparator();
         menuOption->addAction(actionFacadeReconstruction);
         menuOption->addSeparator();
         menuOption->addAction(actionOption);
+        menuOption->addAction(menuRendering->menuAction());
+        menuRendering->addAction(actionLineRendering);
+        menuRendering->addAction(actionHatchingRendering);
+        menuRendering->addAction(actionSSAORendering);
         menuEdit->addAction(actionUndo);
 
         retranslateUi(MainWindowClass);
@@ -187,8 +211,13 @@ public:
         actionAutoTest->setText(QApplication::translate("MainWindowClass", "Auto Test", 0));
         actionFacadeReconstruction->setText(QApplication::translate("MainWindowClass", "Facade Reconstruction", 0));
         actionTextureMapping->setText(QApplication::translate("MainWindowClass", "Texture Mapping", 0));
+        actionLineRendering->setText(QApplication::translate("MainWindowClass", "Line Rendering", 0));
+        actionSSAORendering->setText(QApplication::translate("MainWindowClass", "SSAO", 0));
+        actionHatchingRendering->setText(QApplication::translate("MainWindowClass", "Hatching", 0));
+        actionBuildingReconstruction->setText(QApplication::translate("MainWindowClass", "Building Reconstruction", 0));
         menuFile->setTitle(QApplication::translate("MainWindowClass", "File", 0));
         menuOption->setTitle(QApplication::translate("MainWindowClass", "Tool", 0));
+        menuRendering->setTitle(QApplication::translate("MainWindowClass", "Rendering", 0));
         menuEdit->setTitle(QApplication::translate("MainWindowClass", "Edit", 0));
     } // retranslateUi
 

@@ -6,6 +6,8 @@
 
 namespace massrec {
 
+	int NUM_GRAMMARS = 10;
+
 	obj_function::obj_function(GLWidget3D* glWidget, cga::Grammar* grammar, cv::Mat silhouette_dist_map, float xrotMax, float xrotMin, float yrotMax, float yrotMin, float zrotMax, float zrotMin, float fovMax, float fovMin, float oxMax, float oxMin, float oyMax, float oyMin, float xMax, float xMin, float yMax, float yMin) {
 		this->glWidget = glWidget;
 		this->grammar = grammar;
@@ -52,7 +54,23 @@ namespace massrec {
 		return diff;
 	}
 
-	std::vector<float> parameterEstimation(GLWidget3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool imageBlur, int imageBlurSize, bool refinement, int maxIters, int refinement_method) {
+	int recognition(boost::shared_ptr<Classifier> classifier, int image_size, int screen_width, int screen_height, std::vector<vp::VanishingLine> silhouette) {
+		glm::vec2 scale((float)image_size / screen_width, (float)image_size / screen_height);
+		cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
+		for (auto stroke : silhouette) {
+			cv::Point p1(stroke.start.x * scale.x, stroke.start.y * scale.y);
+			cv::Point p2(stroke.end.x * scale.x, stroke.end.y * scale.y);
+
+			cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_AA);
+		}
+
+
+		std::vector<Prediction> predictions = classifier->Classify(input, NUM_GRAMMARS);
+		return predictions[0].first;
+
+	}
+
+	std::vector<float> parameterEstimation(GLWidget3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
 		time_t start = clock();
 
 		std::cout << "-----------------------------------------------------" << std::endl;
@@ -100,11 +118,6 @@ namespace massrec {
 				cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_AA);
 			}
 		}
-
-		if (imageBlur) {
-			cv::blur(input, input, cv::Size(imageBlurSize, imageBlurSize));
-		}
-		//cv::imwrite("input.png", input);
 
 		// estimate paramter values by CNN
 		std::vector<float> params = regression->Predict(input);
