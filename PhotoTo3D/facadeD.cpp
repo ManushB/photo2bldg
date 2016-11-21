@@ -251,7 +251,7 @@ cv::Mat generateFacadeD(float scale, int NF, int NC, int width, int height, int 
 		int x1 = (BS + (DS * 2 + DW) * j + DS) * scale;
 		int y1 = (height - DH) * scale;
 		int x2 = (BS + (DS * 2 + DW) * j + DS + DW) * scale;
-		int y2 = (height - 1) * scale;
+		int y2 = height * scale - 1;
 
 		if (window_displacement > 0) {
 			x1 += utils::genRand(-window_displacement, window_displacement + 1);
