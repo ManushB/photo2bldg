@@ -526,6 +526,8 @@ namespace facarec {
 		int NC = std::round(params[1] * 14 + 6);
 		if (NC < 6) NC = 6;
 
+		if (NC % 3 != 0) NC = std::round((float)NC / 3.0f) * 3;
+
 		float BS = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[7];
 		float TW = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[8];
 		float TW2 = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[9];

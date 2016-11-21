@@ -60,16 +60,4 @@
 			<param name="bottom" value="RoofLedge"/>
 		</comp>
 	</rule>
-	
-	<!-- material -->
-	<rule name="RoofTop">
-		<setupProjection axesSelector="scope.xy">
-			<param name="texWidth" type="relative" value="1"/>
-			<param name="texHeight" type="relative" value="1"/>
-		</setupProjection>
-		<texture texturePath="material/roof.tif"/>
-	</rule>
-	<rule name="RoofLedge">
-		<color s="#dfe0db"/>
-	</rule>
 </grammar>
