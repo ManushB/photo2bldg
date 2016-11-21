@@ -109,7 +109,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Material
 	{
-		grammars["material"].resize(8);
+		grammars["material"].resize(9);
 		cga::parseGrammar("cga/material/bldg2.xml", grammars["material"][0]);
 		cga::parseGrammar("cga/material/bldg3.xml", grammars["material"][1]);
 		cga::parseGrammar("cga/material/bldg7.xml", grammars["material"][2]);
@@ -118,6 +118,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 		cga::parseGrammar("cga/material/bldg14.xml", grammars["material"][5]);
 		cga::parseGrammar("cga/material/bldg29.xml", grammars["material"][6]);
 		cga::parseGrammar("cga/material/bldg35.xml", grammars["material"][7]);
+		cga::parseGrammar("cga/material/bldg43.xml", grammars["material"][8]);
 	}
 
 	// default grammar and pm values
@@ -126,7 +127,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	pm_params["mass"].resize(grammars["mass"][0].attrs.size(), 0.5);
 	grammar_ids["facade"] = 0;
 	pm_params["facade"].resize(grammars["facade"][0].attrs.size(), 0.5);
-	grammar_ids["material"] = 7;
+	grammar_ids["material"] = 8;
 }
 
 /**
