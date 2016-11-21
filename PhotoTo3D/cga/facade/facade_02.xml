@@ -34,7 +34,7 @@
 	<rule name="GroundFloor">
 		<split splitAxis="x">
 			<param type="floating" value="p07_floor_side" name="Wall"/>
-			<param type="floating" value="p08_tile_width" name="GroundTile" repeat="true"/>
+			<param type="floating" value="p15_door_width+p16_door_side*2" name="GroundTile" repeat="true"/>
 			<param type="floating" value="p07_floor_side" name="Wall"/>
 		</split>
 	</rule>
@@ -71,10 +71,5 @@
 			<param type="floating" value="p02_window_width" name="Window"/>
 			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
-	</rule>
-	
-	<!-- material -->
-	<rule name="Wall">
-		<texture texturePath="material/wall_paris.png"/>
 	</rule>
 </grammar>

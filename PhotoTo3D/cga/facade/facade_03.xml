@@ -98,9 +98,4 @@
 			<param type="floating" value="p17_top_tile_side" name="Wall" />
 		</split>
 	</rule>
-	
-	<!-- material -->
-	<rule name="Wall">
-		<texture texturePath="material/wall_paris.png"/>
-	</rule>
 </grammar>

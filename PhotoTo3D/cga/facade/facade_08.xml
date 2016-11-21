@@ -74,9 +74,4 @@
 			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
 	</rule>
-	
-	<!-- material -->
-	<rule name="Wall">
-		<texture texturePath="material/wall_paris.png"/>
-	</rule>
 </grammar>
