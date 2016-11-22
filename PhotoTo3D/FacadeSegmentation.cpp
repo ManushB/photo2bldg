@@ -17,11 +17,11 @@ namespace fs {
 		cv::blur(Hor, Hor, cv::Size(11, 11));
 
 		// Facadeのsplit linesを求める
-		getSplitLines(Ver, 3, y_split);
-		//refineSplitLines(y_split);
-		distributeSplitLines(y_split);
-		getSplitLines(Hor, 3, x_split);
-		refineSplitLines(x_split);
+		getSplitLines(Ver, 0.2, y_split);
+		refineSplitLines(y_split, 0.3);
+		//distributeSplitLines(y_split);
+		getSplitLines(Hor, 0.2, x_split);
+		refineSplitLines(x_split, 0.2);
 
 		// convert to grayscale
 		cv::Mat gray_img;
@@ -730,14 +730,18 @@ namespace fs {
 	/**
 	* 与えられた関数の極小値を使ってsplit lineを決定する。
 	*/
-	void getSplitLines(const cv::Mat_<float>& val, int size, std::vector<float>& split_positions) {
+	void getSplitLines(const cv::Mat_<float>& val, float threshold, std::vector<float>& split_positions) {
 		cv::Mat_<float> mat = val.clone();
 		if (mat.rows == 1) {
 			mat = mat.t();
 		}
 
+		double max_value, min_value;
+		cv::minMaxLoc(mat, &min_value, &max_value);
+		threshold *= (max_value - min_value);
+
 		for (int r = 0; r < mat.rows; ++r) {
-			if (cvutils::isLocalMinimum(mat, r, size)) {
+			if (isLocalMinimum(mat, r, threshold)) {
 				split_positions.push_back(r);
 			}
 		}
@@ -763,57 +767,21 @@ namespace fs {
 				split_positions.push_back(mat.rows);
 			}
 		}
-
-		////////////////////////////////////////////////////////////
-		// 一旦、極小値を取得した後、隣接する極大値との差のmedianを計算し、
-		// medianより極端に小さい場合は、その極小値を削除する。
-		bool updated = true;
-		while (updated) {
-			updated = false;
-
-			std::vector<float> tmp_positions = split_positions;
-			split_positions.clear();
-			std::vector<float> diffs;
-			for (int i = 1; i < tmp_positions.size() - 1; ++i) {
-				int tmp = 0;
-				float diff = cvutils::findNextMax(mat, tmp_positions[i], tmp) - mat.at<float>(tmp_positions[i], 0);
-				diffs.push_back(diff);
-			}
-
-			float diff_median = utils::median(diffs);
-
-			for (int i = 0; i < tmp_positions.size(); ++i) {
-				if (i == 0) {
-					split_positions.push_back(tmp_positions[i]);
-				}
-				else if (i == tmp_positions.size() - 1) {
-					split_positions.push_back(tmp_positions[i]);
-				}
-				else {
-					if (diffs[i - 1] >= diff_median * 0.5) {
-						split_positions.push_back(tmp_positions[i]);
-					}
-					else {
-						updated = true;
-					}
-				}
-			}
-		}
 	}
 
-	void refineSplitLines(std::vector<float>& split_positions) {
-		// 間隔が狭すぎる場合は、分割して隣接領域にマージする
-		while (true) {
-			// 領域の幅を計算する
-			cv::Mat intervals(split_positions.size() - 1, 1, CV_32F);
-			for (int i = 0; i < split_positions.size() - 1; ++i) {
-				intervals.at<float>(i, 0) = split_positions[i + 1] - split_positions[i];
-			}
-			float avg_interval = cvutils::getMostPopularValue(intervals, 3, 3);
+	// 間隔が狭すぎる場合は、分割して隣接領域にマージする
+	void refineSplitLines(std::vector<float>& split_positions, float threshold) {
+		// 最大の間隔を計算する（ただし、１階は除く）
+		float max_interval = 0;
+		for (int i = 0; i < split_positions.size() - 2; ++i) {
+			float interval = split_positions[i + 1] - split_positions[i];
+			if (interval > max_interval) max_interval = interval;
+		}
 
+		while (true) {
 			bool updated = false;
 			for (int i = 0; i < split_positions.size() - 1;) {
-				if (split_positions[i + 1] - split_positions[i] < avg_interval * 0.5) {
+				if (split_positions[i + 1] - split_positions[i] < max_interval * threshold) {
 					if (i == 0) {
 						split_positions.erase(split_positions.begin() + 1);
 					}
@@ -981,147 +949,6 @@ namespace fs {
 	}
 
 	void align(const cv::Mat& edge_img, const std::vector<float>& y_split, const std::vector<float>& x_split, std::vector<std::vector<WindowPos>> &winpos, int max_iter) {
-#if 0
-		for (int iter = 0; iter < max_iter; ++iter) {
-			// 各カラムについて、窓のx座標をそろえる
-			for (int j = 0; j < x_split.size() - 1; ++j) {
-				for (int i = 0; i < y_split.size() - 1; ++i) {
-					if (winpos[i][j].valid == WindowPos::INVALID) continue;
-
-					float E0 = computeEnergy(winpos, j, -1, y_split, x_split, edge_img);
-
-					// 上の階の窓に揃える
-					float E1 = std::numeric_limits<float>::max();
-					std::vector<std::vector<WindowPos>> winpos1 = winpos;
-					if (i > 0 && winpos[i - 1][j].valid == WindowPos::VALID) {
-						if (winpos1[i][j].valid == WindowPos::UNCERTAIN) {
-							winpos1[i][j].valid = WindowPos::VALID;
-
-							// 可能であれば、y座標をとなりの窓からコピーする
-							if (j > 0 && winpos1[i][j - 1].valid == WindowPos::VALID) {
-								winpos1[i][j].top = winpos1[i][j - 1].top;
-								winpos1[i][j].bottom = winpos1[i][j - 1].bottom;
-							}
-							else if (j < winpos1[i].size() - 1 && winpos1[i][j + 1].valid == WindowPos::VALID) {
-								winpos1[i][j].top = winpos1[i][j + 1].top;
-								winpos1[i][j].bottom = winpos1[i][j + 1].bottom;
-							}
-						}
-						winpos1[i][j].left = winpos1[i - 1][j].left;
-						winpos1[i][j].right = winpos1[i - 1][j].right;
-						E1 = computeEnergy(winpos1, j, -1, y_split, x_split, edge_img);
-					}
-
-					// 下の階の窓に揃える
-					float E2 = std::numeric_limits<float>::max();
-					std::vector<std::vector<WindowPos>> winpos2 = winpos;
-					if (i < y_split.size() - 2 && winpos[i + 1][j].valid == WindowPos::VALID) {
-						if (winpos2[i][j].valid == WindowPos::UNCERTAIN) {
-							winpos2[i][j].valid = WindowPos::VALID;
-
-							// 可能であれば、y座標をとなりの窓からコピーする
-							if (j > 0 && winpos2[i][j - 1].valid == WindowPos::VALID) {
-								winpos2[i][j].top = winpos2[i][j - 1].top;
-								winpos2[i][j].bottom = winpos2[i][j - 1].bottom;
-							}
-							else if (j < winpos2[i].size() - 1 && winpos2[i][j + 1].valid == WindowPos::VALID) {
-								winpos2[i][j].top = winpos2[i][j + 1].top;
-								winpos2[i][j].bottom = winpos2[i][j + 1].bottom;
-							}
-						}
-						winpos2[i][j].left = winpos2[i + 1][j].left;
-						winpos2[i][j].right = winpos2[i + 1][j].right;
-						float E2 = computeEnergy(winpos2, j, -1, y_split, x_split, edge_img);
-					}
-
-					// 窓を削除する
-					std::vector<std::vector<WindowPos>> winpos3 = winpos;
-					winpos3[i][j].valid = WindowPos::UNCERTAIN;
-					float E3 = computeEnergy(winpos3, j, -1, y_split, x_split, edge_img);
-
-					// ステートを更新する
-					if (E1 < E0 && E1 < E2) {
-						winpos = winpos1;
-					}
-					else if (E2 < E0 && E2 < E1) {
-						winpos = winpos2;
-					}
-				}
-			}
-
-			// 各フロアについて、窓のy座標をそろえる
-			for (int i = 0; i < y_split.size() - 1; ++i) {
-				for (int j = 0; j < x_split.size() - 1; ++j) {
-					if (winpos[i][j].valid == WindowPos::INVALID) continue;
-
-					float E0 = computeEnergy(winpos, -1, i, y_split, x_split, edge_img);
-
-					// 左の窓に揃える
-					float E1 = std::numeric_limits<float>::max();
-					std::vector<std::vector<WindowPos>> winpos1 = winpos;
-					if (j > 0 && winpos[i][j - 1].valid == WindowPos::VALID) {
-						if (winpos1[i][j].valid == WindowPos::UNCERTAIN) {
-							winpos1[i][j].valid = WindowPos::VALID;
-
-							// 可能であれば、x座標を上下の窓からコピーする
-							if (i > 0 && winpos1[i - 1][j].valid == WindowPos::VALID) {
-								winpos1[i][j].left = winpos1[i - 1][j].left;
-								winpos1[i][j].right = winpos1[i - 1][j].right;
-							}
-							else if (i < winpos1.size() - 1 && winpos1[i + 1][j].valid == WindowPos::VALID) {
-								winpos1[i][j].left = winpos1[i + 1][j].left;
-								winpos1[i][j].right = winpos1[i + 1][j].right;
-							}
-						}
-						winpos1[i][j].top = winpos1[i][j - 1].top;
-						winpos1[i][j].bottom = winpos1[i][j - 1].bottom;
-						E1 = computeEnergy(winpos1, -1, i, y_split, x_split, edge_img);
-					}
-
-					// 右の窓に揃える
-					float E2 = std::numeric_limits<float>::max();
-					std::vector<std::vector<WindowPos>> winpos2 = winpos;
-					if (j < x_split.size() - 2 && winpos[i][j + 1].valid == WindowPos::VALID) {
-						if (winpos2[i][j].valid == WindowPos::UNCERTAIN) {
-							winpos2[i][j].valid = WindowPos::VALID;
-
-							// 可能であれば、x座標を上下の窓からコピーする
-							if (i > 0 && winpos2[i - 1][j].valid == WindowPos::VALID) {
-								winpos2[i][j].left = winpos2[i - 1][j].left;
-								winpos2[i][j].right = winpos2[i - 1][j].right;
-							}
-							else if (i < winpos2.size() - 1 && winpos2[i + 1][j].valid == WindowPos::VALID) {
-								winpos2[i][j].left = winpos2[i + 1][j].left;
-								winpos2[i][j].right = winpos2[i + 1][j].right;
-							}
-						}
-						winpos2[i][j].top = winpos2[i][j + 1].top;
-						winpos2[i][j].bottom = winpos2[i][j + 1].bottom;
-						float E2 = computeEnergy(winpos2, -1, i, y_split, x_split, edge_img);
-					}
-
-					// 窓を削除する。
-					std::vector<std::vector<WindowPos>> winpos3 = winpos;
-					winpos3[i][j].valid = WindowPos::UNCERTAIN;
-					float E3 = computeEnergy(winpos3, -1, i, y_split, x_split, edge_img);
-
-					// ステートを更新する
-					if (E1 < E0 && E1 < E2 && E1 < E3) {
-						winpos = winpos1;
-					}
-					else if (E2 < E0 && E2 < E1 && E2 < E3) {
-						winpos = winpos2;
-					}
-					else if (E3 < E0 && E3 < E1 && E3 < E2) {
-						winpos = winpos3;
-					}
-				}
-			}
-		}
-#endif
-
-
-#if 1
 		// 窓のX座標をvoteする
 		for (int j = 0; j < x_split.size() - 1; ++j) {
 			int max_left, max_right;
@@ -1217,165 +1044,28 @@ namespace fs {
 				winpos[i][c].bottom = max_bottom;
 			}
 		}
-#endif
 	}
 
-	float computeEnergy(std::vector<std::vector<WindowPos>> &winpos, int u, int v, const std::vector<float>& y_split, const std::vector<float>& x_split, const cv::Mat& edge_img) {
-		float E = 0.0f;
+	bool isLocalMinimum(const cv::Mat& mat, int index, float threshold) {
+		float origin_value = mat.at<float>(index, 0);
 
-		if (v == -1) { // energy of column u
-			for (int i = 0; i < winpos.size(); ++i) {
-				// get the edge image of this tile
-				cv::Mat tile_edge(edge_img, cv::Rect(x_split[u], y_split[i], x_split[u + 1] - x_split[u], y_split[i + 1] - y_split[i]));
+		// check upward
+		for (int r = index - 1; r >= 0; --r) {
+			if (fabs(mat.at<float>(r, 0) - origin_value) > threshold) break;
 
-				// reduce
-				cv::Mat edge_hist;
-				cv::reduce(tile_edge, edge_hist, 0, CV_REDUCE_SUM, CV_32F);
-
-				// get the max of edge hist
-				cv::Mat edge_max;
-				cv::reduce(edge_hist, edge_max, 1, CV_REDUCE_MAX);
-
-				// normalize the edge hist
-				edge_hist /= edge_max.at<float>(0, 0);
-
-				// data cost
-				float data_cost = 0.0f;
-				if (winpos[i][u].valid == WindowPos::VALID) {
-					// the gradient magnitude should be high
-					data_cost += (1 - edge_hist.at<float>(0, winpos[i][u].left));
-					data_cost += (1 - edge_hist.at<float>(0, edge_hist.cols - 1 - winpos[i][u].right));
-
-					// the edge should be close to the boundary of the tile
-					data_cost += (float)winpos[i][u].left / tile_edge.cols;
-					data_cost += (float)winpos[i][u].right / tile_edge.cols;
-				}
-				else {
-					data_cost += edge_max.at<float>(0, 0) * 2;
-				}
-
-				// smoothness cost
-				float smooth_cost = 0.0f;
-				if (i > 0) {
-					if (winpos[i][u].valid == WindowPos::VALID) {
-						if (winpos[i - 1][u].valid == WindowPos::VALID) {
-							if (winpos[i][u].left != winpos[i - 1][u].left) smooth_cost++;
-							if (winpos[i][u].right != winpos[i - 1][u].right) smooth_cost++;
-						}
-						else {
-							smooth_cost += 2;
-						}
-					}
-					else {
-						if (winpos[i - 1][u].valid == WindowPos::VALID) {
-							smooth_cost += 2;
-						}
-						else {
-							// no cost
-						}
-					}
-				}
-				if (i < winpos.size() - 1) {
-					if (winpos[i][u].valid == WindowPos::VALID) {
-						if (winpos[i + 1][u].valid == WindowPos::VALID) {
-							if (winpos[i][u].left != winpos[i + 1][u].left) smooth_cost++;
-							if (winpos[i][u].right != winpos[i + 1][u].right) smooth_cost++;
-						}
-						else {
-							smooth_cost += 2;
-						}
-					}
-					else {
-						if (winpos[i + 1][u].valid == WindowPos::VALID) {
-							smooth_cost += 2;
-						}
-						else {
-							// no cost
-						}
-					}
-				}
-
-				E += data_cost + smooth_cost;
-			}
-		}
-		else { // energy of row v
-			for (int i = 0; i < winpos[v].size(); ++i) {
-				// get the edge image of this tile
-				cv::Mat tile_edge(edge_img, cv::Rect(x_split[i], y_split[v], x_split[i + 1] - x_split[i], y_split[v + 1] - y_split[v]));
-
-				// reduce
-				cv::Mat edge_hist;
-				cv::reduce(tile_edge, edge_hist, 1, CV_REDUCE_SUM, CV_32F);
-
-				// get the max of edge hist
-				cv::Mat edge_max;
-				cv::reduce(edge_hist, edge_max, 0, CV_REDUCE_MAX);
-
-				// normalize the edge hist
-				edge_hist /= edge_max.at<float>(0, 0);
-
-				// data cost
-				float data_cost = 0.0f;
-				if (winpos[v][i].valid == WindowPos::VALID) {
-					// the gradient magnitude should be high
-					data_cost += (1 - edge_hist.at<float>(0, winpos[v][i].top));
-					data_cost += (1 - edge_hist.at<float>(0, edge_hist.rows - 1 - winpos[v][i].bottom));
-
-					// the edge should be close to the boundary of the tile
-					data_cost += (float)winpos[v][i].top / tile_edge.cols;
-					data_cost += (float)winpos[v][i].bottom / tile_edge.cols;
-				}
-				else {
-					data_cost += edge_max.at<float>(0, 0) * 2;
-				}
-
-				// smoothness cost
-				float smooth_cost = 0.0f;
-				if (i > 0) {
-					if (winpos[v][i].valid == WindowPos::VALID) {
-						if (winpos[v][i - 1].valid == WindowPos::VALID) {
-							if (winpos[v][i].left != winpos[v][i - 1].left) smooth_cost++;
-							if (winpos[v][i].right != winpos[v][i - 1].right) smooth_cost++;
-						}
-						else {
-							smooth_cost += 2;
-						}
-					}
-					else {
-						if (winpos[v][i - 1].valid == WindowPos::VALID) {
-							smooth_cost += 2;
-						}
-						else {
-							// no cost
-						}
-					}
-				}
-				if (i < winpos[v].size() - 1) {
-					if (winpos[v][i].valid == WindowPos::VALID) {
-						if (winpos[v][i + 1].valid == WindowPos::VALID) {
-							if (winpos[v][i].left != winpos[v][i + 1].left) smooth_cost++;
-							if (winpos[v][i].right != winpos[v][i + 1].right) smooth_cost++;
-						}
-						else {
-							smooth_cost += 2;
-						}
-					}
-					else {
-						if (winpos[v][i + 1].valid == WindowPos::VALID) {
-							smooth_cost += 2;
-						}
-						else {
-							// no cost
-						}
-					}
-				}
-
-				E += data_cost + smooth_cost;
-			}
+			if (mat.at<float>(r, 0) < origin_value) return false;
 		}
 
-		return E;
+		// check downward
+		for (int r = index; r < mat.rows; ++r) {
+			if (fabs(mat.at<float>(r, 0) - origin_value) > threshold) break;
+
+			if (mat.at<float>(r, 0) < origin_value) return false;
+		}
+
+		return true;
 	}
+
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// visualization

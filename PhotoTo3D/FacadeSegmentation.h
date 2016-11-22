@@ -31,12 +31,12 @@ namespace fs {
 	bool subdivideTile2(const cv::Mat& tile, cv::Mat Ver, cv::Mat Hor, int min_size, int tile_margin, WindowPos& winpos);
 	void findBestHorizontalSplitLines(const cv::Mat& img, const cv::Mat_<float>& Ver, float min_interval, float max_interval, std::vector<int>& y_split);
 	void findBestVerticalSplitLines(const cv::Mat& img, const cv::Mat_<float>& Hor, float min_interval, float max_interval, std::vector<int>& x_split);
-	void getSplitLines(const cv::Mat_<float>& mat, int size, std::vector<float>& split_positions);
-	void refineSplitLines(std::vector<float>& split_positions);
+	void getSplitLines(const cv::Mat_<float>& mat, float threshold, std::vector<float>& split_positions);
+	void refineSplitLines(std::vector<float>& split_positions, float threshold);
 	void distributeSplitLines(std::vector<float>& split_positions);
 	void refine(std::vector<float>& y_split, std::vector<float>& x_split, std::vector<std::vector<WindowPos>>& winpos, float threshold);
 	void align(const cv::Mat& edge_img, const std::vector<float>& y_split, const std::vector<float>& x_split, std::vector<std::vector<WindowPos>>& winpos, int max_iter);
-	float computeEnergy(std::vector<std::vector<WindowPos>> &winpos, int u, int v, const std::vector<float>& y_split, const std::vector<float>& x_split, const cv::Mat& edge_img);
+	bool isLocalMinimum(const cv::Mat& mat, int index, float threshold);
 
 	// visualization
 	void outputFacadeStructure(const cv::Mat& img, const std::vector<float>& y_split, const std::vector<float>& x_split, const std::string& filename, cv::Scalar lineColor, int lineWidth);
