@@ -16,6 +16,8 @@ public:
 	int getSilhouetteWidth();
 	void setSilhouetteColor(const QColor& silhouetteColor);
 	QColor getSilhouetteColor();
+	void setMaterial(int material);
+	int getMaterial();
 
 	public slots:
 	void onOK();

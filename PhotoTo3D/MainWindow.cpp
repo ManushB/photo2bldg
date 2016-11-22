@@ -167,10 +167,14 @@ void MainWindow::onOption() {
 	OptionDialog dlg;
 	dlg.setSilhouetteWidth(glWidget->silhouetteWidth);
 	dlg.setSilhouetteColor(glWidget->silhouetteColor);
+	dlg.setMaterial(glWidget->grammar_ids["material"]);
 
 	if (dlg.exec()) {
 		glWidget->silhouetteWidth = dlg.getSilhouetteWidth();
 		glWidget->silhouetteColor = dlg.getSilhouetteColor();
+		glWidget->grammar_ids["material"] = dlg.getMaterial();
+		glWidget->updateGeometry();
+		glWidget->update();
 	}
 }
 

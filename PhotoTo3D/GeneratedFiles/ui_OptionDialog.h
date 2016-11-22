@@ -35,18 +35,20 @@ public:
     QLineEdit *lineEditSilhouetteRed;
     QLabel *label_19;
     QLineEdit *lineEditSilhouetteWidth;
+    QLabel *label_20;
+    QLineEdit *lineEditMaterial;
 
     void setupUi(QDialog *OptionDialog)
     {
         if (OptionDialog->objectName().isEmpty())
             OptionDialog->setObjectName(QStringLiteral("OptionDialog"));
-        OptionDialog->resize(323, 122);
+        OptionDialog->resize(323, 151);
         pushButtonOK = new QPushButton(OptionDialog);
         pushButtonOK->setObjectName(QStringLiteral("pushButtonOK"));
-        pushButtonOK->setGeometry(QRect(50, 80, 91, 31));
+        pushButtonOK->setGeometry(QRect(50, 110, 91, 31));
         pushButtonCancel = new QPushButton(OptionDialog);
         pushButtonCancel->setObjectName(QStringLiteral("pushButtonCancel"));
-        pushButtonCancel->setGeometry(QRect(190, 80, 91, 31));
+        pushButtonCancel->setGeometry(QRect(190, 110, 91, 31));
         label_15 = new QLabel(OptionDialog);
         label_15->setObjectName(QStringLiteral("label_15"));
         label_15->setGeometry(QRect(210, 40, 16, 16));
@@ -74,6 +76,12 @@ public:
         lineEditSilhouetteWidth = new QLineEdit(OptionDialog);
         lineEditSilhouetteWidth->setObjectName(QStringLiteral("lineEditSilhouetteWidth"));
         lineEditSilhouetteWidth->setGeometry(QRect(160, 10, 71, 20));
+        label_20 = new QLabel(OptionDialog);
+        label_20->setObjectName(QStringLiteral("label_20"));
+        label_20->setGeometry(QRect(20, 70, 101, 16));
+        lineEditMaterial = new QLineEdit(OptionDialog);
+        lineEditMaterial->setObjectName(QStringLiteral("lineEditMaterial"));
+        lineEditMaterial->setGeometry(QRect(160, 70, 71, 20));
         QWidget::setTabOrder(lineEditSilhouetteWidth, lineEditSilhouetteRed);
         QWidget::setTabOrder(lineEditSilhouetteRed, lineEditSilhouetteGreen);
         QWidget::setTabOrder(lineEditSilhouetteGreen, lineEditSilhouetteBlue);
@@ -95,6 +103,7 @@ public:
         label_17->setText(QApplication::translate("OptionDialog", "R", 0));
         label_18->setText(QApplication::translate("OptionDialog", "Silhouette color:", 0));
         label_19->setText(QApplication::translate("OptionDialog", "Silhouette width:", 0));
+        label_20->setText(QApplication::translate("OptionDialog", "Material:", 0));
     } // retranslateUi
 
 };

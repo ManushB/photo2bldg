@@ -28,6 +28,14 @@ QColor OptionDialog::getSilhouetteColor() {
 	return QColor(ui.lineEditSilhouetteRed->text().toInt(), ui.lineEditSilhouetteGreen->text().toInt(), ui.lineEditSilhouetteBlue->text().toInt());
 }
 
+void OptionDialog::setMaterial(int material) {
+	ui.lineEditMaterial->setText(QString::number(material));
+}
+
+int OptionDialog::getMaterial() {
+	return ui.lineEditMaterial->text().toInt();
+}
+
 void OptionDialog::onOK() {
 	accept();
 }
