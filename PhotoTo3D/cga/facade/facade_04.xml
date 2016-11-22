@@ -32,10 +32,16 @@
 			<param name="texHeight" type="absolute" value="5"/>
 		</setupProjection>
 		<split splitAxis="y">
-			<param type="absolute" value="p17_ground_height" name="GroundFloor"/>
-			<param type="absolute" value="p16_floor_height2" name="SecondFloor"/>
+			<param type="absolute" value="p17_ground_height" name="GroundFloorAndLedge"/>
+			<param type="absolute" value="p16_floor_height2" name="SecondFloorAndLedge"/>
 			<param type="floating" value="p15_floor_height" name="Floor" repeat="true"/>
 			<param type="absolute" value="p14_top_wall_height" name="Wall" />
+		</split>
+	</rule>
+	<rule name="GroundFloorAndLedge">
+		<split splitAxis="y">
+			<param type="relative" value="0.92" name="GroundFloor"/>
+			<param type="relative" value="0.08" name="Ledge" />
 		</split>
 	</rule>
 	<rule name="GroundFloor">
@@ -56,6 +62,12 @@
 			<param type="floating" value="p22_door_side" name="Wall"/>
 			<param type="floating" value="p21_door_width" name="Door"/>
 			<param type="floating" value="p22_door_side" name="Wall" />
+		</split>
+	</rule>
+	<rule name="SecondFloorAndLedge">
+		<split splitAxis="y">
+			<param type="relative" value="0.92" name="SecondFloor"/>
+			<param type="relative" value="0.08" name="Ledge" />
 		</split>
 	</rule>
 	<rule name="SecondFloor">
@@ -99,5 +111,50 @@
 			<param type="floating" value="p02_window_width" name="Window"/>
 			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
+	</rule>
+	
+	<!-- ledge -->
+	<rule name="Ledge">
+		<split splitAxis="y">
+			<param type="relative" value="0.5" name="LedgeLayer1"/>
+			<param type="relative" value="0.3" name="LedgeLayer2"/>
+			<param type="relative" value="0.2" name="LedgeLayer3"/>
+		</split>
+	</rule>
+	<rule name="LedgeLayer1">
+		<size centered="true">
+			<param name="xSize" type="absolute" value="scope.sx+0.1*2"/>
+			<param name="ySize" type="relative" value="1"/>
+			<param name="zSize" type="relative" value="1"/>
+		</size>
+		<extrude height="0.1"/>
+		<comp>
+			<param name="side" value="LedgeFace"/>
+			<param name="top" value="LedgeFace"/>
+		</comp>
+	</rule>
+	<rule name="LedgeLayer2">
+		<size centered="true">
+			<param name="xSize" type="absolute" value="scope.sx+0.3*2"/>
+			<param name="ySize" type="relative" value="1"/>
+			<param name="zSize" type="relative" value="1"/>
+		</size>
+		<extrude height="0.3"/>
+		<comp>
+			<param name="side" value="LedgeFace"/>
+			<param name="top" value="LedgeFace"/>
+		</comp>
+	</rule>
+	<rule name="LedgeLayer3">
+		<size centered="true">
+			<param name="xSize" type="absolute" value="scope.sx+0.3*1.15*2"/>
+			<param name="ySize" type="relative" value="1"/>
+			<param name="zSize" type="relative" value="1"/>
+		</size>
+		<extrude height="0.3*1.15"/>
+		<comp>
+			<param name="side" value="LedgeFace"/>
+			<param name="top" value="LedgeFace"/>
+		</comp>
 	</rule>
 </grammar>
