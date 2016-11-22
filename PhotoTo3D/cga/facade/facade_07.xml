@@ -51,7 +51,7 @@
 	<rule name="CenterTile2">
 		<split splitAxis="x">
 			<param type="floating" value="p15_tile_side_margin2" name="Wall"/>
-			<param type="floating" value="p13_window_width2" name="Window"/>
+			<param type="floating" value="p13_window_width2" name="WideWindow"/>
 			<param type="floating" value="p15_tile_side_margin2" name="Wall" />
 		</split>
 	</rule>
