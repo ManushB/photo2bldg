@@ -52,7 +52,7 @@ MassReconstructionDialog::~MassReconstructionDialog() {
 }
 
 void MassReconstructionDialog::onAutomaticRecognition() {
-	ui.lineEditGrammarSnippet->setEnabled(ui.checkBoxAutomaticRecognition->isChecked());
+	ui.lineEditGrammarSnippet->setEnabled(!ui.checkBoxAutomaticRecognition->isChecked());
 }
 
 void MassReconstructionDialog::onRefinement() {
