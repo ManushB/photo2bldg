@@ -65,7 +65,7 @@ boost::shared_ptr<Shape> CylinderSide::clone(const std::string& name) const {
 }
 
 boost::shared_ptr<Shape> CylinderSide::extrude(const std::string& name, float height) {
-	if (_angle < M_PI * 0.25) {
+	if (_angle < M_PI * 0.499) {
 		// if the angle is small enough, approximate it by a flat surface
 		glm::vec3 p2(_radius_x * sinf(_angle), 0, _radius_y * cosf(_angle) - _radius_y);
 		float new_sx = glm::length(p2 - glm::vec3(0, 0, 0));

@@ -516,9 +516,11 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	// grammar id
 	grammar_ids["mass"] = grammarSnippetId;
 
+	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Mass grammar: #" << grammar_ids["mass"] + 1 << std::endl;
 
 	std::vector<float> params = massrec::parameterEstimation(this, regressions["mass"][grammar_ids["mass"]], &grammars["mass"][grammar_ids["mass"]], silhouette, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, refinement, maxIters, refinement_method);
+	utils::output_vector(params);
 
 	// set the camera
 	setupCamera(params, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
@@ -849,6 +851,7 @@ void GLWidget3D::facadeReconstruction() {
 
 	// recognize the grammar id
 	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img);
+	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
 
 	// parameter estimation
