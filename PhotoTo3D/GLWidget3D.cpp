@@ -756,20 +756,45 @@ void GLWidget3D::facadeReconstruction() {
 
 		// save the texture image
 		if (visible) {
-			// obtain the largest height of the images
-			int height_max = 0;
+			// reorder the rectified image
+			std::vector<cv::Mat> reordered_rectified_images;
+			std::vector<glm::vec2> reordered_face_sizes;
+			bool skip = false;
 			for (int i = 0; i < rectified_images.size(); ++i) {
 				if (visibilities[i]) {
-					if (rectified_images[i].rows > height_max) {
-						height_max = rectified_images[i].rows;
+					reordered_rectified_images.push_back(rectified_images[i]);
+					reordered_face_sizes.push_back(face_sizes[i]);
+				}
+				else {
+					skip = true;
+					break;
+				}
+			}
+
+			if (skip) {
+				for (int i = rectified_images.size() - 1; i >= 0; --i) {
+					if (visibilities[i]) {
+						reordered_rectified_images.insert(reordered_rectified_images.begin(), rectified_images[i]);
+						reordered_face_sizes.insert(reordered_face_sizes.begin(), face_sizes[i]);
 					}
+					else {
+						break;
+					}
+				}
+			}
+
+			// obtain the largest height of the images
+			int height_max = 0;
+			for (int i = 0; i < reordered_rectified_images.size(); ++i) {
+				if (reordered_rectified_images[i].rows > height_max) {
+					height_max = reordered_rectified_images[i].rows;
 				}
 			}
 
 			// determine the size of the merged texture
 			int width_total = 0;
-			for (int i = 0; i < rectified_images.size(); ++i) {
-				width_total += (float)rectified_images[i].cols * height_max / rectified_images[i].rows;
+			for (int i = 0; i < reordered_rectified_images.size(); ++i) {
+				width_total += (float)reordered_rectified_images[i].cols * height_max / reordered_rectified_images[i].rows;
 			}
 
 			// initialize the texture
@@ -777,15 +802,13 @@ void GLWidget3D::facadeReconstruction() {
 
 			// merge the texture
 			int offset = 0;
-			for (int i = 0; i < rectified_images.size(); ++i) {
-				int width = (float)rectified_images[i].cols * height_max / rectified_images[i].rows;
+			for (int i = 0; i < reordered_rectified_images.size(); ++i) {
+				int width = (float)reordered_rectified_images[i].cols * height_max / reordered_rectified_images[i].rows;
 
-				if (visibilities[i]) {
-					cv::Mat roi(textureImg, cv::Rect(offset, 0, width, height_max));
+				cv::Mat roi(textureImg, cv::Rect(offset, 0, width, height_max));
 
-					cv::resize(rectified_images[i], rectified_images[i], cv::Size(width, height_max));
-					rectified_images[i].copyTo(roi);
-				}
+				cv::resize(reordered_rectified_images[i], reordered_rectified_images[i], cv::Size(width, height_max));
+				reordered_rectified_images[i].copyTo(roi);
 
 				offset += width;
 			}
