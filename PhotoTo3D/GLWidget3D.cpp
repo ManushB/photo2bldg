@@ -516,6 +516,14 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	// grammar id
 	grammar_ids["mass"] = grammarSnippetId;
 
+	// Hack
+	// For cylinder, we fix the rotation around Y axis
+	if (grammar_ids["mass"] == 1) {
+		float yrot = (yrotMin + yrotMax) * 0.5;
+		yrotMin = yrot;
+		yrotMax = yrot;
+	}
+
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Mass grammar: #" << grammar_ids["mass"] + 1 << std::endl;
 
@@ -723,8 +731,10 @@ void GLWidget3D::facadeReconstruction() {
 			// check if the quad is visible
 			glm::vec3 normal = glm::cross(pts3d[1] - pts3d[0], pts3d[2] - pts3d[1]);
 			normal = glm::vec3(camera.mvMatrix * glm::vec4(normal, 0));
+			normal /= glm::length(normal);
 			glm::vec3 view_dir = glm::vec3(camera.mvMatrix * glm::vec4(pts3d[0], 1));
-			if (glm::dot(normal, view_dir) < -0.01) {
+			view_dir /= glm::length(view_dir);
+			if (glm::dot(normal, view_dir) < -0.1) {
 				visible = true;
 				visibilities.push_back(true);
 
