@@ -150,4 +150,7 @@
 		</setupProjection>
 		<texture texturePath="material/bldg8/door_glass.tif"/>
 	</rule>
+	<rule name="LedgeFace">
+		<color s="#b7a9a4"/>
+	</rule>
 </grammar>

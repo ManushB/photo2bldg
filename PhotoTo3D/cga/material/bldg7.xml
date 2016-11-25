@@ -113,4 +113,7 @@
 	<rule name="WindowFrame">
 		<color s="#867c7a"/>
 	</rule>
+	<rule name="LedgeFace">
+		<color s="#867c7a"/>
+	</rule>
 </grammar>
