@@ -72,7 +72,12 @@ boost::shared_ptr<Shape> CylinderSide::extrude(const std::string& name, float he
 
 		glm::mat4 mat = glm::rotate(_modelMat, _angle * 0.5f, glm::vec3(0, 1, 0));
 
-		return boost::shared_ptr<Shape>(new Cuboid(name, _grammar_type, _pivot, mat, new_sx, _scope.y, height, _color));
+		if (_texCoords.size() >= 4) {
+			return boost::shared_ptr<Shape>(new Cuboid(name, _grammar_type, _pivot, mat, new_sx, _scope.y, height, _color, _texture, _texCoords[0].x, _texCoords[0].y, _texCoords[2].x, _texCoords[2].y));
+		}
+		else {
+			return boost::shared_ptr<Shape>(new Cuboid(name, _grammar_type, _pivot, mat, new_sx, _scope.y, height, _color));
+		}
 	}
 	else {
 		// HACK: use cylinder
