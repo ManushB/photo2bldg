@@ -83,7 +83,7 @@ void CGA::derive(const Grammar& grammar, bool suppressWarning) {
 	}
 }
 
-void CGA::derive(std::vector<Grammar*> grammars, bool suppressWarning) {
+void CGA::derive(const std::vector<Grammar>& grammars, bool suppressWarning) {
 	shapes.clear();
 
 	while (!stack.empty()) {
@@ -92,8 +92,8 @@ void CGA::derive(std::vector<Grammar*> grammars, bool suppressWarning) {
 
 		bool found = false;
 		for (int i = 0; i < grammars.size(); ++i) {
-			if (grammars[i]->contain(shape->_name)) {
-				grammars[i]->getRule(shape->_name).apply(shape, *grammars[i], stack, shapes);
+			if (grammars[i].contain(shape->_name)) {
+				grammars[i].getRule(shape->_name).apply(shape, grammars[i], stack, shapes);
 				found = true;
 				break;
 			}

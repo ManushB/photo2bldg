@@ -11,6 +11,7 @@ class MainWindow : public QMainWindow {
 public:
 	Ui::MainWindowClass ui;
 	GLWidget3D* glWidget;
+	QString image_filename;
 
 public:
 	MainWindow(QWidget *parent = 0);

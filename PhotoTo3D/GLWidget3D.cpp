@@ -21,6 +21,7 @@
 #include "FacadeReconstruction.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
+#include "WindowRecognition.h"
 
 GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent) {
 	mainWin = (MainWindow*)parent;
@@ -47,64 +48,91 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	glm::mat4 light_mvMatrix = glm::lookAt(-light_dir * 50.0f, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	light_mvpMatrix = light_pMatrix * light_mvMatrix;
 
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Building mass
 
-	classifiers["mass"] = boost::shared_ptr<Classifier>(new Classifier("models/mass/deploy.prototxt", "models/mass/train_iter_40000.caffemodel", "models/mass/mean.binaryproto"));
+	// load caffe model
+	classifiers["mass"] = boost::shared_ptr<Classifier>(new Classifier("models/mass/deploy.prototxt", "models/mass/train_iter_60000.caffemodel", "models/mass/mean.binaryproto"));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_01.prototxt", "models/mass/train_01_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_02.prototxt", "models/mass/train_02_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_03.prototxt", "models/mass/train_03_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_04.prototxt", "models/mass/train_04_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_05.prototxt", "models/mass/train_05_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_06.prototxt", "models/mass/train_06_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_07.prototxt", "models/mass/train_07_iter_240000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_08.prototxt", "models/mass/train_08_iter_120000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_09.prototxt", "models/mass/train_09_iter_160000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_10.prototxt", "models/mass/train_10_iter_160000.caffemodel")));
 
-	// caffe modelを読み込む
-	{
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_01.prototxt", "models/mass/train_01_iter_240000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_02.prototxt", "models/mass/train_02_iter_160000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_03.prototxt", "models/mass/train_03_iter_120000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_04.prototxt", "models/mass/train_04_iter_120000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_05.prototxt", "models/mass/train_05_iter_120000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_06.prototxt", "models/mass/train_06_iter_160000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_07.prototxt", "models/mass/train_07_iter_240000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_08.prototxt", "models/mass/train_08_iter_120000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_09.prototxt", "models/mass/train_09_iter_120000.caffemodel")));
-		regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_10.prototxt", "models/mass/train_10_iter_80000.caffemodel")));
-	}
+	// load grammars
+	grammars["mass"].resize(10);
+	cga::parseGrammar("cga/mass/contour_01.xml", grammars["mass"][0]);
+	cga::parseGrammar("cga/mass/contour_02.xml", grammars["mass"][1]);
+	cga::parseGrammar("cga/mass/contour_03.xml", grammars["mass"][2]);
+	cga::parseGrammar("cga/mass/contour_04.xml", grammars["mass"][3]);
+	cga::parseGrammar("cga/mass/contour_05.xml", grammars["mass"][4]);
+	cga::parseGrammar("cga/mass/contour_06.xml", grammars["mass"][5]);
+	cga::parseGrammar("cga/mass/contour_07.xml", grammars["mass"][6]);
+	cga::parseGrammar("cga/mass/contour_08.xml", grammars["mass"][7]);
+	cga::parseGrammar("cga/mass/contour_09.xml", grammars["mass"][8]);
+	cga::parseGrammar("cga/mass/contour_10.xml", grammars["mass"][9]);
 
-	// Grammarを読み込む
-	{
-		grammars["mass"].resize(10);
-		cga::parseGrammar("cga/mass/contour_01.xml", grammars["mass"][0]);
-		cga::parseGrammar("cga/mass/contour_02.xml", grammars["mass"][1]);
-		cga::parseGrammar("cga/mass/contour_03.xml", grammars["mass"][2]);
-		cga::parseGrammar("cga/mass/contour_04.xml", grammars["mass"][3]);
-		cga::parseGrammar("cga/mass/contour_05.xml", grammars["mass"][4]);
-		cga::parseGrammar("cga/mass/contour_06.xml", grammars["mass"][5]);
-		cga::parseGrammar("cga/mass/contour_07.xml", grammars["mass"][6]);
-		cga::parseGrammar("cga/mass/contour_08.xml", grammars["mass"][7]);
-		cga::parseGrammar("cga/mass/contour_09.xml", grammars["mass"][8]);
-		cga::parseGrammar("cga/mass/contour_10.xml", grammars["mass"][9]);
-	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Facade
-	{
-		classifiers["facade"] = boost::shared_ptr<Classifier>(new Classifier("models/facade/deploy.prototxt", "models/facade/train_iter_40000.caffemodel", "models/facade/mean.binaryproto"));
 
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_01.prototxt", "models/facade/train_01_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_02.prototxt", "models/facade/train_02_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_03.prototxt", "models/facade/train_03_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_04.prototxt", "models/facade/train_04_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_05.prototxt", "models/facade/train_05_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_06.prototxt", "models/facade/train_06_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_07.prototxt", "models/facade/train_07_iter_40000.caffemodel")));
-		regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_08.prototxt", "models/facade/train_08_iter_40000.caffemodel")));
+	// load caffe model
+	classifiers["facade"] = boost::shared_ptr<Classifier>(new Classifier("models/facade/deploy.prototxt", "models/facade/train_iter_40000.caffemodel", "models/facade/mean.binaryproto"));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_01.prototxt", "models/facade/train_01_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_02.prototxt", "models/facade/train_02_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_03.prototxt", "models/facade/train_03_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_04.prototxt", "models/facade/train_04_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_05.prototxt", "models/facade/train_05_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_06.prototxt", "models/facade/train_06_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_07.prototxt", "models/facade/train_07_iter_40000.caffemodel")));
+	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_08.prototxt", "models/facade/train_08_iter_40000.caffemodel")));
 
-		grammars["facade"].resize(8);
-		cga::parseGrammar("cga/facade/facade_01.xml", grammars["facade"][0]);
-		cga::parseGrammar("cga/facade/facade_02.xml", grammars["facade"][1]);
-		cga::parseGrammar("cga/facade/facade_03.xml", grammars["facade"][2]);
-		cga::parseGrammar("cga/facade/facade_04.xml", grammars["facade"][3]);
-		cga::parseGrammar("cga/facade/facade_05.xml", grammars["facade"][4]);
-		cga::parseGrammar("cga/facade/facade_06.xml", grammars["facade"][5]);
-		cga::parseGrammar("cga/facade/facade_07.xml", grammars["facade"][6]);
-		cga::parseGrammar("cga/facade/facade_08.xml", grammars["facade"][7]);
-	}
+	// load grammars
+	grammars["facade"].resize(8);
+	cga::parseGrammar("cga/facade/facade_01.xml", grammars["facade"][0]);
+	cga::parseGrammar("cga/facade/facade_02.xml", grammars["facade"][1]);
+	cga::parseGrammar("cga/facade/facade_03.xml", grammars["facade"][2]);
+	cga::parseGrammar("cga/facade/facade_04.xml", grammars["facade"][3]);
+	cga::parseGrammar("cga/facade/facade_05.xml", grammars["facade"][4]);
+	cga::parseGrammar("cga/facade/facade_06.xml", grammars["facade"][5]);
+	cga::parseGrammar("cga/facade/facade_07.xml", grammars["facade"][6]);
+	cga::parseGrammar("cga/facade/facade_08.xml", grammars["facade"][7]);
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Window
+
+	// load caffe model
+	classifiers["window"] = boost::shared_ptr<Classifier>(new Classifier("models/window/deploy.prototxt", "models/window/train_iter_20000.caffemodel", "models/window/mean.binaryproto"));
+
+	// load grammars
+	grammars["window"].resize(13);
+	cga::parseGrammar("cga/window/window_01.xml", grammars["window"][0]);
+	cga::parseGrammar("cga/window/window_02.xml", grammars["window"][1]);
+	cga::parseGrammar("cga/window/window_03.xml", grammars["window"][2]);
+	cga::parseGrammar("cga/window/window_04.xml", grammars["window"][3]);
+	cga::parseGrammar("cga/window/window_05.xml", grammars["window"][4]);
+	cga::parseGrammar("cga/window/window_06.xml", grammars["window"][5]);
+	cga::parseGrammar("cga/window/window_07.xml", grammars["window"][6]);
+	cga::parseGrammar("cga/window/window_08.xml", grammars["window"][7]);
+	cga::parseGrammar("cga/window/window_09.xml", grammars["window"][8]);
+	cga::parseGrammar("cga/window/window_10.xml", grammars["window"][9]);
+	cga::parseGrammar("cga/window/window_11.xml", grammars["window"][10]);
+	cga::parseGrammar("cga/window/window_12.xml", grammars["window"][11]);
+	cga::parseGrammar("cga/window/window_13.xml", grammars["window"][12]);
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Door
+
+	grammars["door"].resize(1);
+	cga::parseGrammar("cga/door/door_01.xml", grammars["door"][0]);
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Material
@@ -513,16 +541,20 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 		grammarSnippetId = massrec::recognition(classifiers["mass"], image_size, width(), height(), silhouette);
 	}
 
+	grammar_ids.clear();
+
 	// grammar id
 	grammar_ids["mass"] = grammarSnippetId;
 
 	// Hack
 	// For cylinder, we fix the rotation around Y axis
+	/*
 	if (grammar_ids["mass"] == 1) {
 		float yrot = (yrotMin + yrotMax) * 0.5;
 		yrotMin = yrot;
 		yrotMax = yrot;
 	}
+	*/
 
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Mass grammar: #" << grammar_ids["mass"] + 1 << std::endl;
@@ -690,7 +722,7 @@ void GLWidget3D::autoTest(int grammar_id, int image_size, const QString& param_f
 	}
 }
 
-void GLWidget3D::facadeReconstruction() {
+void GLWidget3D::facadeReconstruction(int num_floors, int num_columns) {
 	// convert image to cv::Mat object
 	cv::Mat imageMat = cv::Mat(image.height(), image.width(), CV_8UC4, const_cast<uchar*>(image.bits()), image.bytesPerLine()).clone();
 	cv::cvtColor(imageMat, imageMat, cv::COLOR_BGRA2BGR);
@@ -708,6 +740,7 @@ void GLWidget3D::facadeReconstruction() {
 		if (!boost::starts_with(faces[fi]->name, "Facade")) continue;
 
 		std::vector<cv::Mat> rectified_images;
+		std::vector<float> projected_areas;
 		std::vector<bool> visibilities;
 		std::vector<glm::vec2> face_sizes;
 		bool visible = false;
@@ -734,7 +767,15 @@ void GLWidget3D::facadeReconstruction() {
 			normal /= glm::length(normal);
 			glm::vec3 view_dir = glm::vec3(camera.mvMatrix * glm::vec4(pts3d[0], 1));
 			view_dir /= glm::length(view_dir);
-			if (glm::dot(normal, view_dir) < -0.1) {
+			////////////////////////////////////////////////////////////////////////////////////////////////////
+			// DEBUG
+			std::cout << "face " << fi << ": " << glm::dot(normal, view_dir);
+			if (glm::dot(normal, view_dir) < -0.2) {
+				std::cout << " *";
+			}
+			std::cout << std::endl;
+			////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (glm::dot(normal, view_dir) < -0.2) {
 				visible = true;
 				visibilities.push_back(true);
 
@@ -744,6 +785,9 @@ void GLWidget3D::facadeReconstruction() {
 				rectifiedImage = cvutils::adjust_contrast(rectifiedImage);
 
 				rectified_images.push_back(rectifiedImage);
+
+				// compute the projected area
+				projected_areas.push_back(utils::computeArea(pts));
 			}
 			else {
 				visibilities.push_back(false);
@@ -813,8 +857,26 @@ void GLWidget3D::facadeReconstruction() {
 				offset += width;
 			}
 
-			if (textureImg.rows * textureImg.cols > max_facade_area) {
-				max_facade_area = textureImg.rows * textureImg.cols;
+			// compute the sum of the projected area
+			float projected_area = 0;
+			for (int i = 0; i < rectified_images.size(); ++i) {
+				projected_area = projected_areas[i];
+			}
+			
+
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// DEBUG
+			// save each visible facade
+			char fn[256];
+			sprintf(fn, "facade_%d.png", fi);
+			cv::imwrite(fn, textureImg);
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+			//if (textureImg.rows * textureImg.cols > max_facade_area) {
+			if (projected_area > max_facade_area) {
+				//max_facade_area = textureImg.rows * textureImg.cols;
+				max_facade_area = projected_area;
 				max_facade = textureImg;
 
 				// compute the geometric size of the face
@@ -831,74 +893,48 @@ void GLWidget3D::facadeReconstruction() {
 	cv::imwrite("facade.png", max_facade);
 
 	// extract windows
-	std::vector<float> x_split;
-	std::vector<float> y_split;
+	std::vector<float> x_splits;
+	std::vector<float> y_splits;
 	std::vector<std::vector<fs::WindowPos>> win_rects;
-	fs::subdivideFacade(max_facade, false, y_split, x_split, win_rects);
+	fs::subdivideFacade(max_facade, (float)max_facade.rows / num_floors, (float)max_facade.cols / num_columns, false, y_splits, x_splits, win_rects);
 
 	// DEBUG: generate window image of the original size
-	cv::Mat window_img(max_facade.rows, max_facade.cols, CV_8UC3, cv::Scalar(255, 255, 255));
-	for (int i = 0; i < y_split.size() - 1; ++i) {
-		for (int j = 0; j < x_split.size() - 1; ++j) {
-			if (win_rects[i][j].valid == fs::WindowPos::VALID) {
-				int x1 = std::round(x_split[j] + win_rects[i][j].left);
-				int y1 = std::round(y_split[i] + win_rects[i][j].top);
-				int x2 = std::round(x_split[j + 1] - 1 - win_rects[i][j].right);
-				int y2 = std::round(y_split[i + 1] - 1 - win_rects[i][j].bottom);
-				cv::rectangle(window_img, cv::Rect(x1, y1, x2 - x1 + 1, y2 - y1 + 1), cv::Scalar(0, 0, 0), 1);
-			}
-		}
-	}
+	cv::Mat window_img;
+	fs::generateWindowImage(y_splits, x_splits, win_rects, max_facade.size(), window_img);
 	cv::imwrite("window.png", window_img);
 
-	// resize the window coordinates
-	for (int i = 0; i < win_rects.size(); ++i) {
-		for (int j = 0; j < win_rects[i].size(); ++j) {
-			win_rects[i][j].left = win_rects[i][j].left * 227.0f / max_facade.cols;
-			win_rects[i][j].right = win_rects[i][j].right * 227.0f / max_facade.cols;
-			win_rects[i][j].top = win_rects[i][j].top * 227.0f / max_facade.rows;
-			win_rects[i][j].bottom = win_rects[i][j].bottom * 227.0f / max_facade.rows;
-		}
-	}
-	for (int i = 0; i < x_split.size(); ++i) {
-		x_split[i] = x_split[i] * 227.0f / max_facade.cols;
-	}
-	for (int i = 0; i < y_split.size(); ++i) {
-		y_split[i] = y_split[i] * 227.0f / max_facade.rows;
-	}
-
 	// generate window image with size of 227x227
-	cv::Mat input_img(227, 227, CV_8UC3, cv::Scalar(255, 255, 255));
-	for (int i = 0; i < y_split.size() - 1; ++i) {
-		for (int j = 0; j < x_split.size() - 1; ++j) {
-			if (win_rects[i][j].valid == fs::WindowPos::VALID) {
-				int x1 = std::round(x_split[j] + win_rects[i][j].left);
-				int y1 = std::round(y_split[i] + win_rects[i][j].top);
-				int x2 = std::round(x_split[j + 1] - 1 - win_rects[i][j].right);
-				int y2 = std::round(y_split[i + 1] - 1 - win_rects[i][j].bottom);
-				cv::rectangle(input_img, cv::Rect(x1, y1, x2 - x1 + 1, y2 - y1 + 1), cv::Scalar(0, 0, 0), 1);
-			}
-		}
-	}
+	cv::Mat input_img;
+	fs::generateWindowImage(y_splits, x_splits, win_rects, cv::Size(227, 227), input_img);
 	cv::imwrite("window227.png", input_img);
 
-	// recognize the grammar id
+	// recognize the facade grammar id
 	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img);
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
 
 	// parameter estimation
-	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y);
+	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y, y_splits.size() - 1, x_splits.size() - 1);
 	utils::output_vector(params);
 
 	// set PM parameter values
 	pm_params["facade"] = params;
 
+
+	// recognize window styles
+	std::vector<int> selected_win_types = winrec::recognition(max_facade, grammar_ids["facade"], y_splits, x_splits, win_rects, classifiers["window"]);
+	
+	for (int i = 0; i < selected_win_types.size(); ++i) {
+		char window_nt_name[256];
+		sprintf(window_nt_name, "Window%d", i);
+
+		grammar_ids[window_nt_name] = selected_win_types[i];
+	}
+
 	updateGeometry();
 
 	updateStatusBar();
 	update();
-
 }
 
 /**
@@ -1006,11 +1042,11 @@ std::vector<boost::shared_ptr<glutils::Face>> GLWidget3D::updateGeometry(int gra
 	boost::shared_ptr<cga::Shape> start = boost::shared_ptr<cga::Shape>(new cga::Rectangle("Start", "", glm::translate(glm::rotate(glm::mat4(), -(float)vp::M_PI * 0.5f, glm::vec3(1, 0, 0)), glm::vec3(0, 0, 0)), glm::mat4(), 0, 0, glm::vec3(1, 1, 1)));
 	cga.stack.push_back(start);
 
-	std::vector<cga::Grammar*> grammar_list;
-	grammar_list.push_back(mass_grammar);
+	std::vector<cga::Grammar> grammar_list;
+	grammar_list.push_back(*mass_grammar);
 	if (grammar_type == GRAMMAR_TYPE_FACADE) {
-		grammar_list.push_back(facade_grammar);
-		grammar_list.push_back(window_grammar);
+		grammar_list.push_back(*facade_grammar);
+		grammar_list.push_back(*window_grammar);
 	}
 
 	// generate 3d model
@@ -1036,7 +1072,7 @@ std::vector<boost::shared_ptr<glutils::Face>> GLWidget3D::updateGeometry(int gra
 void GLWidget3D::updateGeometry() {
 	// set param values
 	cga::setParamValues(grammars["mass"][grammar_ids["mass"]], pm_params["mass"]);
-	if (grammar_type == GRAMMAR_TYPE_FACADE) {
+	if (grammar_type == GRAMMAR_TYPE_FACADE && grammar_ids.contains("facade")) {
 		cga::setParamValues(grammars["facade"][grammar_ids["facade"]], pm_params["facade"]);
 	}
 
@@ -1048,11 +1084,35 @@ void GLWidget3D::updateGeometry() {
 	boost::shared_ptr<cga::Shape> start = boost::shared_ptr<cga::Shape>(new cga::Rectangle("Start", "", glm::translate(glm::rotate(glm::mat4(), -(float)vp::M_PI * 0.5f, glm::vec3(1, 0, 0)), glm::vec3(0, 0, 0)), glm::mat4(), 0, 0, glm::vec3(1, 1, 1)));
 	cga.stack.push_back(start);
 
-	std::vector<cga::Grammar*> grammar_list;
-	grammar_list.push_back(&grammars["mass"][grammar_ids["mass"]]);
-	if (grammar_type == GRAMMAR_TYPE_FACADE) {
-		grammar_list.push_back(&grammars["facade"][grammar_ids["facade"]]);
-		grammar_list.push_back(&grammars["material"][grammar_ids["material"]]);
+	// combine all the grammar snippets
+	std::vector<cga::Grammar> grammar_list;
+	grammar_list.push_back(grammars["mass"][grammar_ids["mass"]]);
+	if (grammar_type == GRAMMAR_TYPE_FACADE && grammar_ids.contains("facade")) {
+		// add facade grammar snippet
+		grammar_list.push_back(grammars["facade"][grammar_ids["facade"]]);
+
+		// add window grammar snippets
+		for (int k = 0; k < 99; ++k) {
+			char window_nt_name[256];
+			sprintf(window_nt_name, "Window%d", k);
+
+			if (!grammar_ids.contains(window_nt_name)) break;
+
+			grammar_list.push_back(grammars["window"][grammar_ids[window_nt_name]]);
+
+			// rename the axiom of the window grammar snippet
+			for (auto it = grammar_list.back().rules.begin(); it != grammar_list.back().rules.end(); ++it) {
+				if (it->first == "Window") {
+					cga::Rule rule = it->second;
+					grammar_list.back().rules.erase(it);
+					grammar_list.back().rules[window_nt_name] = rule;
+					break;
+				}
+			}
+		}
+
+		// add door grammar snippet
+		grammar_list.push_back(grammars["door"][0]);
 	}
 
 	// generate 3d model

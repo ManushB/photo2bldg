@@ -66,6 +66,16 @@ namespace massrec {
 
 
 		std::vector<Prediction> predictions = classifier->Classify(input, NUM_GRAMMARS);
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// DEBUG
+		std::cout << "--- mass recognition ---------------------------" << std::endl;
+		for (int i = 0; i < predictions.size(); ++i) {
+			std::cout << predictions[i].first << " (" << predictions[i].second << ")" << std::endl;
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 		return predictions[0].first;
 
 	}

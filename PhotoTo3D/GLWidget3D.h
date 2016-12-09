@@ -44,7 +44,7 @@ public:
 	std::map<std::string, boost::shared_ptr<Classifier>> classifiers;
 	std::map<std::string, std::vector<boost::shared_ptr<Regression>>> regressions;
 	std::map<std::string, std::vector<cga::Grammar>> grammars;
-	std::map<std::string, int> grammar_ids;
+	QMap<std::string, int> grammar_ids;
 	std::map<std::string, std::vector<float>> pm_params;
 	std::vector<boost::shared_ptr<glutils::Face>> faces;
 	
@@ -76,7 +76,7 @@ public:
 	void undo();
 	void massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method);
 	void autoTest(int grammar_id, int image_size, const QString& param_filename, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement);
-	void facadeReconstruction();
+	void facadeReconstruction(int num_floors, int num_columns);
 	bool renderImage(cga::Grammar* grammar, std::vector<float>* pm_params, cv::Mat& rendered_image, bool discardIfTopFaceIsVisible = false, bool discardIfBottomFaceIsVisible = false);
 	double distanceMap(cv::Mat rendered_image, const cv::Mat& reference_dist_map);
 	std::vector<boost::shared_ptr<glutils::Face>> updateGeometry(int grammar_type, cga::Grammar* mass_grammar, std::vector<float>* mass_params, cga::Grammar* facade_grammar = NULL, std::vector<float>* facade_params = NULL, cga::Grammar* window_grammar = NULL, std::vector<float>* window_params = NULL);

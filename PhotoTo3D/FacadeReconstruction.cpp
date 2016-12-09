@@ -18,45 +18,50 @@ namespace facarec {
 		return predictions[0].first;
 	}
 
-	std::vector<float> parameterEstimation(int grammar_id, boost::shared_ptr<Regression> regression, const cv::Mat& input_image, int width, int height) {
+	std::vector<float> parameterEstimation(int grammar_id, boost::shared_ptr<Regression> regression, const cv::Mat& input_image, int width, int height, int max_NF, int max_NC) {
 		std::vector<float> params = regression->Predict(input_image);
 
 		utils::output_vector(params);
 
 		if (grammar_id == 0) {
-			return parameterEstimation1(width, height, params);
+			return parameterEstimation1(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 1) {
-			return parameterEstimation2(width, height, params);
+			return parameterEstimation2(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 2) {
-			return parameterEstimation3(width, height, params);
+			return parameterEstimation3(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 3) {
-			return parameterEstimation4(width, height, params);
+			return parameterEstimation4(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 4) {
-			return parameterEstimation5(width, height, params);
+			return parameterEstimation5(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 5) {
-			return parameterEstimation6(width, height, params);
+			return parameterEstimation6(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 6) {
-			return parameterEstimation7(width, height, params);
+			return parameterEstimation7(width, height, max_NF, max_NC, params);
 		}
 		else if (grammar_id == 7) {
-			return parameterEstimation8(width, height, params);
+			return parameterEstimation8(width, height, max_NF, max_NC, params);
 		}
 
 		std::cerr << "Unknown grammar id: " << grammar_id << std::endl;
 		return std::vector<float>();
 	}
 
-	std::vector<float> parameterEstimation1(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation1(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 1) max_NF = 1;
+		if (max_NC < 1) max_NC = 1;
+
 		int NF = std::round(params[0] * 19 + 1);
 		if (NF < 1) NF = 1;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 19 + 1);
 		if (NC < 1) NC = 1;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[7] * 2 + params[8] * NC) * params[7];
 		float TW = (float)width / (params[7] * 2 + params[8] * NC) * params[8];
@@ -90,11 +95,16 @@ namespace facarec {
 		return params;
 	}
 
-	std::vector<float> parameterEstimation2(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation2(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 2) max_NF = 2;
+		if (max_NC < 1) max_NC = 1;
+
 		int NF = std::round(params[0] * 18 + 2);
 		if (NF < 2) NF = 2;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 19 + 1);
 		if (NC < 1) NC = 1;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[7] * 2 + params[8] * NC) * params[7];
 		float TW = (float)width / (params[7] * 2 + params[8] * NC) * params[8];
@@ -160,11 +170,16 @@ namespace facarec {
 		return params;
 	}
 
-	std::vector<float> parameterEstimation3(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation3(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 3) max_NF = 3;
+		if (max_NC < 1) max_NC = 1;
+
 		int NF = std::round(params[0] * 17 + 3);
 		if (NF < 3) NF = 3;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 19 + 1);
 		if (NC < 1) NC = 1;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[7] * 2 + params[8] * NC) * params[7];
 		float TW = (float)width / (params[7] * 2 + params[8] * NC) * params[8];
@@ -241,11 +256,16 @@ namespace facarec {
 		return params;
 	}
 	
-	std::vector<float> parameterEstimation4(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation4(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 3) max_NF = 3;
+		if (max_NC < 1) max_NC = 1;
+
 		int NF = std::round(params[0] * 17 + 3);
 		if (NF < 3) NF = 3;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 19 + 1);
 		if (NC < 1) NC = 1;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[12] * 2 + params[13] * NC) * params[12];
 		float TW = (float)width / (params[12] * 2 + params[13] * NC) * params[13];
@@ -324,11 +344,16 @@ namespace facarec {
 		return params;
 	}
 
-	std::vector<float> parameterEstimation5(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation5(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 5) max_NF = 5;
+		if (max_NC < 1) max_NC = 1;
+
 		int NF = std::round(params[0] * 15 + 5);
 		if (NF < 5) NF = 5;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 19 + 1);
 		if (NC < 1) NC = 1;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[12] * 2 + params[13] * NC) * params[12];
 		float TW = (float)width / (params[12] * 2 + params[13] * NC) * params[13];
@@ -418,11 +443,16 @@ namespace facarec {
 		return params;
 	}
 
-	std::vector<float> parameterEstimation6(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation6(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 1) max_NF = 1;
+		if (max_NC < 3) max_NC = 3;
+
 		int NF = std::round(params[0] * 19 + 1);
 		if (NF < 1) NF = 1;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 17 + 3);
 		if (NC < 3) NC = 3;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[7];
 		float TW = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[8];
@@ -469,11 +499,16 @@ namespace facarec {
 		return params;
 	}
 
-	std::vector<float> parameterEstimation7(int width, int height, std::vector<float> params) {
+	std::vector<float> parameterEstimation7(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 1) max_NF = 1;
+		if (max_NC < 3) max_NC = 3;
+
 		int NF = std::round(params[0] * 19 + 1);
 		if (NF < 1) NF = 1;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
 		int NC = std::round(params[1] * 17 + 3);
 		if (NC < 3) NC = 3;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 		float BS = (float)width / (params[7] * 2 + params[8] * (NC - 1) + params[12]) * params[7];
 		float TW = (float)width / (params[7] * 2 + params[8] * (NC - 1) + params[12]) * params[8];
@@ -520,20 +555,22 @@ namespace facarec {
 		return params;
 	}
 
-	std::vector<float> parameterEstimation8(int width, int height, std::vector<float> params) {
-		int NF = std::round(params[0] * 19 + 1);
-		if (NF < 1) NF = 1;
-		int NC = std::round(params[1] * 14 + 6);
-		if (NC < 6) NC = 6;
+	std::vector<float> parameterEstimation8(int width, int height, int max_NF, int max_NC, std::vector<float> params) {
+		if (max_NF < 3) max_NF = 3;
+		if (max_NC < 3) max_NC = 3;
 
-		if (NC % 3 != 0) NC = std::round((float)NC / 3.0f) * 3;
+		int NF = std::round(params[0] * 17 + 3);
+		if (NF < 3) NF = 3;
+		if (NF > max_NF && max_NF <= 5) NF = max_NF;
+		int NC = std::round(params[1] * 17 + 3);
+		if (NC < 3) NC = 3;
+		if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
-		float BS = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[7];
-		float TW = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[8];
-		float TW2 = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[9];
-		float AH = (float)height / (params[10] + params[11] * NF + params[12]) * params[10];
-		float FH = (float)height / (params[10] + params[11] * NF + params[12]) * params[11];
-		float BH = (float)height / (params[10] + params[11] * NF + params[12]) * params[12];
+		float BS = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[7];
+		float TW = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[8];
+		float AH = (float)height / (params[9] + params[10] * NF + params[11]) * params[9];
+		float FH = (float)height / (params[9] + params[10] * NF + params[11]) * params[10];
+		float GH = (float)height / (params[9] + params[10] * NF + params[11]) * params[11];
 
 		float WW = TW / (params[2] + params[4] * 2) * params[2];
 		float WH = FH / (params[3] + params[5] + params[6]) * params[3];
@@ -541,13 +578,23 @@ namespace facarec {
 		float WT = FH / (params[3] + params[5] + params[6]) * params[5];
 		float WB = FH / (params[3] + params[5] + params[6]) * params[6];
 
-		float WW2 = TW2 / (params[14] + params[13] * 2) * params[14];
-		float WS2 = TW2 / (params[14] + params[13] * 2) * params[13];
-		float WH2 = FH / (params[15] + params[16] + params[17]) * params[16];
-		float WT2 = FH / (params[15] + params[16] + params[17]) * params[15];
-		float WB2 = FH / (params[15] + params[16] + params[17]) * params[17];
+		float WW2 = BS / (params[12] + params[14] + params[15]) * params[12];
+		float WO2 = BS / (params[12] + params[14] + params[15]) * params[14];
+		float WI2 = BS / (params[12] + params[14] + params[15]) * params[15];
+		float WH2 = FH / (params[13] + params[16] + params[17]) * params[13];
+		float WT2 = FH / (params[13] + params[16] + params[17]) * params[16];
+		float WB2 = FH / (params[13] + params[16] + params[17]) * params[17];
 
-		cv::Mat img = generateFacadeH(100, NF, NC, width, height, 3, WW, WH, WS, WT, WB, BS, TW, TW2, AH, FH, BH, WS2, WW2, WT2, WH2, WB2);
+		float DT = GH / (params[18] + params[19]) * params[18];
+		float DH = GH / (params[18] + params[19]) * params[19];
+		float TWH = AH / (params[20] + params[21] + params[22]) * params[20];
+		float TWT = AH / (params[20] + params[21] + params[22]) * params[21];
+		float TWB = AH / (params[20] + params[21] + params[22]) * params[22];
+		float TWH2 = AH / (params[23] + params[24] + params[25]) * params[23];
+		float TWT2 = AH / (params[23] + params[24] + params[25]) * params[24];
+		float TWB2 = AH / (params[23] + params[24] + params[25]) * params[25];
+
+		cv::Mat img = generateFacadeH(100, NF, NC, width, height, 3, WW, WH, WS, WT, WB, BS, TW, AH, FH, GH, WW2, WH2, WO2, WI2, WT2, WB2, DT, DH, TWH, TWT, TWB, TWH2, TWT2, TWB2);
 		cv::imwrite("estimated_facade.png", img);
 
 		params.resize(18);
@@ -560,15 +607,23 @@ namespace facarec {
 		params[6] = WB / 100;
 		params[7] = BS / 100;
 		params[8] = TW / 100;
-		params[9] = TW2 / 100;
-		params[10] = AH / 100;
-		params[11] = FH / 100;
-		params[12] = BH / 100;
-		params[13] = WS2 / 100;
-		params[14] = WW2 / 100;
-		params[15] = WT2 / 100;
-		params[16] = WH2 / 100;
+		params[9] = AH / 100;
+		params[10] = FH / 100;
+		params[11] = GH / 100;
+		params[12] = WW2 / 100;
+		params[13] = WH2 / 100;
+		params[14] = WO2 / 100;
+		params[15] = WI2 / 100;
+		params[16] = WT2 / 100;
 		params[17] = WB2 / 100;
+		params[18] = DT / 100;
+		params[19] = DH / 100;
+		params[20] = TWH / 100;
+		params[21] = TWT / 100;
+		params[22] = TWB / 100;
+		params[23] = TWH2 / 100;
+		params[24] = TWT2 / 100;
+		params[25] = TWB2 / 100;
 
 		return params;
 	}

@@ -1,17 +1,21 @@
 ﻿#include "facadeC.h"
 #include "Utils.h"
 
-cv::Mat generateFacadeC(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, const std::vector<float>& params) {
+cv::Mat generateFacadeC(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params) {
 	// #floors has to be at least 2 for this facade.
 	if (range_NF.first < 3) range_NF.first = 3;
-	
+	if (max_NF < 3) max_NF = 3;
+
 	// #columns has to be at least 1 for this facade.
 	if (range_NC.first < 1) range_NC.first = 1;
+	if (max_NC < 1) max_NC = 1;
 
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
 	if (NF < range_NF.first) NF = range_NF.first;
+	if (NF > max_NF && max_NF <= 5) NF = max_NF;
 	int NC = std::round(params[1] * (range_NC.second - range_NC.first) + range_NC.first);
 	if (NC < range_NC.first) NC = range_NC.first;
+	if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 	float BS = (float)width / (params[7] * 2 + params[8] * NC) * params[7];
 	float TW = (float)width / (params[7] * 2 + params[8] * NC) * params[8];
@@ -79,7 +83,7 @@ cv::Mat generateRandomFacadeC(int width, int height, int thickness, std::pair<in
 	float FH = utils::genRand(2.5, 4);
 
 	// 最上階の高さ
-	float AH = FH + utils::genRand(0, 2);
+	float AH = FH + utils::genRand(0.2, 2);
 
 	// １Fの高さ
 	float GH = FH + utils::genRand(0, 2);
@@ -297,4 +301,20 @@ cv::Mat generateFacadeC(float scale, int NF, int NC, int width, int height, int 
 	}
 
 	return result;
+}
+
+int clusterWindowTypesC(std::vector<std::vector<fs::WindowPos>>& win_rects) {
+	for (int j = 0; j < win_rects[0].size(); ++j) {
+		win_rects[0][j].type = 0;
+	}
+	for (int i = 1; i < win_rects.size() - 1; ++i) {
+		for (int j = 0; j < win_rects[i].size(); ++j) {
+			win_rects[i][j].type = 1;
+		}
+	}
+	for (int j = 0; j < win_rects.back().size(); ++j) {
+		win_rects.back()[j].type = 2;
+	}
+
+	return 3;
 }

@@ -308,6 +308,9 @@
     <ClCompile Include="facadeH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WindowRecognition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.h">
@@ -574,6 +577,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="facadeH.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowRecognition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

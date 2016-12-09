@@ -82,6 +82,14 @@ namespace utils {
 		return sqrt(total / (list.size() - 1));
 	}
 
+	float mean(std::vector<float> list) {
+		float sum = 0.0f;
+		for (int i = 0; i < list.size(); ++i) {
+			sum += list[i];
+		}
+		return sum / list.size();
+	}
+
 	/**
 	 * Generate a random number in [0, 1).
 	 * Note: 1 is exluded!
@@ -193,6 +201,25 @@ namespace utils {
 	glm::vec2 projectPoint(int screen_width, int screen_height, const glm::vec3& p, const glm::mat4& mvpMatrix) {
 		glm::vec4 pp = mvpMatrix * glm::vec4(p, 1);
 		return glm::vec2((pp.x / pp.w + 1.0f) * 0.5f * screen_width, (1.0f - pp.y / pp.w) * 0.5f * screen_height);
+	}
+
+	float computeArea(std::vector<cv::Point2f> pts) {
+		if (pts.size() <= 2) return 0.0f;
+
+		// check if the polygon is closed
+		if (pts.back() != pts.front()) {
+			pts.push_back(pts.front());
+		}
+
+		float sum = 0.0f;
+		std::cout << "----------------------------" << std::endl;
+		for (int i = 0; i < pts.size() - 1; ++i) {
+			std::cout << "(" << pts[i].x << ", " << pts[i].y << ")" << std::endl;
+			sum += pts[i].x * pts[i + 1].y - pts[i + 1].x * pts[i].y;
+		}
+		std::cout << "area: " << abs(sum * 0.5) << std::endl;
+
+		return abs(sum * 0.5);
 	}
 
 	void extractEdges(const cv::Mat& img, std::vector<std::pair<glm::vec2, glm::vec2>>& edges) {

@@ -35,7 +35,7 @@ public:
 public:
 	CGA();
 	void derive(const Grammar& grammar, bool suppressWarning = false);
-	void derive(std::vector<Grammar*> grammars, bool suppressWarning = false);
+	void derive(const std::vector<Grammar>& grammars, bool suppressWarning = false);
 	void generateGeometry(std::vector<boost::shared_ptr<glutils::Face> >& faces, bool center);
 };
 

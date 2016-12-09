@@ -1,17 +1,21 @@
 ﻿#include "facadeG.h"
 #include "Utils.h"
 
-cv::Mat generateFacadeG(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, const std::vector<float>& params) {
+cv::Mat generateFacadeG(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params) {
 	// #floors has to be at least 1 for this facade.
 	if (range_NF.first < 1) range_NF.first = 1;
+	if (max_NF < 1) max_NF = 1;
 
 	// #columns has to be at least 3 for this facade.
 	if (range_NC.first < 3) range_NC.first = 3;
+	if (max_NC < 3) max_NC = 3;
 
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
 	if (NF < range_NF.first) NF = range_NF.first;
+	if (NF > max_NF && max_NF <= 5) NF = max_NF;
 	int NC = std::round(params[1] * (range_NC.second - range_NC.first) + range_NC.first);
 	if (NC < range_NC.first) NC = range_NC.first;
+	if (NC > max_NC && max_NC <= 5) NC = max_NC;
 	if ((NC - 1) % 2 != 0) NC--;
 
 	float BS = (float)width / (params[7] * 2 + params[8] * (NC - 1) + params[12]) * params[7];
@@ -235,4 +239,19 @@ cv::Mat generateFacadeG(float scale, int NF, int NC, int width, int height, int 
 	}
 
 	return result;
+}
+
+int clusterWindowTypesG(std::vector<std::vector<fs::WindowPos>>& win_rects) {
+	for (int i = 0; i < win_rects.size(); ++i) {
+		for (int j = 0; j < win_rects[i].size(); ++j) {
+			if (j == (win_rects[i].size() - win_rects[i].size() % 2) / 2) {
+				win_rects[i][j].type = 0;
+			}
+			else {
+				win_rects[i][j].type = 1;
+			}
+		}
+	}
+
+	return 2;
 }

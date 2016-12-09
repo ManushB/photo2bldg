@@ -16,6 +16,7 @@ namespace utils {
 	void computeVariance(const std::vector<std::vector<float>>& values, const std::vector<float>& mean, std::vector<float>& var);
 	float median(std::vector<float> list);
 	float stddev(std::vector<float> list);
+	float mean(std::vector<float> list);
 
 	double genRand();
 	double genRand(double v);
@@ -27,6 +28,8 @@ namespace utils {
 	bool segmentSegmentIntersect(const glm::vec2& a, const glm::vec2& b, const glm::vec2& c, const glm::vec2& d, float *tab, float *tcd, bool segmentOnly, glm::vec2& intPoint);
 
 	glm::vec2 projectPoint(int screen_width, int screen_height, const glm::vec3& p, const glm::mat4& mvpMatrix);
+
+	float computeArea(std::vector<cv::Point2f> pts);
 
 	void extractEdges(const cv::Mat& img, std::vector<std::pair<glm::vec2, glm::vec2>>& edges);
 	void cleanEdges(std::vector<std::pair<glm::vec2, glm::vec2>>& edges, float maxLineGap, float theta);

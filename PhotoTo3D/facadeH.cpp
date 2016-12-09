@@ -1,25 +1,27 @@
 ﻿#include "facadeH.h"
 #include "Utils.h"
 
-cv::Mat generateFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, const std::vector<float>& params) {
-	// #floors has to be at least 1 for this facade.
-	if (range_NF.first < 1) range_NF.first = 1;
+cv::Mat generateFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params) {
+	// #floors has to be at least 3 for this facade.
+	if (range_NF.first < 3) range_NF.first = 3;
+	if (max_NF < 3) max_NF = 3;
 
-	// #columns has to be at least 6 for this facade.
-	if (range_NC.first < 6) range_NC.first = 6;
+	// #columns has to be at least 3 for this facade.
+	if (range_NC.first < 3) range_NC.first = 3;
+	if (max_NC < 3) max_NC = 3;
 
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
 	if (NF < range_NF.first) NF = range_NF.first;
+	if (NF > max_NF && max_NF <= 5) NF = max_NF;
 	int NC = std::round(params[1] * (range_NC.second - range_NC.first) + range_NC.first);
 	if (NC < range_NC.first) NC = range_NC.first;
-	if (NC % 3 != 0) NC = std::round((float)NC / 3.0f) * 3;
+	if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
-	float BS = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[7];
-	float TW = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[8];
-	float TW2 = (float)width / (params[7] * 2 + params[8] * NC / 3 * 2 + params[9] * NC / 3) * params[9];
-	float AH = (float)height / (params[10] + params[11] * NF + params[12]) * params[10];
-	float FH = (float)height / (params[10] + params[11] * NF + params[12]) * params[11];
-	float BH = (float)height / (params[10] + params[11] * NF + params[12]) * params[12];
+	float BS = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[7];
+	float TW = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[8];
+	float AH = (float)height / (params[9] + params[10] * NF + params[11]) * params[9];
+	float FH = (float)height / (params[9] + params[10] * NF + params[11]) * params[10];
+	float GH = (float)height / (params[9] + params[10] * NF + params[11]) * params[11];
 
 	float WW = TW / (params[2] + params[4] * 2) * params[2];
 	float WH = FH / (params[3] + params[5] + params[6]) * params[3];
@@ -27,21 +29,31 @@ cv::Mat generateFacadeH(int width, int height, int thickness, std::pair<int, int
 	float WT = FH / (params[3] + params[5] + params[6]) * params[5];
 	float WB = FH / (params[3] + params[5] + params[6]) * params[6];
 
-	float WW2 = TW2 / (params[14] + params[13] *2) * params[14];
-	float WS2 = TW2 / (params[14] + params[13] * 2) * params[13];
-	float WH2 = FH / (params[15] + params[16] + params[17]) * params[16];
-	float WT2 = FH / (params[15] + params[16] + params[17]) * params[15];
-	float WB2 = FH / (params[15] + params[16] + params[17]) * params[17];
+	float WW2 = BS / (params[12] + params[14] + params[15]) * params[12];
+	float WO2 = BS / (params[12] + params[14] + params[15]) * params[14];
+	float WI2 = BS / (params[12] + params[14] + params[15]) * params[15];
+	float WH2 = FH / (params[13] + params[16] + params[17]) * params[13];
+	float WT2 = FH / (params[13] + params[16] + params[17]) * params[16];
+	float WB2 = FH / (params[13] + params[16] + params[17]) * params[17];
 
-	return generateFacadeH(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, TW2, AH, FH, BH, WS2, WW2, WT2, WH2, WB2);
+	float DT = GH / (params[18] + params[19]) * params[18];
+	float DH = GH / (params[18] + params[19]) * params[19];
+	float TWH = AH / (params[20] + params[21] + params[22]) * params[20];
+	float TWT = AH / (params[20] + params[21] + params[22]) * params[21];
+	float TWB = AH / (params[20] + params[21] + params[22]) * params[22];
+	float TWH2 = AH / (params[23] + params[24] + params[25]) * params[23];
+	float TWT2 = AH / (params[23] + params[24] + params[25]) * params[24];
+	float TWB2 = AH / (params[23] + params[24] + params[25]) * params[25];
+
+	return generateFacadeH(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, GH, WW2, WH2, WO2, WI2, WT2, WB2, DT, DH, TWH, TWT, TWB, TWH2, TWT2, TWB2);
 }
 
 cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
 	// #floors has to be at least 1 for this facade.
-	if (range_NF.first < 1) range_NF.first = 1;
+	if (range_NF.first < 3) range_NF.first = 3;
 
-	// #columns has to be at least 6 for this facade.
-	if (range_NC.first < 6) range_NC.first = 6;
+	// #columns has to be at least 3 for this facade.
+	if (range_NC.first < 3) range_NC.first = 3;
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// パラメータを設定
@@ -49,40 +61,36 @@ cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<in
 
 	int NF = utils::genRand(range_NF.first, range_NF.second + 1);
 	int NC = utils::genRand(range_NC.first, range_NC.second + 1);
-	if (NC % 3 != 0) NC = ((int)(NC / 3)) * 3;
-
-	// ベースの高さ
-	float BH = utils::genRand(0, 0.5);
-
-	// 屋根の高さ
-	float AH = utils::genRand(0, 0.5);
 
 	// 各フロアの高さ
 	float FH = utils::genRand(2.5, 4);
 
+	// １Fの高さ
+	float GH = FH + utils::genRand(0, 2);
+
+	// 最上階の高さ
+	float AH = FH + utils::genRand(0.2, 2);
+
 	// 各タイルの幅
 	float TW = utils::genRand(2, 4);
 
-	// 各タイルの幅
-	float TW2;
-	if (utils::genRand() < 0.5 && TW * 0.5 > 0.8) {
-		TW2 = utils::genRand(0.8, TW * 0.5);
+	// ビルの横マージン
+	float BS;
+	if (utils::genRand() < 0.2) {
+		BS = utils::genRand(TW * 0.5, TW * 0.7);
 	}
 	else {
-		TW2 = utils::genRand(TW * 2, TW * 3);
+		BS = utils::genRand(TW * 1.3, TW * 3);
 	}
 
-	// ビルの横マージン
-	float BS = utils::genRand(0, 1);
-
 	// 各フロアの窓上部から天井までの高さ
-	float WT = utils::genRand(0.2, 1);
+	float WT = utils::genRand(0.1, 0.35);
 
 	// 各フロアの窓下部からフロア底面までの高さ
-	float WB = utils::genRand(0.2, 1);
+	float WB = utils::genRand(0.1, 0.35);
 
 	// 各フロアの窓の高さ
-	float WH = utils::genRand(1, 2.5);
+	float WH = utils::genRand(0.3, 0.8);
 
 	// 各フロアの各種高さをnormalize
 	ratio = FH / (WT + WB + WH);
@@ -90,46 +98,89 @@ cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<in
 	WB *= ratio;
 	WH *= ratio;
 
-	// 中央の窓上部から天井までの高さ
-	float WT2 = utils::genRand(0.2, 1);
+	// 左・右端の窓上部から天井までの高さ
+	float WT2 = utils::genRand(0.1, 0.35);
 
-	// 中央の窓下部からフロア底面までの高さ
-	float WB2 = utils::genRand(0.2, 1);
+	// 左・右端の窓下部からフロア底面までの高さ
+	float WB2 = utils::genRand(0.1, 0.35);
 
-	// 中央の窓の高さ
-	float WH2 = utils::genRand(1, 2.5);
+	// 左・右端の窓の高さ
+	float WH2 = utils::genRand(0.3, 0.8);
 
-	// 中央の各種高さをnormalize
+	// 左・右端の各種高さをnormalize
 	ratio = FH / (WT2 + WB2 + WH2);
 	WT2 *= ratio;
 	WB2 *= ratio;
 	WH2 *= ratio;
 
 	// 各フロアの窓の横マージン
-	float WS = utils::genRand(0.2, 1);
+	float WS = utils::genRand(0.05, 0.4);
 
 	// 各フロアの窓の幅
-	float WW = utils::genRand(0.5, 2.5);
+	float WW = utils::genRand(0.2, 0.9);
 
 	// 各フロアの各種幅をnormalize
 	ratio = TW / (WS * 2 + WW);
 	WS *= ratio;
 	WW *= ratio;
 
-	// 中央の窓の横のマージン
-	float WS2 = utils::genRand(0.2, 1);
+	// 左・右端の窓の横のマージン
+	float WO2 = utils::genRand(0.2, 0.6);
+	float WI2 = utils::genRand(0.2, 0.6);
 
-	// 中央の窓の幅
-	float WW2 = utils::genRand(0.5, 2.5);
+	// 左・右端の窓の幅
+	float WW2 = utils::genRand(0.1, 0.3);
 
-	// 中央の各種幅をnormalize
-	ratio = TW2 / (WS2 * 2 + WW2);
-	WS2 *= ratio;
+	// 左・右端の各種幅をnormalize
+	ratio = BS / (WO2 + WW2 + WI2);
+	WO2 *= ratio;
 	WW2 *= ratio;
+	WI2 *= ratio;
+
+	// 最上階の窓上部から天井までの高さ
+	float TWT = utils::genRand(0.1, 1);
+
+	// 最上階の窓下部からフロア底面までの高さ
+	float TWB = utils::genRand(0.1, 0.35);
+
+	// 最上階の窓の高さ
+	float TWH = utils::genRand(0.3, 0.8);
+
+	// 最上階の各種高さをnormalize
+	ratio = AH / (TWT + TWB + TWH);
+	TWT *= ratio;
+	TWB *= ratio;
+	TWH *= ratio;
+
+	// 左右の最上階のドア上部から天井までの高さ
+	float TWT2 = utils::genRand(0.2, 2);
+
+	// 左右の最上階の窓下部からフロア底面までの高さ
+	float TWB2 = utils::genRand(0.2, 1);
+
+	// 左右の最上階のドアの高さ
+	float TWH2 = utils::genRand(1, 2.5);
+
+	// 左右の最上階の各種高さをnormalize
+	ratio = AH / (TWT2 + TWB2 + TWH2);
+	TWT2 *= ratio;
+	TWB2 *= ratio;
+	TWH2 *= ratio;
+
+	// １Fのドア上部から天井までの高さ
+	float DT = utils::genRand(0.2, 1.5);
+
+	// １Fのドアの高さ
+	float DH = utils::genRand(2, 3);
+
+	// １Fの各種高さをnormalize
+	ratio = GH / (DT + DH);
+	DT *= ratio;
+	DH *= ratio;
 
 	// すべてを画像のサイズにnormalize
-	ratio = (float)height / (BH + AH + FH * NF);
-	BH *= ratio;
+	ratio = (float)height / (GH + AH + FH * (NF - 2));
+	GH *= ratio;
 	FH *= ratio;
 	WT *= ratio;
 	WB *= ratio;
@@ -138,14 +189,22 @@ cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<in
 	WH2 *= ratio;
 	WB2 *= ratio;
 	AH *= ratio;
-	ratio = (float)width / (BS * 2 + TW * NC / 3 * 2 + TW2 * NC / 3);
+	DT *= ratio;
+	DH *= ratio;
+	TWT *= ratio;
+	TWH *= ratio;
+	TWB *= ratio;
+	TWT2 *= ratio;
+	TWH2 *= ratio;
+	TWB2 *= ratio;
+	ratio = (float)width / (BS * 2 + TW * (NC - 2));
 	BS *= ratio;
 	WS *= ratio;
 	WW *= ratio;
 	TW *= ratio;
-	TW2 *= ratio;
-	WS2 *= ratio;
+	WO2 *= ratio;
 	WW2 *= ratio;
+	WI2 *= ratio;
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// パラメータ値を格納
@@ -158,45 +217,97 @@ cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<in
 	params.push_back(WB / FH);
 	params.push_back(BS / width);
 	params.push_back(TW / width);
-	params.push_back(TW2 / width);
 	params.push_back(AH / height);
 	params.push_back(FH / height);
-	params.push_back(BH / height);
-	params.push_back(WS2 / TW2);
-	params.push_back(WW2 / TW2);
-	params.push_back(WT2 / FH);
+	params.push_back(GH / height);
+	params.push_back(WW2 / BS);
 	params.push_back(WH2 / FH);
+	params.push_back(WO2 / BS);
+	params.push_back(WI2 / BS);
+	params.push_back(WT2 / FH);
 	params.push_back(WB2 / FH);
+	params.push_back(DT / GH);
+	params.push_back(DH / GH);
+	params.push_back(TWH / AH);
+	params.push_back(TWT / AH);
+	params.push_back(TWB / AH);
+	params.push_back(TWH2 / AH);
+	params.push_back(TWT2 / AH);
+	params.push_back(TWB2 / AH);
 
-	return generateFacadeH(NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, TW2, AH, FH, BH, WS2, WW2, WT2, WH2, WB2, window_displacement, window_prob);
+	return generateFacadeH(NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, GH, WW2, WH2, WO2, WI2, WT2, WB2, DT, DH, TWH, TWT, TWB, TWH2, TWT2, TWB2, window_displacement, window_prob);
 }
 
-cv::Mat generateFacadeH(float scale, int NF, int NC, int width, int height, int thickness, float WW, float WH, float WS, float WT, float WB, float BS, float TW, float TW2, float AH, float FH, float BH, float WS2, float WW2, float WT2, float WH2, float WB2, int window_displacement, float window_prob) {
+cv::Mat generateFacadeH(float scale, int NF, int NC, int width, int height, int thickness, float WW, float WH, float WS, float WT, float WB, float BS, float TW, float AH, float FH, float GH, float WW2, float WH2, float WO2, float WI2, float WT2, float WB2, float DT, float DH, float TWH, float TWT, float TWB, float TWH2, float TWT2, float TWB2, int window_displacement, float window_prob) {
 	cv::Mat result(height * scale, width * scale, CV_8UC3, cv::Scalar(255, 255, 255));
 
-	// 窓を描画
-	for (int i = 0; i < NF; ++i) {
-		for (int j = 0; j < NC / 3; ++j) {
-			for (int k = 0; k < 3; ++k) {
-				int x1, y1, x2, y2;
-				if (k == 0) {
-					x1 = (BS + (TW * 2 + TW2) * j + WS) * scale;
-					y1 = (height - BH - FH * i - WB - WH) * scale;
-					x2 = (BS + (TW * 2 + TW2) * j + WS + WW) * scale;
-					y2 = (height - BH - FH * i - WB) * scale;
-				}
-				else if (k == 1) {
-					x1 = (BS + (TW * 2 + TW2) * j + TW + WS2) * scale;
-					y1 = (height - BH - FH * i - WB2 - WH2) * scale;
-					x2 = (BS + (TW * 2 + TW2) * j + TW + WS2 + WW2) * scale;
-					y2 = (height - BH - FH * i - WB2) * scale;
-				}
-				else {
-					x1 = (BS + (TW * 2 + TW2) * j + TW + TW2 + WS) * scale;
-					y1 = (height - BH - FH * i - WB - WH) * scale;
-					x2 = (BS + (TW * 2 + TW2) * j + TW + TW2 + WS + WW) * scale;
-					y2 = (height - BH - FH * i - WB) * scale;
-				}
+	// １Fのドアを描画
+	{
+		// 左端
+		{
+			int x1 = WO2 * scale;
+			int y1 = (height - DH) * scale;
+			int x2 = (WO2 + WW2) * scale;
+			int y2 = height * scale - 1;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+
+		for (int j = 0; j < NC - 2; ++j) {
+			int x1 = (BS + TW * j + WS) * scale;
+			int y1 = (height - DH) * scale;
+			int x2 = (BS + TW * j + WS + WW) * scale;
+			int y2 = height * scale - 1;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+
+		// 右端
+		{
+			int x1 = (BS + TW * (NC - 2) + WI2) * scale;
+			int y1 = (height - DH) * scale;
+			int x2 = (BS + TW * (NC - 2) + WI2 + WW2) * scale;
+			int y2 = height * scale - 1;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+	}
+
+	// ２F以上の窓を描画
+	for (int i = 0; i < NF - 2; ++i) {
+		// 左端
+			{
+				int x1 = WO2 * scale;
+				int y1 = (height - GH - FH * i - WB2 - WH2) * scale;
+				int x2 = (WO2 + WW2) * scale;
+				int y2 = (height - GH - FH * i - WB2) * scale;
 
 				if (window_displacement > 0) {
 					x1 += utils::genRand(-window_displacement, window_displacement + 1);
@@ -209,8 +320,133 @@ cv::Mat generateFacadeH(float scale, int NF, int NC, int width, int height, int 
 					cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
 				}
 			}
+
+		for (int j = 0; j < NC - 2; ++j) {
+			int x1 = (BS + TW * j + WS) * scale;
+			int y1 = (height - GH - FH * i - WB - WH) * scale;
+			int x2 = (BS + TW * j + WS + WW) * scale;
+			int y2 = (height - GH - FH * i - WB) * scale;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+
+		// 右端
+		{
+			int x1 = (BS + TW * (NC - 2) + WI2) * scale;
+			int y1 = (height - GH - FH * i - WB2 - WH2) * scale;
+			int x2 = (BS + TW * (NC - 2) + WI2 + WW2) * scale;
+			int y2 = (height - GH - FH * i - WB2) * scale;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+	}
+
+	// 最上階の窓を描画
+	{
+		// 左端
+		{
+			int x1 = WO2 * scale;
+			int y1 = (height - GH - FH * (NF - 2) - TWB2 - TWH2) * scale;
+			int x2 = (WO2 + WW2) * scale;
+			int y2 = (height - GH - FH * (NF - 2) - TWB2) * scale;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+
+		for (int j = 0; j < NC - 2; ++j) {
+			int x1 = (BS + TW * j + WS) * scale;
+			int y1 = (height - GH - FH * (NF - 2) - TWB - TWH) * scale;
+			int x2 = (BS + TW * j + WS + WW) * scale;
+			int y2 = (height - GH - FH * (NF - 2) - TWB) * scale;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
+		}
+
+		// 右端
+		{
+			int x1 = (BS + TW * (NC - 2) + WI2) * scale;
+			int y1 = (height - GH - FH * (NF - 2) - TWB2 - TWH2) * scale;
+			int x2 = (BS + TW * (NC - 2) + WI2 + WW2) * scale;
+			int y2 = (height - GH - FH * (NF - 2) - TWB2) * scale;
+
+			if (window_displacement > 0) {
+				x1 += utils::genRand(-window_displacement, window_displacement + 1);
+				y1 += utils::genRand(-window_displacement, window_displacement + 1);
+				x2 += utils::genRand(-window_displacement, window_displacement + 1);
+				y2 += utils::genRand(-window_displacement, window_displacement + 1);
+			}
+
+			if (utils::genRand() < window_prob) {
+				cv::rectangle(result, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 0), thickness);
+			}
 		}
 	}
 
 	return result;
+}
+
+int clusterWindowTypesH(std::vector<std::vector<fs::WindowPos>>& win_rects) {
+	for (int j = 0; j < win_rects[0].size(); j += win_rects[0].size() - 1) {
+		win_rects[0][j].type = 0;
+	}
+
+	for (int j = 1; j < win_rects[0].size() - 1; ++j) {
+		win_rects[0][j].type = 1;
+	}
+
+	for (int i = 1; i < win_rects.size() - 1; ++i) {
+		for (int j = 0; j < win_rects[i].size(); j += win_rects[i].size() - 1) {
+			win_rects[i][j].type = 2;
+		}
+
+		for (int j = 1; j < win_rects[i].size() - 1; ++j) {
+			win_rects[i][j].type = 3;
+		}
+	}
+
+	for (int j = 0; j < win_rects.back().size(); j += win_rects.back().size() - 1) {
+		win_rects.back()[j].type = 4;
+	}
+
+	for (int j = 1; j < win_rects.back().size() - 1; ++j) {
+		win_rects.back()[j].type = 5;
+	}
+
+	return 6;
 }

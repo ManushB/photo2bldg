@@ -2,6 +2,8 @@
 #include <QFileDialog>
 #include "MassReconstructionDialog.h"
 #include "OptionDialog.h"
+#include <QInputDialog>
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
@@ -49,6 +51,8 @@ void MainWindow::onOpenImage() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image file..."), "", tr("Image Files (*.jpg *.png *.bmp)"));
 	if (filename.isEmpty()) return;
 
+	image_filename = filename;
+
 	glWidget->clearGeometry();
 	glWidget->loadImage(filename.toUtf8().constData());
 }
@@ -83,9 +87,39 @@ void MainWindow::onUndo() {
 }
 
 void MainWindow::onBuildingReconstruction() {
+	// extract number from the currently loaded image file name
+	int index1 = image_filename.lastIndexOf("/");
+	int index2 = image_filename.indexOf(".");
+	QString current_name = image_filename.mid(index1 + 1, index2 - index1 - 1);
+	std::cout << current_name.toUtf8().constData() << std::endl;
+
+	int num_floors = 1;
+	int num_columns = 1;
+
+	// get #floors/#columns
+	QFile file("floors_columns.txt");
+	file.open(QIODevice::ReadOnly);
+	QTextStream in(&file);
+	while (!in.atEnd()) {
+		QString filename;
+		in >> filename >> num_floors >> num_columns;
+
+		int index = filename.indexOf(".png");
+		std::cout << filename.mid(0, index).toUtf8().constData() << std::endl;
+		if (filename.mid(0, index) == current_name) {
+			break;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// DEBUG
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "#floors = " << num_floors << ", #columns = " << num_columns << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+	//////////////////////////////////////////////////////////////////////////////////	
 	glWidget->massReconstruction(true, 0, 227, 25, -40, 0, -70, -20, -10, 10, 20, 90, -0.8, 0.8, -0.8, 0.8, -15, 15, -15, 15, 1, true, 3000, 0);
 	glWidget->grammar_type = GLWidget3D::GRAMMAR_TYPE_FACADE;
-	glWidget->facadeReconstruction();
+	glWidget->facadeReconstruction(num_floors, num_columns);
 
 	glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_SSAO;
 	glWidget->clearBackground();
@@ -157,9 +191,40 @@ void MainWindow::onAutoTest() {
 }
 
 void MainWindow::onFacadeReconstruction() {
+	// extract number from the currently loaded image file name
+	int index1 = image_filename.lastIndexOf("/");
+	int index2 = image_filename.indexOf(".");
+	QString current_name = image_filename.mid(index1 + 1, index2 - index1 - 1);
+	std::cout << current_name.toUtf8().constData() << std::endl;
+	
+	int num_floors = 1;
+	int num_columns = 1;
+
+	// get #floors/#columns
+	QFile file("floors_columns.txt");
+	file.open(QIODevice::ReadOnly);
+	QTextStream in(&file);
+	while (!in.atEnd()) {
+		QString filename;
+		in >> filename >> num_floors >> num_columns;
+
+		int index = filename.indexOf(".png");
+		std::cout << filename.mid(0, index).toUtf8().constData() << std::endl;
+		if (filename.mid(0, index) == current_name) {
+			break;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// DEBUG
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "#floors = " << num_floors << ", #columns = " << num_columns << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+	//////////////////////////////////////////////////////////////////////////////////
+
 	glWidget->grammar_type = GLWidget3D::GRAMMAR_TYPE_FACADE;
 	
-	glWidget->facadeReconstruction();
+	glWidget->facadeReconstruction(num_floors, num_columns);
 	glWidget->update();
 }
 

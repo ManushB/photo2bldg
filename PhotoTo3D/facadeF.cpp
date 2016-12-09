@@ -1,17 +1,21 @@
 ﻿#include "facadeF.h"
 #include "Utils.h"
 
-cv::Mat generateFacadeF(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, const std::vector<float>& params) {
+cv::Mat generateFacadeF(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params) {
 	// #floors has to be at least 1 for this facade.
 	if (range_NF.first < 1) range_NF.first = 1;
+	if (max_NF < 1) max_NF = 1;
 
 	// #columns has to be at least 3 for this facade.
 	if (range_NC.first < 3) range_NC.first = 3;
+	if (max_NC < 3) max_NC = 3;
 
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
 	if (NF < range_NF.first) NF = range_NF.first;
+	if (NF > max_NF && max_NF <= 5) NF = max_NF;
 	int NC = std::round(params[1] * (range_NC.second - range_NC.first) + range_NC.first);
 	if (NC < range_NC.first) NC = range_NC.first;
+	if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
 	float BS = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[7];
 	float TW = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[8];
@@ -63,21 +67,21 @@ cv::Mat generateRandomFacadeF(int width, int height, int thickness, std::pair<in
 
 	// ビルの横マージン
 	float BS;
-	if (utils::genRand() < 0.5) {
-		BS = utils::genRand(TW * 0.2, TW * 0.7);
+	if (utils::genRand() < 0.2) {
+		BS = utils::genRand(TW * 0.5, TW * 0.7);
 	}
 	else {
 		BS = utils::genRand(TW * 1.3, TW * 3);
 	}
 
 	// 各フロアの窓上部から天井までの高さ
-	float WT = utils::genRand(0.2, 1);
+	float WT = utils::genRand(0.1, 0.35);
 
 	// 各フロアの窓下部からフロア底面までの高さ
-	float WB = utils::genRand(0.2, 1);
+	float WB = utils::genRand(0.1, 0.35);
 
 	// 各フロアの窓の高さ
-	float WH = utils::genRand(1, 2.5);
+	float WH = utils::genRand(0.3, 0.8);
 
 	// 各フロアの各種高さをnormalize
 	ratio = FH / (WT + WB + WH);
@@ -86,13 +90,13 @@ cv::Mat generateRandomFacadeF(int width, int height, int thickness, std::pair<in
 	WH *= ratio;
 
 	// 左・右端の窓上部から天井までの高さ
-	float WT2 = utils::genRand(0.2, 1);
+	float WT2 = utils::genRand(0.1, 0.35);
 
 	// 左・右端の窓下部からフロア底面までの高さ
-	float WB2 = utils::genRand(0.2, 1);
+	float WB2 = utils::genRand(0.1, 0.35);
 
 	// 左・右端の窓の高さ
-	float WH2 = utils::genRand(1, 2.5);
+	float WH2 = utils::genRand(0.3, 0.8);
 
 	// 左・右端の各種高さをnormalize
 	ratio = FH / (WT2 + WB2 + WH2);
@@ -101,10 +105,10 @@ cv::Mat generateRandomFacadeF(int width, int height, int thickness, std::pair<in
 	WH2 *= ratio;
 
 	// 各フロアの窓の横マージン
-	float WS = utils::genRand(0.2, 1);
+	float WS = utils::genRand(0.05, 0.4);
 
 	// 各フロアの窓の幅
-	float WW = utils::genRand(0.5, 2.5);
+	float WW = utils::genRand(0.2, 0.9);
 
 	// 各フロアの各種幅をnormalize
 	ratio = TW / (WS * 2 + WW);
@@ -112,11 +116,11 @@ cv::Mat generateRandomFacadeF(int width, int height, int thickness, std::pair<in
 	WW *= ratio;
 
 	// 左・右端の窓の横のマージン
-	float WO2 = utils::genRand(0.2, 1);
-	float WI2 = utils::genRand(0.2, 1);
+	float WO2 = utils::genRand(0.2, 0.6);
+	float WI2 = utils::genRand(0.2, 0.6);
 
 	// 左・右端の窓の幅
-	float WW2 = utils::genRand(0.5, 2.5);
+	float WW2 = utils::genRand(0.1, 0.3);
 
 	// 左・右端の各種幅をnormalize
 	ratio = BS / (WO2 + WW2 + WI2);
@@ -195,7 +199,7 @@ cv::Mat generateFacadeF(float scale, int NF, int NC, int width, int height, int 
 		for (int j = 0; j < NC - 2; ++j) {
 			int x1 = (BS + TW * j + WS) * scale;
 			int y1 = (height - BH - FH * i - WB - WH) * scale;
-			int x2 = (BS + (WS * 2 + WW) * j + WS + WW) * scale;
+			int x2 = (BS + TW * j + WS + WW) * scale;
 			int y2 = (height - BH - FH * i - WB) * scale;
 
 			if (window_displacement > 0) {
@@ -231,4 +235,17 @@ cv::Mat generateFacadeF(float scale, int NF, int NC, int width, int height, int 
 	}
 
 	return result;
+}
+
+int clusterWindowTypesF(std::vector<std::vector<fs::WindowPos>>& win_rects) {
+	for (int i = 0; i < win_rects.size(); ++i) {
+		for (int j = 0; j < win_rects[i].size(); j += win_rects[i].size() - 1) {
+			win_rects[i][j].type = 0;
+		}
+		for (int j = 1; j < win_rects[i].size() - 1; ++j) {
+			win_rects[i][j].type = 1;
+		}
+	}
+
+	return 2;
 }
