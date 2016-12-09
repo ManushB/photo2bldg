@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
 	<attr name="offset_size" value="0.02" range="0.02,0.02"/>
+	<attr name="window_sill_height" value="0.05" range="0.05,0.05"/>
 	
 	<rule name="Window">
 		<split splitAxis="x">

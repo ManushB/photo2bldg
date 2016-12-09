@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+	<attr name="window_side_offset_09" value="0.1" range="0.1,0.1"/>
+	<attr name="window_top_offset_09" value="0.1" range="0.1,0.1"/>
+
+	<rule name="Door">
+		<extrude height="-0.2"/>
+		<comp>
+			<param name="side" value="Wall"/>
+			<param name="top" value="EntranceTop"/>
+		</comp>
+	</rule>
+	<rule name="EntranceTop">
+		<split splitAxis="y">
+			<param type="relative" value="1-window_top_offset_09" name="EntranceTopMain"/>
+			<param type="relative" value="window_top_offset_09" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="EntranceTopMain">
+		<split splitAxis="x">
+			<param type="relative" value="window_side_offset_09" name="Wall"/>
+			<param type="relative" value="1-window_side_offset_09*2" name="EntranceTopMainMain"/>
+			<param type="relative" value="window_side_offset_09" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="EntranceTopMainMain">
+		<extrude height="-0.6"/>
+		<comp>
+			<param name="side" value="Wall"/>
+			<param name="top" value="DoorGlass"/>
+		</comp>
+	</rule>
+</grammar>

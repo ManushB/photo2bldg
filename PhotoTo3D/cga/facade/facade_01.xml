@@ -43,7 +43,7 @@
 	<rule name="Tile2">
 		<split splitAxis="x">
 			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
-			<param type="floating" value="p02_window_width" name="Window"/>
+			<param type="floating" value="p02_window_width" name="Window0"/>
 			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
 	</rule>

@@ -49,7 +49,7 @@
 	<rule name="LeftTile2">
 		<split splitAxis="x">
 			<param type="floating" value="p14_tile_outer2" name="Wall"/>
-			<param type="floating" value="p12_window_width2" name="Window"/>
+			<param type="floating" value="p12_window_width2" name="Window0"/>
 			<param type="floating" value="p15_tile_inner2" name="Wall" />
 		</split>
 	</rule>
@@ -63,7 +63,7 @@
 	<rule name="RightTile2">
 		<split splitAxis="x">
 			<param type="floating" value="p15_tile_inner2" name="Wall"/>
-			<param type="floating" value="p12_window_width2" name="Window"/>
+			<param type="floating" value="p12_window_width2" name="Window0"/>
 			<param type="floating" value="p14_tile_outer2" name="Wall" />
 		</split>
 	</rule>
@@ -77,7 +77,7 @@
 	<rule name="Tile2">
 		<split splitAxis="x">
 			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
-			<param type="floating" value="p02_window_width" name="Window"/>
+			<param type="floating" value="p02_window_width" name="Window1"/>
 			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
 	</rule>

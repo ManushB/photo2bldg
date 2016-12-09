@@ -87,7 +87,7 @@
 	<rule name="SecondTile2">
 		<split splitAxis="x">
 			<param type="floating" value="p09_tile_side_margin2" name="Wall"/>
-			<param type="floating" value="p07_window_width2" name="Window"/>
+			<param type="floating" value="p07_window_width2" name="Window1"/>
 			<param type="floating" value="p09_tile_side_margin2" name="Wall" />
 		</split>
 	</rule>
@@ -108,10 +108,23 @@
 	<rule name="Tile2">
 		<split splitAxis="x">
 			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
-			<param type="floating" value="p02_window_width" name="Window"/>
+			<param type="floating" value="p02_window_width" name="Window0"/>
 			<param type="floating" value="p04_tile_side_margin" name="Wall" />
 		</split>
 	</rule>
+	
+	<!-- facade 2 -->
+	<rule name="Facade2">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="absolute" value="5"/>
+			<param name="texHeight" type="absolute" value="5"/>
+		</setupProjection>
+		<split splitAxis="y">
+			<param type="floating" value="p15_floor_height" name="Floor" repeat="true"/>
+			<param type="absolute" value="p14_top_wall_height" name="Wall" />
+		</split>
+	</rule>
+
 	
 	<!-- ledge -->
 	<rule name="Ledge">
