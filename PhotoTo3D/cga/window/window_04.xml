@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="door_side_offset" value="0.16" range="0.1,0.3"/>
-	<attr name="door_top_offset" value="0.16" range="0.1,0.3"/>
-	<attr name="horizontal_interval_ratio" value="0.5" range="0.3,0.5"/>
-	<attr name="offset_size" value="0.08" range="0.02,0.2"/>
-	<attr name="vertical_interval_ratio" value="0.5" range="0.3,0.5"/>
-	<attr name="window_sill_height" value="0.05" range="0.02,0.15"/>
+	<attr name="offset_size" value="0.05" range="0.05,0.05"/>
+	<attr name="window_sill_height" value="0.05" range="0.05,0.05"/>
 	
 	<rule name="Window">
 		<split splitAxis="y">
@@ -80,12 +76,12 @@
 			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
 		<split splitAxis="x">
-			<param type="relative" value="horizontal_interval_ratio" name="WindowGlassColumnArea_04" repeat="true"/>
+			<param type="relative" value="0.5" name="WindowGlassColumnArea_04" repeat="true"/>
 		</split>
 	</rule>
 	<rule name="WindowGlassColumnArea_04">
 		<split splitAxis="y">
-			<param type="relative" value="vertical_interval_ratio" name="WindowGlassCellArea_04" repeat="true"/>
+			<param type="relative" value="0.5" name="WindowGlassCellArea_04" repeat="true"/>
 		</split>
 	</rule>
 	<rule name="WindowGlassCellArea_04">
@@ -107,34 +103,6 @@
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowFrame"/>
-		</comp>
-	</rule>
-	
-	<rule name="Door">
-		<extrude height="-0.2"/>
-		<comp>
-			<param name="side" value="Wall"/>
-			<param name="top" value="EntranceTop"/>
-		</comp>
-	</rule>
-	<rule name="EntranceTop">
-		<split splitAxis="y">
-			<param type="relative" value="1-door_top_offset" name="EntranceTopMain"/>
-			<param type="relative" value="door_top_offset" name="Wall"/>
-		</split>
-	</rule>
-	<rule name="EntranceTopMain">
-		<split splitAxis="x">
-			<param type="relative" value="door_side_offset" name="Wall"/>
-			<param type="relative" value="1-door_side_offset*2" name="EntranceTopMainMain"/>
-			<param type="relative" value="door_side_offset" name="Wall"/>
-		</split>
-	</rule>
-	<rule name="EntranceTopMainMain">
-		<extrude height="-0.6"/>
-		<comp>
-			<param name="side" value="Wall"/>
-			<param name="top" value="DoorGlass"/>
 		</comp>
 	</rule>
 </grammar>

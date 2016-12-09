@@ -75,23 +75,6 @@
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
-		<split splitAxis="y">
-			<param type="relative" value="0.5" name="SeparatorAndWindowGlass_02" repeat="true"/>
-		</split>
+		<copy name="WindowGlass"/>
 	</rule>
-	<rule name="SeparatorAndWindowGlass_02">
-		<split splitAxis="y">
-			<param type="relative" value="0.02" name="WindowGlassSeparateTile_02"/>
-			<param type="floating" value="1" name="WindowGlass"/>
-			<param type="relative" value="0.02" name="WindowGlassSeparateTile_02"/>
-		</split>
-	</rule>
-	<rule name="WindowGlassSeparateTile_02">
-		<extrude height="0.05"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowFrame"/>
-		</comp>
-	</rule>
-	
 </grammar>

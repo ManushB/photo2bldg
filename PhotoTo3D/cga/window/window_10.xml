@@ -1,9 +1,26 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="offset_size" value="0.05" range="0.05,0.05"/>
-	<attr name="window_sill_height" value="0.05" range="0.05,0.05"/>
-
+	<attr name="offset_size" value="0.02" range="0.02,0.02"/>
+	
 	<rule name="Window">
+		<split splitAxis="x">
+			<param type="relative" value="0.5" name="WindowLeft"/>
+			<param type="relative" value="0.5" name="WindowRight"/>
+		</split>
+	</rule>
+	<rule name="WindowLeft">
+		<split splitAxis="x">
+			<param type="relative" value="0.9" name="WindowOne"/>
+			<param type="relative" value="0.1" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="WindowRight">
+		<split splitAxis="x">
+			<param type="relative" value="0.1" name="Wall"/>
+			<param type="relative" value="0.9" name="WindowOne"/>
+		</split>
+	</rule>
+	<rule name="WindowOne">
 		<split splitAxis="y">
 			<param type="relative" value="window_sill_height" name="WindowSillTile_02"/>
 			<param type="relative" value="1-window_sill_height" name="WindowTileMain_02"/>
@@ -93,5 +110,4 @@
 			<param name="top" value="WindowFrame"/>
 		</comp>
 	</rule>
-	
 </grammar>
