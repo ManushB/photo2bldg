@@ -52,7 +52,7 @@ void decodeParamsA(float width, float height, std::pair<int, int> range_NF, std:
 	decoded_params[11] = BH;
 }
 
-cv::Mat generateRandomFacadeA(float width, float height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
+cv::Mat generateRandomFacadeA(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
 	// #floors has to be at least 1 for this facade.
 	if (range_NF.first < 1) range_NF.first = 1;
 
