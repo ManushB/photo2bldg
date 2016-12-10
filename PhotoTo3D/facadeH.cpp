@@ -4,10 +4,18 @@
 cv::Mat generateFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params) {
 	// #floors has to be at least 3 for this facade.
 	if (range_NF.first < 3) range_NF.first = 3;
-	if (max_NF < 3) max_NF = 3;
 
 	// #columns has to be at least 3 for this facade.
 	if (range_NC.first < 3) range_NC.first = 3;
+
+	std::vector<float> decoded_params;
+	decodeParamsH(width, height, range_NF, range_NC, max_NF, max_NC, params, decoded_params);
+
+	return generateFacadeH(1, decoded_params[0], decoded_params[1], width, height, thickness, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25]);
+}
+
+void decodeParamsH(float width, float height, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params, std::vector<float>& decoded_params) {
+	if (max_NF < 3) max_NF = 3;
 	if (max_NC < 3) max_NC = 3;
 
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
@@ -45,7 +53,33 @@ cv::Mat generateFacadeH(int width, int height, int thickness, std::pair<int, int
 	float TWT2 = AH / (params[23] + params[24] + params[25]) * params[24];
 	float TWB2 = AH / (params[23] + params[24] + params[25]) * params[25];
 
-	return generateFacadeH(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, GH, WW2, WH2, WO2, WI2, WT2, WB2, DT, DH, TWH, TWT, TWB, TWH2, TWT2, TWB2);
+	decoded_params.resize(26);
+	decoded_params[0] = NF;
+	decoded_params[1] = NC;
+	decoded_params[2] = WW;
+	decoded_params[3] = WH;
+	decoded_params[4] = WS;
+	decoded_params[5] = WT;
+	decoded_params[6] = WB;
+	decoded_params[7] = BS;
+	decoded_params[8] = TW;
+	decoded_params[9] = AH;
+	decoded_params[10] = FH;
+	decoded_params[11] = GH;
+	decoded_params[12] = WW2;
+	decoded_params[13] = WH2;
+	decoded_params[14] = WO2;
+	decoded_params[15] = WI2;
+	decoded_params[16] = WT2;
+	decoded_params[17] = WB2;
+	decoded_params[18] = DT;
+	decoded_params[19] = DH;
+	decoded_params[20] = TWH;
+	decoded_params[21] = TWT;
+	decoded_params[22] = TWB;
+	decoded_params[23] = TWH2;
+	decoded_params[24] = TWT2;
+	decoded_params[25] = TWB2;
 }
 
 cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {

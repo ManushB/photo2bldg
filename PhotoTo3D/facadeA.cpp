@@ -4,10 +4,18 @@
 cv::Mat generateFacadeA(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params) {
 	// #floors has to be at least 1 for this facade.
 	if (range_NF.first < 1) range_NF.first = 1;
-	if (max_NF < 1) max_NF = 1;
 
 	// #columns has to be at least 1 for this facade.
 	if (range_NC.first < 1) range_NC.first = 1;
+
+	std::vector<float> decoded_params;
+	decodeParamsA(width, height, range_NF, range_NC, max_NF, max_NC, params, decoded_params);
+	
+	return generateFacadeA(1, decoded_params[0], decoded_params[1], width, height, thickness, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11]);
+}
+
+void decodeParamsA(float width, float height, std::pair<int, int> range_NF, std::pair<int, int> range_NC, int max_NF, int max_NC, const std::vector<float>& params, std::vector<float>& decoded_params) {
+	if (max_NF < 1) max_NF = 1;
 	if (max_NC < 1) max_NC = 1;
 
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
@@ -28,11 +36,23 @@ cv::Mat generateFacadeA(int width, int height, int thickness, std::pair<int, int
 	float WS = TW / (params[2] + params[4] * 2) * params[4];
 	float WT = FH / (params[3] + params[5] + params[6]) * params[5];
 	float WB = FH / (params[3] + params[5] + params[6]) * params[6];
-	
-	return generateFacadeA(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, BH);
+
+	decoded_params.resize(12);
+	decoded_params[0] = NF;
+	decoded_params[1] = NC;
+	decoded_params[2] = WW;
+	decoded_params[3] = WH;
+	decoded_params[4] = WS;
+	decoded_params[5] = WT;
+	decoded_params[6] = WB;
+	decoded_params[7] = BS;
+	decoded_params[8] = TW;
+	decoded_params[9] = AH;
+	decoded_params[10] = FH;
+	decoded_params[11] = BH;
 }
 
-cv::Mat generateRandomFacadeA(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
+cv::Mat generateRandomFacadeA(float width, float height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
 	// #floors has to be at least 1 for this facade.
 	if (range_NF.first < 1) range_NF.first = 1;
 
