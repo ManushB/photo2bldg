@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <grammar version="1.0" author="Gen Nishida">
 	<!-- parameters -->
-	<attr name="width" value="10" range="4,40"/>
 	<attr name="depth" value="10" range="4,40"/>
 	<attr name="height" value="10" range="4,40"/>
 	<attr name="roof_height" value="1" range="0.3,1.5"/>
 	<attr name="roof_overhang" value="0.5" range="0.3,1.5"/>
+	<attr name="width" value="10" range="4,40"/>
 	
 	<!-- building mass -->
 	<rule name="Start">

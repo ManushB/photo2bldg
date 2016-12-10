@@ -1,12 +1,21 @@
 <?xml version="1.0"?>
 <grammar version="1.0" author="Gen Nishida">
 	<!-- parameters -->
-	<attr name="width" value="10" range="4,50"/>
-	<attr name="depth" value="10" range="4,50"/>
-	<attr name="height" value="10" range="4,50"/>
-
+	<attr name="depth" value="10" range="8,45"/>
+	<attr name="depth_offset_ratio" value="0.1" range="0.04,0.2"/>
+	<attr name="depth_offset_ratio2" value="0.2" range="0.04,0.2"/>
+	<attr name="height1" value="10" range="8,25"/>
+	<attr name="height2" value="2" range="2,6"/>
+	<attr name="height3" value="2" range="2,6"/>
+	<attr name="width" value="10" range="8,20"/>
+	<attr name="width_offset_ratio" value="0.1" range="0.0,0.2"/>
+	<attr name="width_offset_ratio2" value="0.1" range="0.04,0.2"/>
+	<attr name="x_slope" value="30" range="0,60"/>
+	
 	<!-- building mass -->
 	<rule name="Start">
+		<copy name="Start2"/>
+		<copy name="Start3"/>
 		<translate mode="rel" coordSystem="world">
 			<param name="x" type="absolute" value="0"/>
 			<param name="y" type="absolute" value="0"/>
@@ -17,11 +26,87 @@
 			<param name="ySize" type="absolute" value="depth"/>
 			<param name="zSize" type="absolute" value="0"/>
 		</size>
-		<extrude height="height"/>
+		<extrude height="height1"/>
 		<comp>
 			<param name="side" value="Facade"/>
 			<param name="top" value="Roof"/>
 			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	<rule name="Start2">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="0"/>
+			<param name="y" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="height1"/>
+		</translate>
+		<size centered="true">
+			<param name="xSize" type="absolute" value="width-width*width_offset_ratio*2"/>
+			<param name="ySize" type="absolute" value="depth-depth*depth_offset_ratio*2"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="height2"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="Roof"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	<rule name="Start3">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="0"/>
+			<param name="y" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="height1+height2"/>
+		</translate>
+		<size centered="true">
+			<param name="xSize" type="absolute" value="width-width*width_offset_ratio*2-width*width_offset_ratio2*2"/>
+			<param name="ySize" type="absolute" value="depth-depth*depth_offset_ratio*2-depth*depth_offset_ratio2*2"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="height3"/>
+		<comp>
+			<param name="side" value="Facade"/>
+			<param name="top" value="Roof2"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	<rule name="Roof2">
+		<roofHip angle="x_slope"/>
+		<comp>
+			<param name="top" value="RoofTop"/>
+		</comp>
+	</rule>
+	
+	<!-- roof -->
+	<rule name="Roof">
+		<offset offsetDistance="0.2" inside="TopFaceOffset"/>
+	</rule>
+	<rule name="TopFaceOffset">
+		<extrude height="0.05"/>
+		<comp>
+			<param name="side" value="RoofLedge"/>
+			<param name="top" value="TopFaceOffsetTop"/>
+			<param name="bottom" value="RoofLedge"/>
+		</comp>
+	</rule>
+	<rule name="TopFaceOffsetTop">
+		<offset offsetDistance="0.05" inside="TopFaceOffsetTopOffset"/>
+	</rule>
+	<rule name="TopFaceOffsetTopOffset">
+		<extrude height="0.2"/>
+		<comp>
+			<param name="side" value="RoofLedge"/>
+			<param name="top" value="TopFaceOffsetTopOffsetTop"/>
+			<param name="bottom" value="RoofLedge"/>
+		</comp>
+	</rule>
+	<rule name="TopFaceOffsetTopOffsetTop">
+		<offset offsetDistance="-0.25" inside="TopFaceOffsetTopOffsetTopInside" border="RoofLedge"/>
+	</rule>
+	<rule name="TopFaceOffsetTopOffsetTopInside">
+		<extrude height="-0.125"/>
+		<comp>
+			<param name="side" value="RoofLedge"/>
+			<param name="top" value="RoofTop"/>
 		</comp>
 	</rule>
 </grammar>

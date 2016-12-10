@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <grammar version="1.0" author="Gen Nishida">
 	<!-- parameters -->
-	<attr name="width" value="10" range="4,40"/>
 	<attr name="depth1" value="5" range="4,10"/>
-	<attr name="depth2" value="10" range="10,40"/>
+	<attr name="depth2" value="10" range="6,40"/>
 	<attr name="height1" value="10" range="8,30"/>
 	<attr name="height2" value="2" range="1,10"/>
+	<attr name="width" value="10" range="8,30"/>
 
 	<!-- building mass -->
 	<rule name="Start">
@@ -18,7 +18,7 @@
 		</translate>
 		<size>
 			<param name="xSize" type="absolute" value="width"/>
-			<param name="ySize" type="absolute" value="depth1"/>
+			<param name="ySize" type="absolute" value="depth1*2+depth2"/>
 			<param name="zSize" type="absolute" value="0"/>
 		</size>
 		<extrude height="height1"/>
@@ -33,37 +33,19 @@
 		<translate mode="rel" coordSystem="world">
 			<param name="x" type="absolute" value="-width*0.5"/>
 			<param name="y" type="absolute" value="-depth2*0.5"/>
-			<param name="z" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="height1"/>
 		</translate>
 		<size>
 			<param name="xSize" type="absolute" value="width"/>
 			<param name="ySize" type="absolute" value="depth2"/>
 			<param name="zSize" type="absolute" value="0"/>
 		</size>
-		<extrude height="height1+height2"/>
+		<extrude height="height2"/>
 		<comp>
-			<param name="side" value="Facade"/>
+			<param name="side" value="Facade2"/>
 			<param name="top" value="Roof"/>
 			<param name="bottom" value="Base"/>
 		</comp>
 	</rule>
 	
-	<rule name="Start3">
-		<translate mode="rel" coordSystem="world">
-			<param name="x" type="absolute" value="-width*0.5"/>
-			<param name="y" type="absolute" value="depth2*0.5"/>
-			<param name="z" type="absolute" value="0"/>
-		</translate>
-		<size>
-			<param name="xSize" type="absolute" value="width"/>
-			<param name="ySize" type="absolute" value="depth1"/>
-			<param name="zSize" type="absolute" value="0"/>
-		</size>
-		<extrude height="height1"/>
-		<comp>
-			<param name="side" value="Facade"/>
-			<param name="top" value="Roof"/>
-			<param name="bottom" value="Base"/>
-		</comp>
-	</rule>
 </grammar>

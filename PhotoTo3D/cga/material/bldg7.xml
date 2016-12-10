@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="interval_ratio" value="0.5" range="0.5,0.5"/>
+	<attr name="door_side_offset" value="0.1" range="0.1,0.1"/>
+	<attr name="door_top_offset" value="0.1" range="0.1,0.1"/>	<attr name="interval_ratio" value="0.5" range="0.5,0.5"/>
 	<attr name="offset_size" value="0.08" range="0.02,0.2"/>
 	<attr name="window_sill_height" value="0.05" range="0.05,0.05"/>
 	<attr name="window_depth" value="0.2" range="0.2,0.2"/>
-
+	
 	<rule name="Window">
 		<split splitAxis="y">
 			<param type="relative" value="window_sill_height" name="WindowSillTile_02"/>
@@ -86,6 +87,34 @@
 		</comp>
 	</rule>
 	
+	<rule name="Door">
+		<extrude height="-0.2"/>
+		<comp>
+			<param name="side" value="Wall"/>
+			<param name="top" value="EntranceTop"/>
+		</comp>
+	</rule>
+	<rule name="EntranceTop">
+		<split splitAxis="y">
+			<param type="relative" value="1-door_top_offset" name="EntranceTopMain"/>
+			<param type="relative" value="door_top_offset" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="EntranceTopMain">
+		<split splitAxis="x">
+			<param type="relative" value="door_side_offset" name="Wall"/>
+			<param type="relative" value="1-door_side_offset*2" name="EntranceTopMainMain"/>
+			<param type="relative" value="door_side_offset" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="EntranceTopMainMain">
+		<extrude height="-0.6"/>
+		<comp>
+			<param name="side" value="Wall"/>
+			<param name="top" value="DoorGlass"/>
+		</comp>
+	</rule>
+	
 	<!-- material -->
 	<rule name="Roof">
 		<setupProjection axesSelector="scope.xy">
@@ -112,6 +141,13 @@
 	</rule>
 	<rule name="WindowFrame">
 		<color s="#867c7a"/>
+	</rule>
+	<rule name="DoorGlass">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<texture texturePath="material/bldg2/door_glass.tif"/>
 	</rule>
 	<rule name="LedgeFace">
 		<color s="#867c7a"/>
