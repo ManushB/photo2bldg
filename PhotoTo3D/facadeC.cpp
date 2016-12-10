@@ -235,7 +235,7 @@ cv::Mat generateRandomFacadeC(int width, int height, int thickness, std::pair<in
 	params.push_back(TWH / AH);
 	params.push_back(TWB / AH);
 
-	return generateFacadeC(NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, GH, ND, DT, DH, DW, DS, TWS, TWW, TWT, TWH, TWB, window_displacement, window_prob);
+	return generateFacadeC(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, GH, ND, DT, DH, DW, DS, TWS, TWW, TWT, TWH, TWB, window_displacement, window_prob);
 }
 
 cv::Mat generateFacadeC(float scale, int NF, int NC, int width, int height, int thickness, float WW, float WH, float WS, float WT, float WB, float BS, float TW, float AH, float FH, float GH, int ND, float DT, float DH, float DW, float DS, float TWS, float TWW, float TWT, float TWH, float TWB, int window_displacement, float window_prob) {

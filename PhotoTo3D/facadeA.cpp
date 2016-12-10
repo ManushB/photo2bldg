@@ -116,7 +116,7 @@ cv::Mat generateRandomFacadeA(int width, int height, int thickness, std::pair<in
 	params.push_back(FH / height);
 	params.push_back(BH / height);
 
-	return generateFacadeA(NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, BH, window_displacement, window_prob);
+	return generateFacadeA(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, BS, TW, AH, FH, BH, window_displacement, window_prob);
 }
 
 cv::Mat generateFacadeA(float scale, int NF, int NC, int width, int height, int thickness, float WW, float WH, float WS, float WT, float WB, float BS, float TW, float AH, float FH, float BH, int window_displacement, float window_prob) {

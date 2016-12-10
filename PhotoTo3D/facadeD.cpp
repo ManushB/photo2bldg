@@ -247,7 +247,7 @@ cv::Mat generateRandomFacadeD(int width, int height, int thickness, std::pair<in
 	params.push_back(DW / (DW + DS * 2));
 	params.push_back(DS / (DW + DS * 2));
 
-	return generateFacadeD(NF, NC, width, height, thickness, WW, WH, WS, WT, WB, WW2, WH2, WS2, WT2, WB2, BS, TW, AH, FH, FH2, GH, ND, DT, DH, DW, DS, window_displacement, window_prob);
+	return generateFacadeD(1, NF, NC, width, height, thickness, WW, WH, WS, WT, WB, WW2, WH2, WS2, WT2, WB2, BS, TW, AH, FH, FH2, GH, ND, DT, DH, DW, DS, window_displacement, window_prob);
 }
 
 cv::Mat generateFacadeD(float scale, int NF, int NC, int width, int height, int thickness, float WW, float WH, float WS, float WT, float WB, float WW2, float WH2, float WS2, float WT2, float WB2, float BS, float TW, float AH, float FH, float FH2, float GH, int ND, float DT, float DH, float DW, float DS, int window_displacement, float window_prob) {
