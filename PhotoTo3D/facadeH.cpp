@@ -80,11 +80,6 @@ void decodeParamsH(float width, float height, std::pair<int, int> range_NF, std:
 	decoded_params[23] = TWH2;
 	decoded_params[24] = TWT2;
 	decoded_params[25] = TWB2;
-
-	std::cout << "----------------------------------" << std::endl;
-	for (int i = 0; i < decoded_params.size(); ++i) {
-		std::cout << "[" << i << "] " << decoded_params[i] << std::endl;
-	}
 }
 
 cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
