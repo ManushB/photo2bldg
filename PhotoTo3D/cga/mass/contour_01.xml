@@ -46,7 +46,7 @@
 		</size>
 		<extrude height="height2"/>
 		<comp>
-			<param name="side" value="Facade"/>
+			<param name="side" value="Facade2"/>
 			<param name="top" value="Roof"/>
 			<param name="bottom" value="Base"/>
 		</comp>
@@ -64,7 +64,7 @@
 		</size>
 		<extrude height="height3"/>
 		<comp>
-			<param name="side" value="Facade"/>
+			<param name="side" value="Facade2"/>
 			<param name="top" value="Roof2"/>
 			<param name="bottom" value="Base"/>
 		</comp>

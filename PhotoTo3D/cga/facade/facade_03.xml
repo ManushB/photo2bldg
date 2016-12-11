@@ -119,7 +119,6 @@
 		</setupProjection>
 		<split splitAxis="y">
 			<param type="floating" value="p10_floor_height" name="Floor" repeat="true"/>
-			<param type="floating" value="p09_top_floor_height" name="TopFloorAndLedge" />
 		</split>
 	</rule>
 	
