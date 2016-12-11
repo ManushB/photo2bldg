@@ -27,9 +27,9 @@ void decodeParamsH(float width, float height, std::pair<int, int> range_NF, std:
 
 	float BS = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[7];
 	float TW = (float)width / (params[7] * 2 + params[8] * (NC - 2)) * params[8];
-	float AH = (float)height / (params[9] + params[10] * NF + params[11]) * params[9];
-	float FH = (float)height / (params[9] + params[10] * NF + params[11]) * params[10];
-	float GH = (float)height / (params[9] + params[10] * NF + params[11]) * params[11];
+	float AH = (float)height / (params[9] + params[10] * (NF - 2) + params[11]) * params[9];
+	float FH = (float)height / (params[9] + params[10] * (NF - 2) + params[11]) * params[10];
+	float GH = (float)height / (params[9] + params[10] * (NF - 2) + params[11]) * params[11];
 
 	float WW = TW / (params[2] + params[4] * 2) * params[2];
 	float WH = FH / (params[3] + params[5] + params[6]) * params[3];
@@ -80,6 +80,11 @@ void decodeParamsH(float width, float height, std::pair<int, int> range_NF, std:
 	decoded_params[23] = TWH2;
 	decoded_params[24] = TWT2;
 	decoded_params[25] = TWB2;
+
+	std::cout << "----------------------------------" << std::endl;
+	for (int i = 0; i < decoded_params.size(); ++i) {
+		std::cout << "[" << i << "] " << decoded_params[i] << std::endl;
+	}
 }
 
 cv::Mat generateRandomFacadeH(int width, int height, int thickness, std::pair<int, int> range_NF, std::pair<int, int> range_NC, std::vector<float>& params, int window_displacement, float window_prob) {
