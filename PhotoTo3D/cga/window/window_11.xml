@@ -5,72 +5,72 @@
 
 	<rule name="Window">
 		<split splitAxis="y">
-			<param type="relative" value="window_sill_height" name="WindowSillTile_02"/>
-			<param type="relative" value="1-window_sill_height" name="WindowTileMain_02"/>
+			<param type="relative" value="window_sill_height" name="WindowSillTile_11"/>
+			<param type="relative" value="1-window_sill_height" name="WindowTileMain_11"/>
 		</split>
 	</rule>
-	<rule name="WindowSillTile_02">
+	<rule name="WindowSillTile_11">
 		<split splitAxis="y">
-			<param type="relative" value="0.5" name="WindowSillTileLayer1_02"/>
-			<param type="relative" value="0.5" name="WindowSillTileLayer2_02"/>
+			<param type="relative" value="0.5" name="WindowSillTileLayer1_11"/>
+			<param type="relative" value="0.5" name="WindowSillTileLayer2_11"/>
 		</split>
 	</rule>
-	<rule name="WindowSillTileLayer1_02">
+	<rule name="WindowSillTileLayer1_11">
 		<split splitAxis="x">
 			<param type="relative" value="0.05" name="Wall"/>
-			<param type="floating" value="1" name="WindowSillTileLayer1Main_02"/>
+			<param type="floating" value="1" name="WindowSillTileLayer1Main_11"/>
 			<param type="relative" value="0.05" name="Wall"/>
 		</split>
 	</rule>
-	<rule name="WindowSillTileLayer1Main_02">
+	<rule name="WindowSillTileLayer1Main_11">
 		<extrude height="0.1"/>
 		<comp>
 			<param name="top" value="WindowSill"/>
 			<param name="side" value="WindowSill"/>
 		</comp>
 	</rule>
-	<rule name="WindowSillTileLayer2_02">
+	<rule name="WindowSillTileLayer2_11">
 		<extrude height="0.2"/>
 		<comp>
 			<param name="top" value="WindowSill"/>
 			<param name="side" value="WindowSill"/>
 		</comp>
 	</rule>
-	<rule name="WindowTileMain_02">
+	<rule name="WindowTileMain_11">
 		<split splitAxis="x">
 			<param type="relative" value="0.05" name="Wall"/>
-			<param type="floating" value="1" name="WindowTileMainMain_02"/>
+			<param type="floating" value="1" name="WindowTileMainMain_11"/>
 			<param type="relative" value="0.05" name="Wall"/>
 		</split>
 	</rule>
-	<rule name="WindowTileMainMain_02">
+	<rule name="WindowTileMainMain_11">
 		<extrude height="0.1"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowTileMainMainTop_02"/>
+			<param name="top" value="WindowTileMainMainTop_11"/>
 		</comp>
 	</rule>
-	<rule name="WindowTileMainMainTop_02">
-		<offset offsetDistance="-offset_size" inside="WindowTileMainMainTopInside_02" border="WindowFrame"/>
+	<rule name="WindowTileMainMainTop_11">
+		<offset offsetDistance="-offset_size" inside="WindowTileMainMainTopInside_11" border="WindowFrame"/>
 	</rule>
-	<rule name="WindowTileMainMainTopInside_02">
+	<rule name="WindowTileMainMainTopInside_11">
 		<extrude height="-0.1"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowTileMainMainTopInsideBottom_02"/>
+			<param name="top" value="WindowTileMainMainTopInsideBottom_11"/>
 		</comp>
 	</rule>
-	<rule name="WindowTileMainMainTopInsideBottom_02">
-		<offset offsetDistance="-0.02" inside="WindowTileMainMainTopInsideBottomInside_02" border="WindowFrame"/>
+	<rule name="WindowTileMainMainTopInsideBottom_11">
+		<offset offsetDistance="-0.02" inside="WindowTileMainMainTopInsideBottomInside_11" border="WindowFrame"/>
 	</rule>
-	<rule name="WindowTileMainMainTopInsideBottomInside_02">
+	<rule name="WindowTileMainMainTopInsideBottomInside_11">
 		<extrude height="-0.05"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowGlassArea_02"/>
+			<param name="top" value="WindowGlassArea_11"/>
 		</comp>
 	</rule>
-	<rule name="WindowGlassArea_02">
+	<rule name="WindowGlassArea_11">
 		<setupProjection axesSelector="scope.xy">
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>

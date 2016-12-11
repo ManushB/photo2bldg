@@ -4,10 +4,10 @@
 		<extrude height="-1"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowGlassArea01"/>
+			<param name="top" value="WindowGlassArea_07"/>
 		</comp>
 	</rule>
-	<rule name="WindowGlassArea01">
+	<rule name="WindowGlassArea_07">
 		<setupProjection axesSelector="scope.xy">
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>

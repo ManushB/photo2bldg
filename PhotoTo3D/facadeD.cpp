@@ -75,9 +75,9 @@ void decodeParamsD(float width, float height, std::pair<int, int> range_NF, std:
 	decoded_params[0] = NF;
 	decoded_params[1] = NC;
 	decoded_params[2] = WW;
-	decoded_params[3] = WW;
-	decoded_params[4] = WH;
-	decoded_params[5] = WS;
+	decoded_params[3] = WH;
+	decoded_params[4] = WS;
+	decoded_params[5] = WT;
 	decoded_params[6] = WB;
 	decoded_params[7] = WW2;
 	decoded_params[8] = WH2;
@@ -85,7 +85,7 @@ void decodeParamsD(float width, float height, std::pair<int, int> range_NF, std:
 	decoded_params[10] = WT2;
 	decoded_params[11] = WB2;
 	decoded_params[12] = BS;
-	decoded_params[13] = BS;
+	decoded_params[13] = TW;
 	decoded_params[14] = AH;
 	decoded_params[15] = FH;
 	decoded_params[16] = FH2;
