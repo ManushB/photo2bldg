@@ -53,14 +53,14 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	// Building mass
 
 	// load caffe model
-	classifiers["mass"] = boost::shared_ptr<Classifier>(new Classifier("models/mass/deploy.prototxt", "models/mass/train_iter_60000.caffemodel", "models/mass/mean.binaryproto"));
+	classifiers["mass"] = boost::shared_ptr<Classifier>(new Classifier("models/mass/deploy.prototxt", "models/mass/train_iter_80000.caffemodel", "models/mass/mean.binaryproto"));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_01.prototxt", "models/mass/train_01_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_02.prototxt", "models/mass/train_02_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_03.prototxt", "models/mass/train_03_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_04.prototxt", "models/mass/train_04_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_05.prototxt", "models/mass/train_05_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_06.prototxt", "models/mass/train_06_iter_160000.caffemodel")));
-	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_07.prototxt", "models/mass/train_07_iter_240000.caffemodel")));
+	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_07.prototxt", "models/mass/train_07_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_08.prototxt", "models/mass/train_08_iter_120000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_09.prototxt", "models/mass/train_09_iter_160000.caffemodel")));
 	regressions["mass"].push_back(boost::shared_ptr<Regression>(new Regression("models/mass/deploy_10.prototxt", "models/mass/train_10_iter_160000.caffemodel")));

@@ -1,14 +1,20 @@
 <?xml version="1.0"?>
 <grammar version="1.0" author="Gen Nishida">
 	<!-- parameters -->
-	<attr name="depth" value="10" range="4,50"/>
-	<attr name="height" value="10" range="4,50"/>
+	<attr name="chimney_height" value="5" range="8,15"/>
+	<attr name="chimney_left_offset" value="0.3" range="0.1,0.3"/>
+	<attr name="chimney_right_offset" value="0.3" range="0.2,0.5"/>
+	<attr name="chimney_size_ratio" value="0.1" range="0.03,0.2"/>
+	<attr name="depth" value="10" range="30,40"/>
+	<attr name="height" value="10" range="12,20"/>
 	<attr name="roof_overhang" value="0.5" range="0.1,1"/>
-	<attr name="roof_slope" value="30" range="20,50"/>
-	<attr name="width" value="12" range="4,50"/>
+	<attr name="roof_slope" value="30" range="20,30"/>
+	<attr name="width" value="12" range="20,32"/>
 	
 	<!-- building mass -->
 	<rule name="Start">
+		<copy name="Start2"/>
+		<copy name="Start3"/>
 		<translate mode="rel" coordSystem="world">
 			<param name="x" type="absolute" value="0"/>
 			<param name="y" type="absolute" value="0"/>
@@ -45,7 +51,45 @@
 	<rule name="TopFaceOffsetTopInside">
 		<roofHip angle="roof_slope"/>
 		<comp>
-			<param name="top" value="RoofTop"/>
+			<param name="top" value="RoofSlant"/>
+		</comp>
+	</rule>
+	
+	<!-- chimney -->
+	<rule name="Start2">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="width*0.5-width*chimney_right_offset"/>
+			<param name="y" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="height"/>
+		</translate>
+		<size centered="true">
+			<param name="xSize" type="absolute" value="width*chimney_size_ratio"/>
+			<param name="ySize" type="absolute" value="depth*chimney_size_ratio"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="chimney_height"/>
+		<comp>
+			<param name="side" value="ChimneyWall"/>
+			<param name="top" value="ChimneyTop"/>
+			<param name="bottom" value="Base"/>
+		</comp>
+	</rule>
+	<rule name="Start3">
+		<translate mode="rel" coordSystem="world">
+			<param name="x" type="absolute" value="-width*0.5+width*chimney_left_offset"/>
+			<param name="y" type="absolute" value="0"/>
+			<param name="z" type="absolute" value="height"/>
+		</translate>
+		<size centered="true">
+			<param name="xSize" type="absolute" value="width*chimney_size_ratio"/>
+			<param name="ySize" type="absolute" value="depth*chimney_size_ratio"/>
+			<param name="zSize" type="absolute" value="0"/>
+		</size>
+		<extrude height="chimney_height"/>
+		<comp>
+			<param name="side" value="ChimneyWall"/>
+			<param name="top" value="ChimneyTop"/>
+			<param name="bottom" value="Base"/>
 		</comp>
 	</rule>
 </grammar>
