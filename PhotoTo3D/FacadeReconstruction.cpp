@@ -13,9 +13,18 @@ namespace facarec {
 
 	int NUM_GRAMMARS = 8;
 
-	int recognition(boost::shared_ptr<Classifier> classifier, const cv::Mat& input_image) {
+	int recognition(boost::shared_ptr<Classifier> classifier, const cv::Mat& input_image, int mass_grammar_id) {
 		std::vector<Prediction> predictions = classifier->Classify(input_image, NUM_GRAMMARS);
-		return predictions[0].first;
+
+		for (int i = 0; i < predictions.size(); ++i) {
+			// HACK
+			// if the building mass is a cylinder shape, we use only the first 5 facade grammars as valid.
+			if (mass_grammar_id != 1 || predictions[i].first < 5) {
+				return predictions[i].first;
+			}
+		}
+
+		return 0;
 	}
 
 	std::vector<float> parameterEstimation(int grammar_id, boost::shared_ptr<Regression> regression, const cv::Mat& input_image, float width, float height, int max_NF, int max_NC) {

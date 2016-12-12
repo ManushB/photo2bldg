@@ -8,7 +8,7 @@
 
 namespace facarec {
 
-	int recognition(boost::shared_ptr<Classifier> classifier, const cv::Mat& input_image);
+	int recognition(boost::shared_ptr<Classifier> classifier, const cv::Mat& input_image, int mass_grammar_id);
 	std::vector<float> parameterEstimation(int grammar_id, boost::shared_ptr<Regression> regression, const cv::Mat& input_image, float width, float height, int max_NF, int max_NC);
 	std::vector<float> parameterEstimation1(float width, float height, int max_NF, int max_NC, std::vector<float> params);
 	std::vector<float> parameterEstimation2(float width, float height, int max_NF, int max_NC, std::vector<float> params);

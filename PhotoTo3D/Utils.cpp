@@ -212,12 +212,9 @@ namespace utils {
 		}
 
 		float sum = 0.0f;
-		std::cout << "----------------------------" << std::endl;
 		for (int i = 0; i < pts.size() - 1; ++i) {
-			std::cout << "(" << pts[i].x << ", " << pts[i].y << ")" << std::endl;
 			sum += pts[i].x * pts[i + 1].y - pts[i + 1].x * pts[i].y;
 		}
-		std::cout << "area: " << abs(sum * 0.5) << std::endl;
 
 		return abs(sum * 0.5);
 	}

@@ -794,6 +794,7 @@ void GLWidget3D::facadeReconstruction(int num_floors, int num_columns) {
 			else {
 				visibilities.push_back(false);
 				rectified_images.push_back(cv::Mat(glm::length(pts3d[2] - pts3d[1]) * 100, glm::length(pts3d[1] - pts3d[0]) * 100, CV_8UC3));
+				projected_areas.push_back(0);
 			}
 
 			// set the size
@@ -911,7 +912,7 @@ void GLWidget3D::facadeReconstruction(int num_floors, int num_columns) {
 	cv::imwrite("window227.png", input_img);
 
 	// recognize the facade grammar id
-	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img);
+	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"]);
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
 
