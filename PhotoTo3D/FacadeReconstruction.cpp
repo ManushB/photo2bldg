@@ -21,8 +21,6 @@ namespace facarec {
 	std::vector<float> parameterEstimation(int grammar_id, boost::shared_ptr<Regression> regression, const cv::Mat& input_image, float width, float height, int max_NF, int max_NC) {
 		std::vector<float> params = regression->Predict(input_image);
 
-		utils::output_vector(params);
-
 		if (grammar_id == 0) {
 			params = parameterEstimation1(width, height, max_NF, max_NC, params);
 		}
@@ -67,7 +65,7 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation2(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsA(width, height, std::make_pair(2, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
+		decodeParamsB(width, height, std::make_pair(2, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
 
 		cv::Mat img = generateFacadeB(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16]);
 		cv::imwrite("estimated_facade.png", img);
