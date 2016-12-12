@@ -5,28 +5,28 @@
 	<rule name="Window">
 		<extrude height="extrude_height"/>
 		<comp>
-			<param name="side" value="WindowFrame"/>
+			<param name="side" value="Wall"/>
 			<param name="top" value="WindowMainTop_13"/>
 		</comp>
 	</rule>
 	<rule name="WindowMainTop_13">
 		<split splitAxis="x">
-			<param type="relative" value="0.15" name="WindowFrame"/>
+			<param type="relative" value="0.15" name="Wall"/>
 			<param type="relative" value="0.7" name="WindowMainTopMiddle_13"/>
-			<param type="relative" value="0.15" name="WindowFrame"/>
+			<param type="relative" value="0.15" name="Wall"/>
 		</split>
 	</rule>
 	<rule name="WindowMainTopMiddle_13">
 		<split splitAxis="y">
-			<param type="relative" value="0.15" name="WindowFrame"/>
+			<param type="relative" value="0.15" name="Wall"/>
 			<param type="relative" value="0.7" name="WindowMainTopCenter_13"/>
-			<param type="relative" value="0.15" name="WindowFrame"/>
+			<param type="relative" value="0.15" name="Wall"/>
 		</split>
 	</rule>
 	<rule name="WindowMainTopCenter_13">
 		<extrude height="-extrude_height"/>
 		<comp>
-			<param name="side" value="WindowFrame"/>
+			<param name="side" value="Wall"/>
 			<param name="top" value="WindowGlassArea_13"/>
 		</comp>
 	</rule>

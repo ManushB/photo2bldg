@@ -139,17 +139,18 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Material
 	{
-		grammars["material"].resize(10);
+		grammars["material"].resize(11);
 		cga::parseGrammar("cga/material/bldg2.xml", grammars["material"][0]);
 		cga::parseGrammar("cga/material/bldg3.xml", grammars["material"][1]);
-		cga::parseGrammar("cga/material/bldg7.xml", grammars["material"][2]);
-		cga::parseGrammar("cga/material/bldg8.xml", grammars["material"][3]);
-		cga::parseGrammar("cga/material/bldg11.xml", grammars["material"][4]);
-		cga::parseGrammar("cga/material/bldg14.xml", grammars["material"][5]);
-		cga::parseGrammar("cga/material/bldg29.xml", grammars["material"][6]);
-		cga::parseGrammar("cga/material/bldg35.xml", grammars["material"][7]);
-		cga::parseGrammar("cga/material/bldg43.xml", grammars["material"][8]);
-		cga::parseGrammar("cga/material/bldg45.xml", grammars["material"][9]);
+		cga::parseGrammar("cga/material/bldg5.xml", grammars["material"][2]);
+		cga::parseGrammar("cga/material/bldg7.xml", grammars["material"][3]);
+		cga::parseGrammar("cga/material/bldg8.xml", grammars["material"][4]);
+		cga::parseGrammar("cga/material/bldg11.xml", grammars["material"][5]);
+		cga::parseGrammar("cga/material/bldg14.xml", grammars["material"][6]);
+		cga::parseGrammar("cga/material/bldg29.xml", grammars["material"][7]);
+		cga::parseGrammar("cga/material/bldg35.xml", grammars["material"][8]);
+		cga::parseGrammar("cga/material/bldg43.xml", grammars["material"][9]);
+		cga::parseGrammar("cga/material/bldg45.xml", grammars["material"][10]);
 	}
 
 	// default grammar and pm values
@@ -1116,6 +1117,9 @@ void GLWidget3D::updateGeometry() {
 
 		// add door grammar snippet
 		grammar_list.push_back(grammars["door"][0]);
+
+		// add material grammar snippet
+		grammar_list.push_back(grammars["material"][grammar_ids["material"]]);
 	}
 
 	// generate 3d model

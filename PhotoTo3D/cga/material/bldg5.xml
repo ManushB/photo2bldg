@@ -2,34 +2,34 @@
 <grammar type="material" version="1.0" author="Gen Nishida">
 	<rule name="RoofTop">
 		<setupProjection axesSelector="scope.xy">
-			<param name="texWidth" type="absolute" value="5"/>
-			<param name="texHeight" type="absolute" value="5"/>
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
-		<texture texturePath="material/bldg45/roof.tif"/>
+		<texture texturePath="material/bldg5/roof.png"/>
 	</rule>
 	<rule name="RoofLedge">
-		<color s="#724f3a"/>
+		<color s="#0a080b"/>
 	</rule>
 	<rule name="Wall">
-		<texture texturePath="material/bldg45/wall.png"/>
+		<texture texturePath="material/bldg5/wall.png"/>
 	</rule>
 	<rule name="WindowGlass">
-		<texture texturePath="material/bldg45/window_glass.png"/>
+		<texture texturePath="material/bldg5/window_glass.png"/>
 	</rule>
 	<rule name="WindowSill">
-		<color s="#724f3a"/>
+		<color s="#0a080b"/>
 	</rule>
 	<rule name="WindowFrame">
-		<color s="#f0e8e5"/>
+		<color s="#0a080b"/>
 	</rule>
 	<rule name="DoorGlass">
 		<setupProjection axesSelector="scope.xy">
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
-		<texture texturePath="material/bldg45/door_glass.tif"/>
+		<texture texturePath="material/bldg5/door_glass.tif"/>
 	</rule>
 	<rule name="LedgeFace">
-		<color s="#724f3a"/>
+		<color s="#0a080b"/>
 	</rule>
 </grammar>

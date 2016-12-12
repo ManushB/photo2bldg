@@ -47,7 +47,7 @@
 	<rule name="WindowTileMainMain_03">
 		<extrude height="-window_depth"/>
 		<comp>
-			<param name="side" value="WindowFrame"/>
+			<param name="side" value="Wall"/>
 			<param name="top" value="WindowTileMainMainTopInsideBottom_03"/>
 		</comp>
 	</rule>
@@ -72,13 +72,13 @@
 	</rule>
 	<rule name="SeparatorAndWindowGlass_03">
 		<split splitAxis="y">
-			<param type="relative" value="0.02" name="WindowGlassSeparateTile_03"/>
-			<param type="floating" value="1" name="WindowGlass"/>
-			<param type="relative" value="0.02" name="WindowGlassSeparateTile_03"/>
+			<param type="relative" value="0.08" name="WindowGlassSeparateTile_03"/>
+			<param type="floating" value="0.84" name="WindowGlass"/>
+			<param type="relative" value="0.08" name="WindowGlassSeparateTile_03"/>
 		</split>
 	</rule>
 	<rule name="WindowGlassSeparateTile_03">
-		<extrude height="0.08"/>
+		<extrude height="0.1"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowFrame"/>

@@ -48,9 +48,9 @@
 	</rule>
 	<rule name="SeparatorAndWindowGlass_10">
 		<split splitAxis="y">
-			<param type="relative" value="0.02" name="WindowGlassSeparateTile_10"/>
-			<param type="floating" value="1" name="WindowGlass"/>
-			<param type="relative" value="0.02" name="WindowGlassSeparateTile_10"/>
+			<param type="relative" value="0.08" name="WindowGlassSeparateTile_10"/>
+			<param type="floating" value="0.84" name="WindowGlass"/>
+			<param type="relative" value="0.08" name="WindowGlassSeparateTile_10"/>
 		</split>
 	</rule>
 	<rule name="WindowGlassSeparateTile_10">

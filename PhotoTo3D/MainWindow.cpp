@@ -105,7 +105,6 @@ void MainWindow::onBuildingReconstruction() {
 		in >> filename >> num_floors >> num_columns;
 
 		int index = filename.indexOf(".png");
-		std::cout << filename.mid(0, index).toUtf8().constData() << std::endl;
 		if (filename.mid(0, index) == current_name) {
 			break;
 		}
@@ -209,7 +208,6 @@ void MainWindow::onFacadeReconstruction() {
 		in >> filename >> num_floors >> num_columns;
 
 		int index = filename.indexOf(".png");
-		std::cout << filename.mid(0, index).toUtf8().constData() << std::endl;
 		if (filename.mid(0, index) == current_name) {
 			break;
 		}
