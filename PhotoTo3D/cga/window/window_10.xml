@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="offset_size" value="0.02" range="0.02,0.02"/>
-	<attr name="window_sill_height" value="0.05" range="0.05,0.05"/>
+	<attr name="window_depth" value="0.2" range="0.2,0.2"/>
 	
 	<rule name="Window">
 		<split splitAxis="x">
@@ -22,57 +21,7 @@
 		</split>
 	</rule>
 	<rule name="WindowOne_10">
-		<split splitAxis="y">
-			<param type="relative" value="window_sill_height" name="WindowSillTile_10"/>
-			<param type="relative" value="1-window_sill_height" name="WindowTileMain_10"/>
-		</split>
-	</rule>
-	<rule name="WindowSillTile_10">
-		<split splitAxis="y">
-			<param type="relative" value="0.5" name="WindowSillTileLayer1_10"/>
-			<param type="relative" value="0.5" name="WindowSillTileLayer2_10"/>
-		</split>
-	</rule>
-	<rule name="WindowSillTileLayer1_10">
-		<split splitAxis="x">
-			<param type="relative" value="0.05" name="Wall"/>
-			<param type="floating" value="1" name="WindowSillTileLayer1Main_10"/>
-			<param type="relative" value="0.05" name="Wall"/>
-		</split>
-	</rule>
-	<rule name="WindowSillTileLayer1Main_10">
-		<extrude height="0.1"/>
-		<comp>
-			<param name="top" value="WindowSill"/>
-			<param name="side" value="WindowSill"/>
-		</comp>
-	</rule>
-	<rule name="WindowSillTileLayer2_10">
-		<extrude height="0.2"/>
-		<comp>
-			<param name="top" value="WindowSill"/>
-			<param name="side" value="WindowSill"/>
-		</comp>
-	</rule>
-	<rule name="WindowTileMain_10">
-		<split splitAxis="x">
-			<param type="relative" value="0.05" name="Wall"/>
-			<param type="floating" value="1" name="WindowTileMainMain_10"/>
-			<param type="relative" value="0.05" name="Wall"/>
-		</split>
-	</rule>
-	<rule name="WindowTileMainMain_10">
-		<extrude height="0.1"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowTileMainMainTop_10"/>
-		</comp>
-	</rule>
-	<rule name="WindowTileMainMainTop_10">
-		<offset offsetDistance="-offset_size" inside="WindowTileMainMainTopInside_10" border="WindowFrame"/>
-	</rule>
-	<rule name="WindowTileMainMainTopInside_10">
-		<extrude height="-0.1"/>
+		<extrude height="-window_depth"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowTileMainMainTopInsideBottom_10"/>
@@ -105,7 +54,7 @@
 		</split>
 	</rule>
 	<rule name="WindowGlassSeparateTile_10">
-		<extrude height="0.05"/>
+		<extrude height="0.08"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowFrame"/>

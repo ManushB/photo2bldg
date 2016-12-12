@@ -2,6 +2,7 @@
 <grammar type="window" version="1.0" author="Gen Nishida">
 	<attr name="offset_size" value="0.05" range="0.05,0.05"/>
 	<attr name="window_sill_height" value="0.05" range="0.05,0.05"/>
+	<attr name="window_depth" value="0.2" range="0.2,0.2"/>
 
 	<rule name="Window">
 		<split splitAxis="y">
@@ -44,17 +45,7 @@
 		</split>
 	</rule>
 	<rule name="WindowTileMainMain_03">
-		<extrude height="0.1"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowTileMainMainTop_03"/>
-		</comp>
-	</rule>
-	<rule name="WindowTileMainMainTop_03">
-		<offset offsetDistance="-offset_size" inside="WindowTileMainMainTopInside_03" border="WindowFrame"/>
-	</rule>
-	<rule name="WindowTileMainMainTopInside_03">
-		<extrude height="-0.1"/>
+		<extrude height="-window_depth"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowTileMainMainTopInsideBottom_03"/>
@@ -87,7 +78,7 @@
 		</split>
 	</rule>
 	<rule name="WindowGlassSeparateTile_03">
-		<extrude height="0.05"/>
+		<extrude height="0.08"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowFrame"/>

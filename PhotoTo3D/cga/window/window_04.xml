@@ -99,7 +99,7 @@
 		</split>
 	</rule>
 	<rule name="WindowGlassSeparateTile_04">
-		<extrude height="0.05"/>
+		<extrude height="0.08"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowFrame"/>

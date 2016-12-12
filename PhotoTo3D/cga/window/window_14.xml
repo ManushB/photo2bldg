@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+	<attr name="window_depth" value="0.4" range="0.4,0.4"/>
+	
+	<rule name="Window">
+		<extrude height="-window_depth*0.3"/>
+		<comp>
+			<param name="side" value="WindowFrame"/>
+			<param name="top" value="WindowInsideBottom_14"/>
+		</comp>
+	</rule>
+	<rule name="WindowInsideBottom_14">
+		<split splitAxis="y">
+			<param type="floating" value="0.5" name="WindowInsideBottomInside_14"/>
+			<param type="relative" value="0.1" name="WindowFrame"/>
+			<param type="relative" value="0.4" name="WindowInsideBottomBottom_14"/>
+		</split>
+	</rule>
+	<rule name="WindowInsideBottomBottom_14">
+		<extrude height="-window_depth*0.2"/>
+		<comp>
+			<param name="side" value="WindowFrame"/>
+			<param name="top" value="WindowFrame"/>
+		</comp>
+	</rule>
+	<rule name="WindowInsideBottomInside_14">
+		<extrude height="-window_depth*0.7"/>
+		<comp>
+			<param name="side" value="WindowFrame"/>
+			<param name="top" value="WindowGlassArea_14"/>
+		</comp>
+	</rule>
+	<rule name="WindowGlassArea_14">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<copy name="WindowGlass"/>
+	</rule>
+</grammar>

@@ -112,7 +112,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	classifiers["window"] = boost::shared_ptr<Classifier>(new Classifier("models/window/deploy.prototxt", "models/window/train_iter_20000.caffemodel", "models/window/mean.binaryproto"));
 
 	// load grammars
-	grammars["window"].resize(13);
+	grammars["window"].resize(15);
 	cga::parseGrammar("cga/window/window_01.xml", grammars["window"][0]);
 	cga::parseGrammar("cga/window/window_02.xml", grammars["window"][1]);
 	cga::parseGrammar("cga/window/window_03.xml", grammars["window"][2]);
@@ -126,6 +126,8 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	cga::parseGrammar("cga/window/window_11.xml", grammars["window"][10]);
 	cga::parseGrammar("cga/window/window_12.xml", grammars["window"][11]);
 	cga::parseGrammar("cga/window/window_13.xml", grammars["window"][12]);
+	cga::parseGrammar("cga/window/window_14.xml", grammars["window"][13]);
+	cga::parseGrammar("cga/window/window_15.xml", grammars["window"][14]);
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
