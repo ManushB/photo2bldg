@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.actionLoadSilhouette, SIGNAL(triggered()), this, SLOT(onLoadSilhouette()));
 	connect(ui.actionSaveSilhouette, SIGNAL(triggered()), this, SLOT(onSaveSilhouette()));
 	connect(ui.actionOpenCGA, SIGNAL(triggered()), this, SLOT(onOpenCGA()));
+	connect(ui.actionSaveOBJ, SIGNAL(triggered()), this, SLOT(onSaveOBJ()));
 	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(onUndo()));
 	connect(ui.actionBuildingReconstruction, SIGNAL(triggered()), this, SLOT(onBuildingReconstruction()));
@@ -80,6 +81,13 @@ void MainWindow::onOpenCGA() {
 	if (filename.isEmpty()) return;
 
 	glWidget->loadCGA(filename.toUtf8().data());
+}
+
+void MainWindow::onSaveOBJ() {
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save OBJ file..."), "", tr("OBJ Files (*.obj)"));
+	if (filename.isEmpty()) return;
+
+	glWidget->saveOBJ(filename.toUtf8().constData());
 }
 
 void MainWindow::onUndo() {

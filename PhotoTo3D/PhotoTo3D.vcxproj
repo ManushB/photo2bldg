@@ -291,6 +291,7 @@
     <ClCompile Include="MassReconstructionDialog.cpp" />
     <ClCompile Include="NumberEval.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="OBJWriter.cpp" />
     <ClCompile Include="OffsetOperator.cpp" />
     <ClCompile Include="OptionDialog.cpp" />
     <ClCompile Include="Polygon.cpp" />
@@ -441,6 +442,7 @@
     <ClInclude Include="LShape.h" />
     <ClInclude Include="LShapePrism.h" />
     <ClInclude Include="LShapeTaper.h" />
+    <ClInclude Include="OBJWriter.h" />
     <ClInclude Include="WindowRecognition.h" />
     <CustomBuild Include="MassReconstructionDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

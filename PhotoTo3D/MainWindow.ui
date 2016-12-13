@@ -35,6 +35,7 @@
     <addaction name="actionSaveSilhouette"/>
     <addaction name="separator"/>
     <addaction name="actionOpenCGA"/>
+    <addaction name="actionSaveOBJ"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -242,6 +243,11 @@
   <action name="actionBuildingReconstruction">
    <property name="text">
     <string>Building Reconstruction</string>
+   </property>
+  </action>
+  <action name="actionSaveOBJ">
+   <property name="text">
+    <string>Save OBJ</string>
    </property>
   </action>
  </widget>

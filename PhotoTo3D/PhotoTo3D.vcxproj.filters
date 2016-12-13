@@ -311,6 +311,9 @@
     <ClCompile Include="WindowRecognition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OBJWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.h">
@@ -580,6 +583,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindowRecognition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

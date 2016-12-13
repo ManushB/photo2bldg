@@ -72,7 +72,8 @@ public:
 	void loadSilhouette(const QString& filename);
 	void saveSilhouette(const QString& filename);
 	void clearGeometry();
-	void loadCGA(const std::string& filename);
+	void loadCGA(const QString& filename);
+	void saveOBJ(const QString& filename);
 	void undo();
 	void massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method);
 	void autoTest(int grammar_id, int image_size, const QString& param_filename, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement);

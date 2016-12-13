@@ -22,6 +22,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 #include "WindowRecognition.h"
+#include "OBJWriter.h"
 
 GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent) {
 	mainWin = (MainWindow*)parent;
@@ -498,9 +499,9 @@ void GLWidget3D::clearGeometry() {
  * Load a grammar from a file and generate a 3d geometry.
  * This is only for test usage.
  */
-void GLWidget3D::loadCGA(const std::string& filename) {
+void GLWidget3D::loadCGA(const QString& filename) {
 	cga::Grammar grammar;
-	cga::parseGrammar(filename.c_str(), grammar);
+	cga::parseGrammar(filename.toUtf8().constData(), grammar);
 
 	cga::CGA cga;
 	cga.modelMat = glm::rotate(glm::mat4(), -3.1415926f * 0.5f, glm::vec3(1, 0, 0));
@@ -521,6 +522,10 @@ void GLWidget3D::loadCGA(const std::string& filename) {
 
 	// render 2d image
 	render();
+}
+
+void GLWidget3D::saveOBJ(const QString& filename) {
+	OBJWriter::write(faces, filename.toUtf8().constData());
 }
 
 void GLWidget3D::undo() {
