@@ -32,4 +32,27 @@ boost::shared_ptr<Shape> SetupProjectionOperator::apply(boost::shared_ptr<Shape>
 	return shape;
 }
 
+QDomElement SetupProjectionOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	if (axesSelector == AXES_SCOPE_XY) {
+		node.setAttribute("axesSelector", "scope.xy");
+	}
+	else if (axesSelector == AXES_SCOPE_XZ) {
+		node.setAttribute("axesSelector", "scope.xz");
+	}
+	else if (axesSelector == AXES_SCOPE_YZ) {
+		node.setAttribute("axesSelector", "scope.yz");
+	}
+
+	QDomElement child1 = texWidth.toXml(doc);
+	child1.setAttribute("name", "texWidth");
+	node.appendChild(child1);
+
+	QDomElement child2 = texHeight.toXml(doc);
+	child2.setAttribute("name", "texHeight");
+	node.appendChild(child2);
+
+	return node;
+}
+
 }

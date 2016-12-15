@@ -33,6 +33,19 @@ boost::shared_ptr<Shape> ColorOperator::apply(boost::shared_ptr<Shape>& shape, c
 	return shape;
 }
 
+QDomElement ColorOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	if (s.empty()) {
+		node.setAttribute("r", r.c_str());
+		node.setAttribute("g", g.c_str());
+		node.setAttribute("b", b.c_str());
+	}
+	else {
+		node.setAttribute("s", s.c_str());
+	}
+	return node;
+}
+
 void ColorOperator::decodeRGB(const std::string& str, float& r, float& g, float& b) {
 	int ir, ig, ib;
     std::istringstream(str.substr(1, 2)) >> std::hex >> ir;

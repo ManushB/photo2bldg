@@ -31,4 +31,18 @@ boost::shared_ptr<Shape> ShapeUOperator::apply(boost::shared_ptr<Shape>& shape, 
 	return shape->shapeU(shape->_name, actual_frontWidth, actual_backDepth);
 }
 
+QDomElement ShapeUOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+
+	QDomElement child1 = frontWidth.toXml(doc);
+	child1.setAttribute("name", "frontWidth");
+	node.appendChild(child1);
+
+	QDomElement child2 = backDepth.toXml(doc);
+	child2.setAttribute("name", "backDepth");
+	node.appendChild(child2);
+
+	return node;
+}
+
 }

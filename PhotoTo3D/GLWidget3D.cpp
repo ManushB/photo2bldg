@@ -23,6 +23,7 @@
 #include <boost/lexical_cast.hpp>
 #include "WindowRecognition.h"
 #include "OBJWriter.h"
+#include "GrammarWriter.h"
 
 GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers), parent) {
 	mainWin = (MainWindow*)parent;
@@ -522,6 +523,44 @@ void GLWidget3D::loadCGA(const QString& filename) {
 
 	// render 2d image
 	render();
+}
+
+void GLWidget3D::saveCGA(const QString& filename) {
+	std::vector<cga::Grammar> grammar_list;
+	grammar_list.push_back(grammars["mass"][grammar_ids["mass"]]);
+	if (grammar_type == GRAMMAR_TYPE_FACADE && grammar_ids.contains("facade")) {
+		// add facade grammar snippet
+		grammar_list.push_back(grammars["facade"][grammar_ids["facade"]]);
+
+		// add window grammar snippets
+		for (int k = 0; k < 99; ++k) {
+			char window_nt_name[256];
+			sprintf(window_nt_name, "Window%d", k);
+
+			if (!grammar_ids.contains(window_nt_name)) break;
+
+			grammar_list.push_back(grammars["window"][grammar_ids[window_nt_name]]);
+
+			// rename the axiom of the window grammar snippet
+			for (auto it = grammar_list.back().rules.begin(); it != grammar_list.back().rules.end(); ++it) {
+				if (it->first == "Window") {
+					cga::Rule rule = it->second;
+					grammar_list.back().rules.erase(it);
+					grammar_list.back().rules[window_nt_name] = rule;
+					break;
+				}
+			}
+		}
+
+		// add door grammar snippet
+		grammar_list.push_back(grammars["door"][0]);
+
+		// add material grammar snippet
+		grammar_list.push_back(grammars["material"][grammar_ids["material"]]);
+	}
+
+	//cga::save(filename.toUtf8().constData(), grammars["mass"][grammar_ids["mass"]]);
+	cga::save(filename.toUtf8().constData(), grammar_list);
 }
 
 void GLWidget3D::saveOBJ(const QString& filename) {

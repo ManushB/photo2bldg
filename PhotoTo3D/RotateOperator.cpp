@@ -16,4 +16,13 @@ boost::shared_ptr<Shape> RotateOperator::apply(boost::shared_ptr<Shape>& shape, 
 	return shape;
 }
 
+QDomElement RotateOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("xAngle", xAngle);
+	node.setAttribute("yAngle", xAngle);
+	node.setAttribute("zAngle", xAngle);
+
+	return node;
+}
+
 }

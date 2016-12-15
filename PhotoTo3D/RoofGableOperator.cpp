@@ -14,4 +14,11 @@ boost::shared_ptr<Shape> RoofGableOperator::apply(boost::shared_ptr<Shape>& shap
 	return shape->roofGable(shape->_name, actual_angle);
 }
 
+QDomElement RoofGableOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("angle", angle.c_str());
+
+	return node;
+}
+
 }

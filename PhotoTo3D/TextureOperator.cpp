@@ -14,4 +14,11 @@ boost::shared_ptr<Shape> TextureOperator::apply(boost::shared_ptr<Shape>& shape,
 	return shape;
 }
 
+QDomElement TextureOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("texturePath", texture.c_str());
+
+	return node;
+}
+
 }

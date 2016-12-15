@@ -54,6 +54,7 @@ public:
     QAction *actionHatchingRendering;
     QAction *actionBuildingReconstruction;
     QAction *actionSaveOBJ;
+    QAction *actionSaveCGA;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -129,6 +130,8 @@ public:
         actionBuildingReconstruction->setObjectName(QStringLiteral("actionBuildingReconstruction"));
         actionSaveOBJ = new QAction(MainWindowClass);
         actionSaveOBJ->setObjectName(QStringLiteral("actionSaveOBJ"));
+        actionSaveCGA = new QAction(MainWindowClass);
+        actionSaveCGA->setObjectName(QStringLiteral("actionSaveCGA"));
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindowClass->setCentralWidget(centralWidget);
@@ -162,6 +165,7 @@ public:
         menuFile->addAction(actionSaveSilhouette);
         menuFile->addSeparator();
         menuFile->addAction(actionOpenCGA);
+        menuFile->addAction(actionSaveCGA);
         menuFile->addAction(actionSaveOBJ);
         menuFile->addSeparator();
         menuFile->addAction(actionExit);
@@ -220,6 +224,7 @@ public:
         actionHatchingRendering->setText(QApplication::translate("MainWindowClass", "Hatching", 0));
         actionBuildingReconstruction->setText(QApplication::translate("MainWindowClass", "Building Reconstruction", 0));
         actionSaveOBJ->setText(QApplication::translate("MainWindowClass", "Save OBJ", 0));
+        actionSaveCGA->setText(QApplication::translate("MainWindowClass", "Save CGA", 0));
         menuFile->setTitle(QApplication::translate("MainWindowClass", "File", 0));
         menuOption->setTitle(QApplication::translate("MainWindowClass", "Tool", 0));
         menuRendering->setTitle(QApplication::translate("MainWindowClass", "Rendering", 0));

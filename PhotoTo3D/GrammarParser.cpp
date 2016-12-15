@@ -35,6 +35,28 @@ void parseGrammar(const char* filename, Grammar& grammar) {
 	doc.setContent(&file, true);
 	QDomElement root = doc.documentElement();
 
+	parseGrammar(root, grammar);
+}
+
+void parseGrammar(const char* filename, std::vector<Grammar>& grammars) {
+	QFile file(filename);
+
+	QDomDocument doc;
+	doc.setContent(&file, true);
+	QDomElement root = doc.documentElement();
+	QDomNode child_node = root.firstChild();
+	while (!child_node.isNull()) {
+		if (child_node.toElement().tagName() == "grammar") {
+			Grammar grammar;
+			parseGrammar(child_node.toElement(), grammar);
+			grammars.push_back(grammar);
+		}
+
+		child_node = child_node.nextSibling();
+	}
+}
+
+void parseGrammar(QDomElement& root, Grammar& grammar) {
 	QDomNode child_node = root.firstChild();
 	while (!child_node.isNull()) {
 		if (child_node.toElement().tagName() == "attr") {
@@ -57,10 +79,12 @@ void parseGrammar(const char* filename, Grammar& grammar) {
 
 			if (range.size() > 0) {
 				grammar.addAttr(name, Attribute(name, value, range[0], range[1]));
-			} else {
+			}
+			else {
 				grammar.addAttr(name, Attribute(name, value));
 			}
-		} else if (child_node.toElement().tagName() == "rule") {
+		}
+		else if (child_node.toElement().tagName() == "rule") {
 			if (!child_node.toElement().hasAttribute("name")) {
 				throw "<rule> tag must contain name attribute.";
 			}
@@ -74,49 +98,71 @@ void parseGrammar(const char* filename, Grammar& grammar) {
 
 				if (operator_name == "center") {
 					grammar.addOperator(name, parseCenterOperator(operator_node));
-				} else if (operator_name == "color") {
+				}
+				else if (operator_name == "color") {
 					grammar.addOperator(name, parseColorOperator(operator_node));
-				} else if (operator_name == "comp") {
+				}
+				else if (operator_name == "comp") {
 					grammar.addOperator(name, parseCompOperator(operator_node));
-				} else if (operator_name == "copy") {
+				}
+				else if (operator_name == "copy") {
 					grammar.addOperator(name, parseCopyOperator(operator_node));
-				} else if (operator_name == "cornerCut") {
+				}
+				else if (operator_name == "cornerCut") {
 					grammar.addOperator(name, parseCornerCutOperator(operator_node));
-				} else if (operator_name == "extrude") {
+				}
+				else if (operator_name == "extrude") {
 					grammar.addOperator(name, parseExtrudeOperator(operator_node));
-				} else if (operator_name == "hemisphere") {
+				}
+				else if (operator_name == "hemisphere") {
 					grammar.addOperator(name, parseHemisphereOperator(operator_node));
-				} else if (operator_name == "innerCircle") {
+				}
+				else if (operator_name == "innerCircle") {
 					grammar.addOperator(name, parseInnerCircleOperator(operator_node));
-				} else if (operator_name == "innerSemiCircle") {
+				}
+				else if (operator_name == "innerSemiCircle") {
 					grammar.addOperator(name, parseInnerSemiCircleOperator(operator_node));
-				} else if (operator_name == "insert") {
+				}
+				else if (operator_name == "insert") {
 					grammar.addOperator(name, parseInsertOperator(operator_node));
-				} else if (operator_name == "offset") {
+				}
+				else if (operator_name == "offset") {
 					grammar.addOperator(name, parseOffsetOperator(operator_node));
-				} else if (operator_name == "pyramid") {
+				}
+				else if (operator_name == "pyramid") {
 					grammar.addOperator(name, parsePyramidOperator(operator_node));
-				} else if (operator_name == "roofGable") {
+				}
+				else if (operator_name == "roofGable") {
 					grammar.addOperator(name, parseRoofGableOperator(operator_node));
-				} else if (operator_name == "roofHip") {
+				}
+				else if (operator_name == "roofHip") {
 					grammar.addOperator(name, parseRoofHipOperator(operator_node));
-				} else if (operator_name == "rotate") {
+				}
+				else if (operator_name == "rotate") {
 					grammar.addOperator(name, parseRotateOperator(operator_node));
-				} else if (operator_name == "setupProjection") {
+				}
+				else if (operator_name == "setupProjection") {
 					grammar.addOperator(name, parseSetupProjectionOperator(operator_node));
-				} else if (operator_name == "shapeL") {
+				}
+				else if (operator_name == "shapeL") {
 					grammar.addOperator(name, parseShapeLOperator(operator_node));
-				} else if (operator_name == "shapeU") {
+				}
+				else if (operator_name == "shapeU") {
 					grammar.addOperator(name, parseShapeUOperator(operator_node));
-				} else if (operator_name == "size") {
+				}
+				else if (operator_name == "size") {
 					grammar.addOperator(name, parseSizeOperator(operator_node));
-				} else if (operator_name == "split") {
+				}
+				else if (operator_name == "split") {
 					grammar.addOperator(name, parseSplitOperator(operator_node));
-				} else if (operator_name == "taper") {
+				}
+				else if (operator_name == "taper") {
 					grammar.addOperator(name, parseTaperOperator(operator_node));
-				} else if (operator_name == "texture") {
+				}
+				else if (operator_name == "texture") {
 					grammar.addOperator(name, parseTextureOperator(operator_node));
-				} else if (operator_name == "translate") {
+				}
+				else if (operator_name == "translate") {
 					grammar.addOperator(name, parseTranslateOperator(operator_node));
 				}
 
@@ -410,6 +456,8 @@ boost::shared_ptr<Operator> parseSetupProjectionOperator(const QDomNode& node) {
 boost::shared_ptr<Operator> parseShapeLOperator(const QDomNode& node) {
 	Value frontWidth;
 	Value rightWidth;
+	bool frontWidthFound = false;
+	bool rightWidthFound = false;
 
 	QDomNode child = node.firstChild();
 	while (!child.isNull()) {
@@ -425,6 +473,7 @@ boost::shared_ptr<Operator> parseShapeLOperator(const QDomNode& node) {
 			std::string value = child.toElement().attribute("value").toUtf8().constData();
 
 			if (name == "frontWidth") {
+				frontWidthFound = true;
 				if (type == "relative") {
 					frontWidth = Value(Value::TYPE_RELATIVE, value);
 				}
@@ -436,6 +485,7 @@ boost::shared_ptr<Operator> parseShapeLOperator(const QDomNode& node) {
 				}
 			}
 			else if (name == "rightWidth") {
+				rightWidthFound = true;
 				if (type == "relative") {
 					rightWidth = Value(Value::TYPE_RELATIVE, value);
 				}
@@ -451,12 +501,21 @@ boost::shared_ptr<Operator> parseShapeLOperator(const QDomNode& node) {
 		child = child.nextSibling();
 	}
 
+	if (!frontWidthFound) {
+		throw "shapeL node has to have frontWidth parametter.";
+	}
+	if (!rightWidthFound) {
+		throw "shapeL node has to have rightWidth parametter.";
+	}
+
 	return boost::shared_ptr<Operator>(new ShapeLOperator(frontWidth, rightWidth));
 }
 
 boost::shared_ptr<Operator> parseShapeUOperator(const QDomNode& node) {
 	Value frontWidth;
 	Value backDepth;
+	bool frontWidthFound = false;
+	bool backDepthFound = false;
 
 	QDomNode child = node.firstChild();
 	while (!child.isNull()) {
@@ -472,6 +531,7 @@ boost::shared_ptr<Operator> parseShapeUOperator(const QDomNode& node) {
 			std::string value = child.toElement().attribute("value").toUtf8().constData();
 
 			if (name == "frontWidth") {
+				frontWidthFound = true;
 				if (type == "relative") {
 					frontWidth = Value(Value::TYPE_RELATIVE, value);
 				}
@@ -479,10 +539,11 @@ boost::shared_ptr<Operator> parseShapeUOperator(const QDomNode& node) {
 					frontWidth = Value(Value::TYPE_ABSOLUTE, value);
 				}
 				else {
-					throw "type attribute under shapeL node has to be either relative or absolute.";
+					throw "type attribute under shapeU node has to be either relative or absolute.";
 				}
 			}
 			else if (name == "backDepth") {
+				backDepthFound = true;
 				if (type == "relative") {
 					backDepth = Value(Value::TYPE_RELATIVE, value);
 				}
@@ -490,12 +551,19 @@ boost::shared_ptr<Operator> parseShapeUOperator(const QDomNode& node) {
 					backDepth = Value(Value::TYPE_ABSOLUTE, value);
 				}
 				else {
-					throw "type attribute under shapeL node has to be either relative or absolute.";
+					throw "type attribute under shapeU node has to be either relative or absolute.";
 				}
 			}
 		}
 
 		child = child.nextSibling();
+	}
+
+	if (!frontWidthFound) {
+		throw "shapeU node has to have frontWidth parametter.";
+	}
+	if (!backDepthFound) {
+		throw "shapeU node has to have backDepth parametter.";
 	}
 
 	return boost::shared_ptr<Operator>(new ShapeUOperator(frontWidth, backDepth));

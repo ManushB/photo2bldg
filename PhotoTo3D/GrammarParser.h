@@ -9,6 +9,8 @@
 namespace cga {
 
 void parseGrammar(const char* filename, Grammar& grammar);
+void parseGrammar(const char* filename, std::vector<Grammar>& grammars);
+void parseGrammar(QDomElement& root, Grammar& grammar);
 boost::shared_ptr<Operator> parseCenterOperator(const QDomNode& node);
 boost::shared_ptr<Operator> parseColorOperator(const QDomNode& node);
 boost::shared_ptr<Operator> parseCompOperator(const QDomNode& node);

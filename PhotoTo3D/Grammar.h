@@ -6,6 +6,7 @@
 #include <list>
 #include <boost/shared_ptr.hpp>
 #include "Shape.h"
+#include <QDomElement>
 
 namespace cga {
 
@@ -39,6 +40,7 @@ public:
 	Value(int type, const std::string& value, bool repeat = false) : type(type), value(value), repeat(repeat) {}
 	
 	float getEstimateValue(float size, const Grammar& grammar, const boost::shared_ptr<Shape>& shape) const;
+	QDomElement toXml(QDomDocument& doc);
 };
 
 class Operator {
@@ -49,6 +51,7 @@ public:
 	Operator() {}
 
 	virtual boost::shared_ptr<Shape> apply(boost::shared_ptr<Shape>& shape, const Grammar& grammar, std::list<boost::shared_ptr<Shape> >& stack) = 0;
+	virtual QDomElement toXml(QDomDocument& doc) = 0;
 };
 
 class Rule {

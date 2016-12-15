@@ -13,4 +13,10 @@ boost::shared_ptr<Shape> InsertOperator::apply(boost::shared_ptr<Shape>& shape, 
 	return shape->insert(shape->_name, grammar.evalString(geometryPath, shape));
 }
 
+QDomElement InsertOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("geometryPath", geometryPath.c_str());
+	return node;
+}
+
 }

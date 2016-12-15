@@ -39,4 +39,25 @@ boost::shared_ptr<Shape> SizeOperator::apply(boost::shared_ptr<Shape>& shape, co
 	return shape;
 }
 
+QDomElement SizeOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	if (centered) {
+		node.setAttribute("centered", "true");
+	}
+
+	QDomElement child1 = xSize.toXml(doc);
+	child1.setAttribute("name", "xSize");
+	node.appendChild(child1);
+
+	QDomElement child2 = ySize.toXml(doc);
+	child2.setAttribute("name", "ySize");
+	node.appendChild(child2);
+
+	QDomElement child3 = zSize.toXml(doc);
+	child3.setAttribute("name", "zSize");
+	node.appendChild(child3);
+
+	return node;
+}
+
 }

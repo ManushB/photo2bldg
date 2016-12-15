@@ -14,4 +14,11 @@ boost::shared_ptr<Shape> RoofHipOperator::apply(boost::shared_ptr<Shape>& shape,
 	return shape->roofHip(shape->_name, actual_angle);
 }
 
+QDomElement RoofHipOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("angle", angle.c_str());
+
+	return node;
+}
+
 }

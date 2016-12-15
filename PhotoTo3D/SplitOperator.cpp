@@ -37,4 +37,25 @@ boost::shared_ptr<Shape> SplitOperator::apply(boost::shared_ptr<Shape>& shape, c
 	return boost::shared_ptr<Shape>();
 }
 
+QDomElement SplitOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	if (splitAxis == DIRECTION_X) {
+		node.setAttribute("splitAxis", "x");
+	}
+	else if (splitAxis == DIRECTION_Y) {
+		node.setAttribute("splitAxis", "y");
+	}
+	else if (splitAxis == DIRECTION_Z) {
+		node.setAttribute("splitAxis", "z");
+	}
+
+	for (int i = 0; i < sizes.size(); ++i) {
+		QDomElement child = sizes[i].toXml(doc);
+		child.setAttribute("name", output_names[i].c_str());
+		node.appendChild(child);
+	}
+
+	return node;
+}
+
 }

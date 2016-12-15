@@ -314,6 +314,9 @@
     <ClCompile Include="OBJWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GrammarWriter.cpp">
+      <Filter>Source Files\rule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.h">
@@ -587,6 +590,9 @@
     </ClInclude>
     <ClInclude Include="OBJWriter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GrammarWriter.h">
+      <Filter>Source Files\rule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

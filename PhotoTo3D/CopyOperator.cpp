@@ -16,4 +16,11 @@ boost::shared_ptr<Shape> CopyOperator::apply(boost::shared_ptr<Shape>& shape, co
 	return shape;
 }
 
+QDomElement CopyOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("name", copy_name.c_str());
+
+	return node;
+}
+
 }

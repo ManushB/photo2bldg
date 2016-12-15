@@ -40,4 +40,36 @@ boost::shared_ptr<Shape> TranslateOperator::apply(boost::shared_ptr<Shape>& shap
 	return shape;
 }
 
+QDomElement TranslateOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+
+	if (mode == MODE_ABSOLUTE) {
+		node.setAttribute("mode", "abs");
+	}
+	else if (mode == MODE_RELATIVE) {
+		node.setAttribute("mode", "rel");
+	}
+
+	if (coordSystem == COORD_SYSTEM_WORLD) {
+		node.setAttribute("coordSystem", "world");
+	}
+	else if (coordSystem == COORD_SYSTEM_OBJECT) {
+		node.setAttribute("coordSystem", "object");
+	}
+
+	QDomElement child1 = x.toXml(doc);
+	child1.setAttribute("name", "x");
+	node.appendChild(child1);
+
+	QDomElement child2 = y.toXml(doc);
+	child2.setAttribute("name", "y");
+	node.appendChild(child2);
+
+	QDomElement child3 = z.toXml(doc);
+	child3.setAttribute("name", "z");
+	node.appendChild(child3);
+
+	return node;
+}
+
 }

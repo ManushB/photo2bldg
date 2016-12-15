@@ -12,4 +12,10 @@ boost::shared_ptr<Shape> HemisphereOperator::apply(boost::shared_ptr<Shape>& sha
 	return shape->hemisphere(shape->_name);
 }
 
+QDomElement HemisphereOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+
+	return node;
+}
+
 }

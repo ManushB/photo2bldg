@@ -21,4 +21,17 @@ boost::shared_ptr<Shape> OffsetOperator::apply(boost::shared_ptr<Shape>& shape, 
 	return boost::shared_ptr<Shape>();
 }
 
+QDomElement OffsetOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("offsetDistance", offsetDistance.c_str());
+	if (!inside.empty()) {
+		node.setAttribute("inside", inside.c_str());
+	}
+	if (!border.empty()) {
+		node.setAttribute("border", border.c_str());
+	}
+
+	return node;
+}
+
 }

@@ -17,4 +17,12 @@ boost::shared_ptr<Shape> TaperOperator::apply(boost::shared_ptr<Shape>& shape, c
 	return shape->taper(shape->_name, actual_height, actual_slope);
 }
 
+QDomElement TaperOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("height", height.c_str());
+	node.setAttribute("slope", slope.c_str());
+
+	return node;
+}
+
 }

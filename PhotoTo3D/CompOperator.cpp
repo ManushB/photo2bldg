@@ -19,4 +19,17 @@ boost::shared_ptr<Shape> CompOperator::apply(boost::shared_ptr<Shape>& shape, co
 	return boost::shared_ptr<Shape>();
 }
 
+QDomElement CompOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+
+	for (auto it = name_map.begin(); it != name_map.end(); ++it) {
+		QDomElement child = doc.createElement("param");
+		child.setAttribute("name", it->first.c_str());
+		child.setAttribute("value", it->second.c_str());
+		node.appendChild(child);
+	}
+
+	return node;
+}
+
 }

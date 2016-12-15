@@ -27,6 +27,7 @@ public slots:
 	void onLoadSilhouette();
 	void onSaveSilhouette();
 	void onOpenCGA();
+	void onSaveCGA();
 	void onSaveOBJ();
 	void onUndo();
 	void onBuildingReconstruction();

@@ -32,6 +32,25 @@ float Value::getEstimateValue(float size, const Grammar& grammar, const boost::s
 	}
 }
 
+QDomElement Value::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement("param");
+	if (type == TYPE_ABSOLUTE) {
+		node.setAttribute("type", "absolute");
+	}
+	else if (type == TYPE_RELATIVE) {
+		node.setAttribute("type", "relative");
+	}
+	else if (type == TYPE_FLOATING) {
+		node.setAttribute("type", "floating");
+	}
+	node.setAttribute("value", value.c_str());
+	if (repeat) {
+		node.setAttribute("repeat", "true");
+	}
+
+	return node;
+}
+
 /**
  * このルールを指定されたshapeに適用する。
  * いくつかのオペレーション (compやsplitなど)は、適用後のshapeをstackに格納する。

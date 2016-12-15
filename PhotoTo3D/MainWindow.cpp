@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(ui.actionLoadSilhouette, SIGNAL(triggered()), this, SLOT(onLoadSilhouette()));
 	connect(ui.actionSaveSilhouette, SIGNAL(triggered()), this, SLOT(onSaveSilhouette()));
 	connect(ui.actionOpenCGA, SIGNAL(triggered()), this, SLOT(onOpenCGA()));
+	connect(ui.actionSaveCGA, SIGNAL(triggered()), this, SLOT(onSaveCGA()));
 	connect(ui.actionSaveOBJ, SIGNAL(triggered()), this, SLOT(onSaveOBJ()));
 	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(onUndo()));
@@ -81,6 +82,13 @@ void MainWindow::onOpenCGA() {
 	if (filename.isEmpty()) return;
 
 	glWidget->loadCGA(filename.toUtf8().data());
+}
+
+void MainWindow::onSaveCGA() {
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save CGA file..."), "", tr("CGA Files (*.xml)"));
+	if (filename.isEmpty()) return;
+
+	glWidget->saveCGA(filename.toUtf8().constData());
 }
 
 void MainWindow::onSaveOBJ() {

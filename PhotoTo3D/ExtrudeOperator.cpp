@@ -15,4 +15,11 @@ boost::shared_ptr<Shape> ExtrudeOperator::apply(boost::shared_ptr<Shape>& shape,
 	return shape->extrude(shape->_name, actual_height);
 }
 
+QDomElement ExtrudeOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+	node.setAttribute("height", height.c_str());
+
+	return node;
+}
+
 }

@@ -12,4 +12,10 @@ boost::shared_ptr<Shape> InnerSemiCircleOperator::apply(boost::shared_ptr<Shape>
 	return shape->innerSemiCircle(shape->_name);
 }
 
+QDomElement InnerSemiCircleOperator::toXml(QDomDocument& doc) {
+	QDomElement node = doc.createElement(name.c_str());
+
+	return node;
+}
+
 }
