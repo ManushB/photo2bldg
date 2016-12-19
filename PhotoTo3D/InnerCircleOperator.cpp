@@ -5,7 +5,7 @@
 namespace cga {
 
 InnerCircleOperator::InnerCircleOperator() {
-	this->name = "circle";
+	this->name = "innerCircle";
 }
 
 boost::shared_ptr<Shape> InnerCircleOperator::apply(boost::shared_ptr<Shape>& shape, const Grammar& grammar, std::list<boost::shared_ptr<Shape> >& stack) {
