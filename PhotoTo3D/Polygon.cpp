@@ -42,6 +42,40 @@ Polygon::Polygon(const std::string& name, const std::string& grammar_type, const
 	_center /= points.size();
 }
 
+Polygon::Polygon(const std::string& name, const std::string& grammar_type, const glm::mat4& pivot, const glm::mat4& modelMat, const std::vector<glm::vec2>& points, const glm::vec3& color, const std::string& texture, const std::vector<glm::vec2>& texCoords) {
+	this->_active = true;
+	this->_axiom = false;
+	this->_name = name;
+	this->_grammar_type = grammar_type;
+	this->_pivot = pivot;
+	this->_modelMat = modelMat;
+	//this->_points = points;
+	for (int i = 0; i < points.size(); ++i) {
+		if (i == 0) {
+			_points.push_back(points[i]);
+		}
+		else {
+			if (glm::length(points[i] - points[i - 1]) > 0.0f) {
+				_points.push_back(points[i]);
+			}
+		}
+	}
+
+	this->_color = color;
+	this->_texture = texture;
+	this->_textureEnabled = true;
+	_texCoords = texCoords;
+
+	glutils::BoundingBox bbox(points);
+	this->_scope = glm::vec3(bbox.maxPt.x, bbox.maxPt.y, 0);
+
+	this->_center = glm::vec2(0, 0);
+	for (int i = 0; i < points.size(); ++i) {
+		_center += points[i];
+	}
+	_center /= points.size();
+}
+
 Polygon::Polygon(const std::string& name, const std::string& grammar_type, const glm::mat4& pivot, const glm::mat4& modelMat, const std::vector<glm::vec2>& points, const glm::vec3& color, const std::string& texture, float texWidth, float texHeight) {
 	this->_active = true;
 	this->_axiom = false;

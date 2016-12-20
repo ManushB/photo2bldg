@@ -20,6 +20,7 @@ private:
 public:
 	Polygon() {}
 	Polygon(const std::string& name, const std::string& grammar_type, const glm::mat4& pivot, const glm::mat4& modelMat, const std::vector<glm::vec2>& points, const glm::vec3& color, const std::string& texture);
+	Polygon(const std::string& name, const std::string& grammar_type, const glm::mat4& pivot, const glm::mat4& modelMat, const std::vector<glm::vec2>& points, const glm::vec3& color, const std::string& texture, const std::vector<glm::vec2>& texCoords);
 	Polygon(const std::string& name, const std::string& grammar_type, const glm::mat4& pivot, const glm::mat4& modelMat, const std::vector<glm::vec2>& points, const glm::vec3& color, const std::string& texture, float texWidth, float texHeight);
 	boost::shared_ptr<Shape> clone(const std::string& name) const;
 	boost::shared_ptr<Shape> extrude(const std::string& name, float height);

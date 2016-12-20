@@ -317,6 +317,15 @@
     <ClCompile Include="GrammarWriter.cpp">
       <Filter>Source Files\rule</Filter>
     </ClCompile>
+    <ClCompile Include="Arch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchPrism.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InnerArchOperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.h">
@@ -593,6 +602,15 @@
     </ClInclude>
     <ClInclude Include="GrammarWriter.h">
       <Filter>Source Files\rule</Filter>
+    </ClInclude>
+    <ClInclude Include="Arch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchPrism.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InnerArchOperator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

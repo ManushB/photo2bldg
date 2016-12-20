@@ -44,6 +44,10 @@ boost::shared_ptr<Shape> Shape::hemisphere(const std::string& name) {
 	throw "hemisphere() is not supported.";
 }
 
+void Shape::innerArch(const std::string& name, const std::string& inside, const std::string& border, std::vector<boost::shared_ptr<Shape> >& shapes) {
+	throw "innerArch() is not supported.";
+}
+
 boost::shared_ptr<Shape> Shape::innerCircle(const std::string& name) {
 	throw "innerCircle() is not supported.";
 }

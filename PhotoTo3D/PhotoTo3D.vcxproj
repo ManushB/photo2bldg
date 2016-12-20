@@ -206,6 +206,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arch.cpp" />
+    <ClCompile Include="ArchPrism.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CenterOperator.cpp" />
@@ -280,6 +282,7 @@
     <ClCompile Include="HemisphereOperator.cpp" />
     <ClCompile Include="HipRoof.cpp" />
     <ClCompile Include="HoughTransform.cpp" />
+    <ClCompile Include="InnerArchOperator.cpp" />
     <ClCompile Include="InnerCircleOperator.cpp" />
     <ClCompile Include="InnerSemiCircleOperator.cpp" />
     <ClCompile Include="InsertOperator.cpp" />
@@ -397,6 +400,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arch.h" />
+    <ClInclude Include="ArchPrism.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CenterOperator.h" />
@@ -438,6 +443,7 @@
     <ClInclude Include="HemisphereOperator.h" />
     <ClInclude Include="HipRoof.h" />
     <ClInclude Include="HoughTransform.h" />
+    <ClInclude Include="InnerArchOperator.h" />
     <ClInclude Include="InnerCircleOperator.h" />
     <ClInclude Include="InnerSemiCircleOperator.h" />
     <ClInclude Include="InsertOperator.h" />

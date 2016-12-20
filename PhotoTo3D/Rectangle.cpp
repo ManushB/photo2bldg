@@ -12,6 +12,7 @@
 #include "Cuboid.h"
 #include "SemiCircle.h"
 #include "UShape.h"
+#include "Arch.h"
 #include "CGA.h"
 
 namespace cga {
@@ -99,6 +100,54 @@ boost::shared_ptr<Shape> Rectangle::hemisphere(const std::string& name) {
 	points[2] = glm::vec2(_scope.x, _scope.y);
 	points[3] = glm::vec2(0, _scope.y);
 	return boost::shared_ptr<Shape>(new Pyramid(name, _grammar_type, _pivot, _modelMat, points, glm::vec2(_scope.x * 0.5, _scope.y * 0.5), (_scope.x + _scope.y) * 0.25, 0, _color, _texture));
+}
+
+void Rectangle::innerArch(const std::string& name, const std::string& inside, const std::string& border, std::vector<boost::shared_ptr<Shape> >& shapes) {
+	// inner shape
+	if (!inside.empty()) {
+		if (_textureEnabled) {
+			float offset_u1 = _texCoords[0].x;
+			float offset_v1 = _texCoords[0].y;
+			float offset_u2 = _texCoords[2].x;
+			float offset_v2 = _texCoords[2].y;
+			shapes.push_back(boost::shared_ptr<Shape>(new Arch(inside, _grammar_type, _pivot, _modelMat, _scope.x, _scope.y, _color, _texture, _texCoords[0].x, _texCoords[0].y, _texCoords[2].x, _texCoords[2].y)));
+		}
+		else {
+			shapes.push_back(boost::shared_ptr<Shape>(new Arch(inside, _grammar_type, _pivot, _modelMat, _scope.x, _scope.y, _color)));
+		}
+	}
+
+	// border shape
+	if (!border.empty()) {
+		if (_scope.x * 0.5 < _scope.y) {
+			float r = _scope.x * 0.5;
+
+			for (int i = 0; i < CIRCLE_SLICES / 2; ++i) {
+				float theta1 = (float)i / CIRCLE_SLICES * 2 * M_PI;
+				float theta2 = (float)(i + 1) / CIRCLE_SLICES * 2 * M_PI;
+
+				std::vector<glm::vec2> pts;
+				if (i < CIRCLE_SLICES / 4) {
+					pts.push_back(glm::vec2(r + r * cosf(theta1), r * sinf(theta1) + _scope.y - r));
+					pts.push_back(glm::vec2(_scope.x, _scope.y));
+					pts.push_back(glm::vec2(r + r * cosf(theta2), r * sinf(theta2) + _scope.y - r));
+				}
+				else {
+					pts.push_back(glm::vec2(r + r * cosf(theta1), r * sinf(theta1) + _scope.y - r));
+					pts.push_back(glm::vec2(0, _scope.y));
+					pts.push_back(glm::vec2(r + r * cosf(theta2), r * sinf(theta2) + _scope.y - r));
+				}
+
+				std::vector<glm::vec2> tex(pts.size());
+				for (int i = 0; i < pts.size(); ++i) {
+					tex[i].x = pts[i].x / _scope.x * (_texCoords[1].x - _texCoords[0].x) + _texCoords[0].x;
+					tex[i].y = pts[i].y / _scope.y * (_texCoords[2].y - _texCoords[0].y) + _texCoords[0].y;
+				}
+
+				shapes.push_back(boost::shared_ptr<Shape>(new Polygon(border, _grammar_type, _pivot, _modelMat, pts, _color, _texture, tex)));
+			}
+		}
+	}
 }
 
 boost::shared_ptr<Shape> Rectangle::innerCircle(const std::string& name) {
