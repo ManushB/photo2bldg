@@ -19,9 +19,10 @@
 #include "MassReconstruction.h"
 #include "FacadeSegmentation.h"
 #include "FacadeReconstruction.h"
+#include "WindowRecognition.h"
+#include "WindowPositioning.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
-#include "WindowRecognition.h"
 #include "OBJWriter.h"
 #include "GrammarWriter.h"
 
@@ -69,6 +70,11 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 
 	// load grammars
 	grammars["mass"].resize(10);
+	for (int i = 0; i < grammars["mass"].size(); ++i) {
+		QString file_path = QString("cga/mass/contour_%1.xml").arg(i + 1, 2, 10, QChar('0'));
+		cga::parseGrammar(file_path.toUtf8().constData(), grammars["mass"][i]);
+	}
+	/*
 	cga::parseGrammar("cga/mass/contour_01.xml", grammars["mass"][0]);
 	cga::parseGrammar("cga/mass/contour_02.xml", grammars["mass"][1]);
 	cga::parseGrammar("cga/mass/contour_03.xml", grammars["mass"][2]);
@@ -79,13 +85,13 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	cga::parseGrammar("cga/mass/contour_08.xml", grammars["mass"][7]);
 	cga::parseGrammar("cga/mass/contour_09.xml", grammars["mass"][8]);
 	cga::parseGrammar("cga/mass/contour_10.xml", grammars["mass"][9]);
-
+	*/
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Facade
 
 	// load caffe model
-	classifiers["facade"] = boost::shared_ptr<Classifier>(new Classifier("models/facade/deploy.prototxt", "models/facade/train_iter_20000.caffemodel", "models/facade/mean.binaryproto"));
+	classifiers["facade"] = boost::shared_ptr<Classifier>(new Classifier("models/facade/deploy.prototxt", "models/facade/train_iter_40000.caffemodel", "models/facade/mean.binaryproto"));
 	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_01.prototxt", "models/facade/train_01_iter_40000.caffemodel")));
 	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_02.prototxt", "models/facade/train_02_iter_40000.caffemodel")));
 	regressions["facade"].push_back(boost::shared_ptr<Regression>(new Regression("models/facade/deploy_03.prototxt", "models/facade/train_03_iter_40000.caffemodel")));
@@ -97,6 +103,11 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 
 	// load grammars
 	grammars["facade"].resize(8);
+	for (int i = 0; i < grammars["facade"].size(); ++i) {
+		QString file_path = QString("cga/facade/facade_%1.xml").arg(i + 1, 2, 10, QChar('0'));
+		cga::parseGrammar(file_path.toUtf8().constData(), grammars["facade"][i]);
+	}
+	/*
 	cga::parseGrammar("cga/facade/facade_01.xml", grammars["facade"][0]);
 	cga::parseGrammar("cga/facade/facade_02.xml", grammars["facade"][1]);
 	cga::parseGrammar("cga/facade/facade_03.xml", grammars["facade"][2]);
@@ -105,7 +116,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	cga::parseGrammar("cga/facade/facade_06.xml", grammars["facade"][5]);
 	cga::parseGrammar("cga/facade/facade_07.xml", grammars["facade"][6]);
 	cga::parseGrammar("cga/facade/facade_08.xml", grammars["facade"][7]);
-
+	*/
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Window
@@ -114,23 +125,11 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	classifiers["window"] = boost::shared_ptr<Classifier>(new Classifier("models/window/deploy.prototxt", "models/window/train_iter_20000.caffemodel", "models/window/mean.binaryproto"));
 
 	// load grammars
-	grammars["window"].resize(15);
-	cga::parseGrammar("cga/window/window_01.xml", grammars["window"][0]);
-	cga::parseGrammar("cga/window/window_02.xml", grammars["window"][1]);
-	cga::parseGrammar("cga/window/window_03.xml", grammars["window"][2]);
-	cga::parseGrammar("cga/window/window_04.xml", grammars["window"][3]);
-	cga::parseGrammar("cga/window/window_05.xml", grammars["window"][4]);
-	cga::parseGrammar("cga/window/window_06.xml", grammars["window"][5]);
-	cga::parseGrammar("cga/window/window_07.xml", grammars["window"][6]);
-	cga::parseGrammar("cga/window/window_08.xml", grammars["window"][7]);
-	cga::parseGrammar("cga/window/window_09.xml", grammars["window"][8]);
-	cga::parseGrammar("cga/window/window_10.xml", grammars["window"][9]);
-	cga::parseGrammar("cga/window/window_11.xml", grammars["window"][10]);
-	cga::parseGrammar("cga/window/window_12.xml", grammars["window"][11]);
-	cga::parseGrammar("cga/window/window_13.xml", grammars["window"][12]);
-	cga::parseGrammar("cga/window/window_14.xml", grammars["window"][13]);
-	cga::parseGrammar("cga/window/window_15.xml", grammars["window"][14]);
-
+	grammars["window"].resize(31);
+	for (int i = 0; i < grammars["window"].size(); ++i) {
+		QString file_path = QString("cga/window/window_%1.xml").arg(i + 1, 2, 10, QChar('0'));
+		cga::parseGrammar(file_path.toUtf8().constData(), grammars["window"][i]);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Door
@@ -769,7 +768,7 @@ void GLWidget3D::autoTest(int grammar_id, int image_size, const QString& param_f
 	}
 }
 
-void GLWidget3D::facadeReconstruction(int num_floors, int num_columns) {
+void GLWidget3D::facadeReconstruction() {
 	// convert image to cv::Mat object
 	cv::Mat imageMat = cv::Mat(image.height(), image.width(), CV_8UC4, const_cast<uchar*>(image.bits()), image.bytesPerLine()).clone();
 	cv::cvtColor(imageMat, imageMat, cv::COLOR_BGRA2BGR);
@@ -940,18 +939,82 @@ void GLWidget3D::facadeReconstruction(int num_floors, int num_columns) {
 	// get the largest facade image
 	cv::imwrite("facade.png", max_facade);
 
-	// extract windows
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ここから、Facade CNNと同じはず
+	cv::Mat facade_img = max_facade;
+
+	Regression floors_regression("models/floors/deploy_01.prototxt", "models/floors/train_01_iter_40000.caffemodel");
+	Classifier win_exist_classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_40000.caffemodel", "models/window_existence/mean.binaryproto");
+	boost::shared_ptr<Regression> win_pos_regression = boost::shared_ptr<Regression>(new Regression("models/window_position/deploy_01.prototxt", "models/window_position/train_01_iter_70000.caffemodel"));
+
+	// floor height / column width
+	cv::Mat resized_facade_img;
+	cv::resize(facade_img, resized_facade_img, cv::Size(227, 227));
+	std::vector<float> floor_params = floors_regression.Predict(resized_facade_img);
+	int num_floors = std::round(floor_params[0] + 0.3);
+	int num_columns = std::round(floor_params[1] + 0.38);
+	float average_floor_height = (float)facade_img.rows / num_floors;
+	float average_column_width = (float)facade_img.cols / num_columns;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// DEBUG
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "#floors = " << num_floors << ", #columns = " << num_columns << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+	//////////////////////////////////////////////////////////////////////////////////
+		
+	// subdivide the facade into tiles and windows
 	std::vector<float> x_splits;
 	std::vector<float> y_splits;
 	std::vector<std::vector<fs::WindowPos>> win_rects;
-	fs::subdivideFacade(max_facade, (float)max_facade.rows / num_floors, (float)max_facade.cols / num_columns, false, y_splits, x_splits, win_rects);
+	fs::subdivideFacade(max_facade, (float)max_facade.rows / num_floors, (float)max_facade.cols / num_columns, y_splits, x_splits, win_rects);
 
+	// obtain the dominant facade color
+	std::cout << "OK" << std::endl;
+	cv::Scalar facade_color = fs::getDominantColor(facade_img, y_splits, x_splits, win_rects, 10);
+	std::cout << "Facade color = (" << QString("%1").arg((int)facade_color[0], 2, 16, QChar('0')).toUtf8().constData() << "," << QString("%1").arg((int)facade_color[1], 2, 16, QChar('0')).toUtf8().constData() << "," << QString("%1").arg((int)facade_color[2], 2, 16, QChar('0')).toUtf8().constData() << ")" << std::endl;
+
+	// gray scale
+	cv::Mat facade_gray_img;
+	cv::cvtColor(facade_img, facade_gray_img, cv::COLOR_BGR2GRAY);
+	cv::cvtColor(facade_gray_img, facade_gray_img, cv::COLOR_GRAY2BGR);
+
+	// use window positioning CNN to locate windows
+	for (int i = 0; i < y_splits.size() - 1; ++i) {
+		for (int j = 0; j < x_splits.size() - 1; ++j) {
+			cv::Mat tile_img(facade_gray_img, cv::Rect(x_splits[j], y_splits[i], x_splits[j + 1] - x_splits[j] + 1, y_splits[i + 1] - y_splits[i] + 1));
+
+			cv::Mat resized_tile_img;
+			cv::resize(tile_img, resized_tile_img, cv::Size(227, 227));
+
+			// check the existence of window
+			std::vector<Prediction> pred_exist = win_exist_classifier.Classify(resized_tile_img, 2);
+			if (pred_exist[0].first == 1) {
+				win_rects[i][j].valid = fs::WindowPos::VALID;
+			}
+			else {
+				win_rects[i][j].valid = fs::WindowPos::INVALID;
+			}
+
+			if (fs::WindowPos::VALID) {
+				// predict the window position
+				//std::vector<float> pred_params = win_pos_regression.Predict(resized_tile_img);
+				std::vector<float> pred_params = wp::parameterEstimation(win_pos_regression, resized_tile_img, true, 3000);
+				//utils::output_vector(pred_params);
+				win_rects[i][j].left = std::round(pred_params[0] * tile_img.cols);
+				win_rects[i][j].top = std::round(pred_params[1] * tile_img.rows);
+				win_rects[i][j].right = std::round(pred_params[2] * tile_img.cols);
+				win_rects[i][j].bottom = std::round(pred_params[3] * tile_img.rows);
+			}
+		}
+	}
+	
 	// DEBUG: generate window image of the original size
 	cv::Mat window_img;
 	fs::generateWindowImage(y_splits, x_splits, win_rects, max_facade.size(), window_img);
 	cv::imwrite("window.png", window_img);
 
-	// generate window image with size of 227x227
+	// generate input image for facade CNN
 	cv::Mat input_img;
 	fs::generateWindowImage(y_splits, x_splits, win_rects, cv::Size(227, 227), input_img);
 	cv::imwrite("window227.png", input_img);
@@ -980,7 +1043,6 @@ void GLWidget3D::facadeReconstruction(int num_floors, int num_columns) {
 	}
 
 	updateGeometry();
-
 	updateStatusBar();
 	update();
 }

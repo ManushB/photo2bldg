@@ -1,64 +1,83 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="window_depth" value="0.3" range="0.3,0.3"/>
-	
-	<rule name="Window">
-		<extrude height="-window_depth*0.3"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowInsideBottom_15"/>
-		</comp>
-	</rule>
-	<rule name="WindowInsideBottom_15">
-		<split splitAxis="y">
-			<param type="floating" value="0.75" name="WindowInsideBottomInside_15"/>
-			<param type="relative" value="0.25" name="WindowFrame"/>
-		</split>
-	</rule>
-	<rule name="WindowInsideBottomInside_15">
-		<extrude height="-window_depth*0.7"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowGlassArea_15"/>
-		</comp>
-	</rule>
-	<rule name="WindowGlassArea_15">
-		<setupProjection axesSelector="scope.xy">
-			<param name="texWidth" type="relative" value="1"/>
-			<param name="texHeight" type="relative" value="1"/>
-		</setupProjection>
-		<split splitAxis="x">
-			<param type="relative" value="0.2" name="WindowGlassColumnArea_15"/>
-			<param type="relative" value="0.6" name="WindowGlassColumnArea_15"/>
-			<param type="relative" value="0.2" name="WindowGlassColumnArea_15"/>
-		</split>
-	</rule>
-	<rule name="WindowGlassColumnArea_15">
-		<split splitAxis="y">
-			<param type="relative" value="0.2" name="WindowGlassCellArea_15"/>
-			<param type="relative" value="0.6" name="WindowGlassCellArea_15"/>
-			<param type="relative" value="0.2" name="WindowGlassCellArea_15"/>
-		</split>
-	</rule>
-	<rule name="WindowGlassCellArea_15">
-		<split splitAxis="x">
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_15"/>
-			<param type="floating" value="1" name="WindowGlassCellColumnArea_15"/>
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_15"/>
-		</split>
-	</rule>
-	<rule name="WindowGlassCellColumnArea_15">
-		<split splitAxis="y">
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_15"/>
-			<param type="floating" value="1" name="WindowGlass"/>
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_15"/>
-		</split>
-	</rule>
-	<rule name="WindowGlassSeparateTile_15">
-		<extrude height="0.08"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowFrame"/>
-		</comp>
-	</rule>
+    <attr value="0.3" name="window_depth" range="0.3,0.3"/>
+    <rule name="Window">
+        <split splitAxis="y">
+            <param value="0.05" type="floating" name="WindowBottom_15"/>
+            <param value="0.95" type="relative" name="WindowMain_15"/>
+        </split>
+    </rule>
+    <rule name="WindowBottom_15">
+        <extrude height="0.3"/>
+        <comp>
+            <param value="WindowSill" name="side"/>
+            <param value="WindowSill" name="top"/>
+        </comp>
+    </rule>
+	<rule name="WindowMain_15">
+        <extrude height="-window_depth*0.3"/>
+        <comp>
+            <param value="Wall" name="side"/>
+            <param value="WindowInsideBottom_15" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowInsideBottom_15">
+        <split splitAxis="y">
+            <param value="0.75" type="floating" name="WindowInsideBottomInside_15"/>
+            <param value="0.25" type="relative" name="Wall"/>
+        </split>
+    </rule>
+    <rule name="WindowInsideBottomInside_15">
+        <split splitAxis="x">
+            <param value="0.08" type="relative" name="Wall"/>
+            <param value="0.84" type="relative" name="WindowInsideBottomInsideMain_15"/>
+            <param value="0.08" type="relative" name="Wall"/>
+        </split>
+    </rule>
+    <rule name="WindowInsideBottomInsideMain_15">
+        <extrude height="-window_depth*0.7"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowGlassArea_15" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowGlassArea_15">
+        <setupProjection axesSelector="scope.xy">
+            <param value="1" type="relative" name="texWidth"/>
+            <param value="1" type="relative" name="texHeight"/>
+        </setupProjection>
+        <split splitAxis="x">
+            <param value="0.2" type="relative" name="WindowGlassColumnArea_15"/>
+            <param value="0.6" type="relative" name="WindowGlassColumnArea_15"/>
+            <param value="0.2" type="relative" name="WindowGlassColumnArea_15"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassColumnArea_15">
+        <split splitAxis="y">
+            <param value="0.2" type="relative" name="WindowGlassCellArea_15"/>
+            <param value="0.6" type="relative" name="WindowGlassCellArea_15"/>
+            <param value="0.2" type="relative" name="WindowGlassCellArea_15"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassCellArea_15">
+        <split splitAxis="x">
+            <param value="0.04" type="relative" name="WindowGlassSeparateTile_15"/>
+            <param value="1" type="floating" name="WindowGlassCellColumnArea_15"/>
+            <param value="0.04" type="relative" name="WindowGlassSeparateTile_15"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassCellColumnArea_15">
+        <split splitAxis="y">
+            <param value="0.04" type="relative" name="WindowGlassSeparateTile_15"/>
+            <param value="1" type="floating" name="WindowGlass"/>
+            <param value="0.04" type="relative" name="WindowGlassSeparateTile_15"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassSeparateTile_15">
+        <extrude height="0.08"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowFrame" name="top"/>
+        </comp>
+    </rule>
 </grammar>

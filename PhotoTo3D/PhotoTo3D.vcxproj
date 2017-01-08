@@ -326,6 +326,7 @@
     <ClCompile Include="UShapeTaper.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VanishingPoint.cpp" />
+    <ClCompile Include="WindowPositioning.cpp" />
     <ClCompile Include="WindowRecognition.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -451,6 +452,7 @@
     <ClInclude Include="LShapePrism.h" />
     <ClInclude Include="LShapeTaper.h" />
     <ClInclude Include="OBJWriter.h" />
+    <ClInclude Include="WindowPositioning.h" />
     <ClInclude Include="WindowRecognition.h" />
     <CustomBuild Include="MassReconstructionDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

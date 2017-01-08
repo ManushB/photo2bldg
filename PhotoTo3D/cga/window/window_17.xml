@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+    <attr name="window_depth" value="0.25" range="0.25,0.25"/>
+    <rule name="Window">
+        <extrude height="-window_depth"/>
+        <comp>
+            <param name="side" value="WindowFrame"/>
+            <param name="top" value="WindowInsideBottom_17"/>
+        </comp>
+    </rule>
+    <rule name="WindowInsideBottom_17">
+        <offset offsetDistance="-0.02" inside="WindowInsideBottomInside_17" border="WindowFrame"/>
+    </rule>
+    <rule name="WindowInsideBottomInside_17">
+        <extrude height="-0.05"/>
+        <comp>
+            <param name="side" value="WindowFrame"/>
+            <param name="top" value="WindowGlassArea_17"/>
+        </comp>
+    </rule>
+    <rule name="WindowGlassArea_17">
+        <setupProjection axesSelector="scope.xy">
+            <param type="relative" name="texWidth" value="1"/>
+            <param type="relative" name="texHeight" value="1"/>
+        </setupProjection>
+        <split splitAxis="x">
+            <param type="relative" name="SeparatorAndWindowGlass_17" value="0.2" repeat="true"/>
+        </split>
+    </rule>
+    <rule name="SeparatorAndWindowGlass_17">
+        <split splitAxis="x">
+            <param type="relative" name="WindowGlassSeparateTile_17" value="0.08"/>
+            <param type="relative" name="WindowGlass" value="0.84"/>
+            <param type="relative" name="WindowGlassSeparateTile_17" value="0.08"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassSeparateTile_17">
+        <extrude height="0.08"/>
+        <comp>
+            <param name="side" value="WindowFrame"/>
+            <param name="top" value="WindowFrame"/>
+        </comp>
+    </rule>
+</grammar>

@@ -64,9 +64,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation1(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsA(width, height, std::make_pair(1, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
+		FacadeA::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeA(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11]);
+		cv::Mat img = FacadeA::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -74,9 +74,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation2(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsB(width, height, std::make_pair(2, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
+		FacadeB::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeB(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16]);
+		cv::Mat img = FacadeB::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -84,9 +84,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation3(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsC(width, height, std::make_pair(3, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
+		FacadeC::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeC(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21]);
+		cv::Mat img = FacadeC::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -94,9 +94,9 @@ namespace facarec {
 	
 	std::vector<float> parameterEstimation4(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsD(width, height, std::make_pair(3, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
+		FacadeD::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeD(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22]);
+		cv::Mat img = FacadeD::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25], decoded_params[26]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -104,9 +104,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation5(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsE(width, height, std::make_pair(5, 20), std::make_pair(1, 20), max_NF, max_NC, params, decoded_params);
+		FacadeE::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeE(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25], decoded_params[26], decoded_params[27]);
+		cv::Mat img = FacadeE::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -114,9 +114,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation6(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsF(width, height, std::make_pair(1, 20), std::make_pair(3, 20), max_NF, max_NC, params, decoded_params);
+		FacadeF::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeF(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17]);
+		cv::Mat img = FacadeF::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25], decoded_params[26]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -124,9 +124,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation7(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsG(width, height, std::make_pair(1, 20), std::make_pair(3, 20), max_NF, max_NC, params, decoded_params);
+		FacadeG::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeG(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17]);
+		cv::Mat img = FacadeG::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25], decoded_params[26], decoded_params[27], decoded_params[28]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;
@@ -134,9 +134,9 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation8(float width, float height, int max_NF, int max_NC, std::vector<float> params) {
 		std::vector<float> decoded_params;
-		decodeParamsH(width, height, std::make_pair(3, 20), std::make_pair(3, 20), max_NF, max_NC, params, decoded_params);
+		FacadeH::decodeParams(width, height, max_NF, max_NC, params, decoded_params);
 
-		cv::Mat img = generateFacadeH(100, decoded_params[0], decoded_params[1], width, height, 3, decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25]);
+		cv::Mat img = FacadeH::generateFacade(100, width, height, 3, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21]);
 		cv::imwrite("estimated_facade.png", img);
 
 		return decoded_params;

@@ -1,0 +1,255 @@
+<?xml version="1.0"?>
+<grammar version="1.0" author="Gen Nishida">
+	<!-- parameters -->
+	<attr name="p00_num_floors" value="5" range="0,100"/>
+	<attr name="p01_num_columns" value="6" range="0,100"/>
+	<attr name="p02_window_width" value="0.4" range="0,100"/>
+	<attr name="p03_window_height" value="0.4" range="0,100"/>
+	<attr name="p04_tile_side_margin" value="0.3" range="0,100"/>
+	<attr name="p05_tile_top_margin" value="0.3" range="0,100"/>
+	<attr name="p06_tile_bottom_margin" value="0.3" range="0,100"/>
+	<attr name="p07_floor_side" value="0.1" range="0,100"/>
+	<attr name="p08_tile_width" value="0.1" range="0,100"/>
+	<attr name="p09_top_wall_height" value="0.1" range="0,100"/>
+	<attr name="p10_floor_height" value="0.1" range="0,100"/>
+	<attr name="p11_base_height" value="0.1" range="0,100"/>
+	<attr name="p12_window_width2" value="0.4" range="0,100"/>
+	<attr name="p13_window_height2" value="0.4" range="0,100"/>
+	<attr name="p14_tile_out_margin2" value="0.4" range="0,100"/>
+	<attr name="p15_tile_in_margin2" value="0.4" range="0,100"/>
+	<attr name="p16_tile_top_margin2" value="0.3" range="0,100"/>
+	<attr name="p17_tile_bottom_margin2" value="0.3" range="0,100"/>
+	<attr name="p18_door_top" value="0.5" range="0,100"/>
+	<attr name="p19_door_height" value="0.5" range="0,100"/>
+	<attr name="p20_top_window_height" value="0.5" range="0,100"/>
+	<attr name="p21_top_tile_top_margin" value="0.5" range="0,100"/>
+	<attr name="p22_top_tile_bottom_margin" value="0.5" range="0,100"/>
+	<attr name="p23_top_window_height2" value="0.5" range="0,100"/>
+	<attr name="p24_top_tile_top_margin2" value="0.5" range="0,100"/>
+	<attr name="p25_top_tile_bottom_margin2" value="0.5" range="0,100"/>
+	
+	<!-- facade -->
+	<rule name="Facade">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="absolute" value="5"/>
+			<param name="texHeight" type="absolute" value="5"/>
+		</setupProjection>
+		<split splitAxis="y">
+			<param type="floating" value="p11_base_height" name="GroundFloorAndLedge"/>
+			<param type="floating" value="p10_floor_height" name="Floor" repeat="true"/>
+			<param type="floating" value="p09_top_wall_height" name="TopFloorAndLedge" />
+		</split>
+	</rule>
+	<rule name="GroundFloorAndLedge">
+		<split splitAxis="y">
+			<param type="relative" value="0.92" name="GroundFloor"/>
+			<param type="relative" value="0.08" name="Ledge" />
+		</split>
+	</rule>
+	<rule name="GroundFloor">
+		<split splitAxis="x">
+			<param type="floating" value="p07_floor_side" name="LeftGroundTile"/>
+			<param type="floating" value="p08_tile_width" name="GroundTile" repeat="true"/>
+			<param type="floating" value="p07_floor_side" name="RightGroundTile"/>
+		</split>
+	</rule>
+	<rule name="LeftGroundTile">
+		<split splitAxis="y">
+			<param type="floating" value="p19_door_height" name="LeftGroundTile2"/>
+			<param type="floating" value="p18_door_top" name="Wall" />
+		</split>
+	</rule>
+	<rule name="LeftGroundTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p14_tile_out_margin2" name="Wall"/>
+			<param type="floating" value="p12_window_width2" name="Door"/>
+			<param type="floating" value="p15_tile_in_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="RightGroundTile">
+		<split splitAxis="y">
+			<param type="floating" value="p19_door_height" name="RightGroundTile2"/>
+			<param type="floating" value="p18_door_top" name="Wall" />
+		</split>
+	</rule>
+	<rule name="RightGroundTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p15_tile_in_margin2" name="Wall"/>
+			<param type="floating" value="p12_window_width2" name="Door"/>
+			<param type="floating" value="p14_tile_out_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="GroundTile">
+		<split splitAxis="y">
+			<param type="floating" value="p19_door_height" name="GroundTile2"/>
+			<param type="floating" value="p18_door_top" name="Wall" />
+		</split>
+	</rule>
+	<rule name="GroundTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
+			<param type="floating" value="p02_window_width" name="Door"/>
+			<param type="floating" value="p04_tile_side_margin" name="Wall" />
+		</split>
+	</rule>
+	<rule name="Floor">
+		<split splitAxis="x">
+			<param type="floating" value="p07_floor_side" name="LeftTile"/>
+			<param type="floating" value="p08_tile_width" name="Tile" repeat="true"/>
+			<param type="floating" value="p07_floor_side" name="RightTile"/>
+		</split>
+	</rule>
+	<rule name="LeftTile">
+		<split splitAxis="y">
+			<param type="floating" value="p17_tile_bottom_margin2" name="Wall"/>
+			<param type="floating" value="p13_window_height2" name="LeftTile2"/>
+			<param type="floating" value="p16_tile_top_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="LeftTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p14_tile_out_margin2" name="Wall"/>
+			<param type="floating" value="p12_window_width2" name="Window2"/>
+			<param type="floating" value="p15_tile_in_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="RightTile">
+		<split splitAxis="y">
+			<param type="floating" value="p17_tile_bottom_margin2" name="Wall"/>
+			<param type="floating" value="p13_window_height2" name="RightTile2"/>
+			<param type="floating" value="p16_tile_top_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="RightTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p15_tile_in_margin2" name="Wall"/>
+			<param type="floating" value="p12_window_width2" name="Window2"/>
+			<param type="floating" value="p14_tile_out_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="Tile">
+		<split splitAxis="y">
+			<param type="floating" value="p06_tile_bottom_margin" name="Wall"/>
+			<param type="floating" value="p03_window_height" name="Tile2"/>
+			<param type="floating" value="p05_tile_top_margin" name="Wall" />
+		</split>
+	</rule>
+	<rule name="Tile2">
+		<split splitAxis="x">
+			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
+			<param type="floating" value="p02_window_width" name="Window3"/>
+			<param type="floating" value="p04_tile_side_margin" name="Wall" />
+		</split>
+	</rule>
+	<rule name="TopFloorAndLedge">
+		<split splitAxis="y">
+			<param type="relative" value="0.08" name="Ledge" />
+			<param type="relative" value="0.92" name="TopFloor"/>
+		</split>
+	</rule>
+	<rule name="TopFloor">
+		<split splitAxis="x">
+			<param type="floating" value="p07_floor_side" name="LeftTopTile"/>
+			<param type="floating" value="p08_tile_width" name="TopTile" repeat="true"/>
+			<param type="floating" value="p07_floor_side" name="RightTopTile"/>
+		</split>
+	</rule>
+	<rule name="LeftTopTile">
+		<split splitAxis="y">
+			<param type="floating" value="p25_top_tile_bottom_margin2" name="Wall"/>
+			<param type="floating" value="p23_top_window_height2" name="LeftTopTile2"/>
+			<param type="floating" value="p24_top_tile_top_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="LeftTopTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p14_tile_out_margin2" name="Wall"/>
+			<param type="floating" value="p12_window_width2" name="Window0"/>
+			<param type="floating" value="p15_tile_in_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="RightTopTile">
+		<split splitAxis="y">
+			<param type="floating" value="p25_top_tile_bottom_margin2" name="Wall"/>
+			<param type="floating" value="p23_top_window_height2" name="RightTopTile2"/>
+			<param type="floating" value="p24_top_tile_top_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="RightTopTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p15_tile_in_margin2" name="Wall"/>
+			<param type="floating" value="p12_window_width2" name="Window0"/>
+			<param type="floating" value="p14_tile_out_margin2" name="Wall" />
+		</split>
+	</rule>
+	<rule name="TopTile">
+		<split splitAxis="y">
+			<param type="floating" value="p22_top_tile_bottom_margin" name="Wall"/>
+			<param type="floating" value="p20_top_window_height" name="TopTile2"/>
+			<param type="floating" value="p21_top_tile_top_margin" name="Wall" />
+		</split>
+	</rule>
+	<rule name="TopTile2">
+		<split splitAxis="x">
+			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
+			<param type="floating" value="p02_window_width" name="Window1"/>
+			<param type="floating" value="p04_tile_side_margin" name="Wall" />
+		</split>
+	</rule>
+	
+	<!-- facade 2 -->
+	<rule name="Facade2">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="absolute" value="5"/>
+			<param name="texHeight" type="absolute" value="5"/>
+		</setupProjection>
+		<split splitAxis="y">
+			<param type="floating" value="p10_floor_height" name="Floor" repeat="true"/>
+		</split>
+	</rule>
+	
+	<!-- ledge -->
+	<rule name="Ledge">
+		<split splitAxis="y">
+			<param type="relative" value="0.5" name="LedgeLayer1"/>
+			<param type="relative" value="0.3" name="LedgeLayer2"/>
+			<param type="relative" value="0.2" name="LedgeLayer3"/>
+		</split>
+	</rule>
+	<rule name="LedgeLayer1">
+		<size centered="true">
+			<param name="xSize" type="absolute" value="scope.sx+0.1*2"/>
+			<param name="ySize" type="relative" value="1"/>
+			<param name="zSize" type="relative" value="1"/>
+		</size>
+		<extrude height="0.1"/>
+		<comp>
+			<param name="side" value="LedgeFace"/>
+			<param name="top" value="LedgeFace"/>
+		</comp>
+	</rule>
+	<rule name="LedgeLayer2">
+		<size centered="true">
+			<param name="xSize" type="absolute" value="scope.sx+0.3*2"/>
+			<param name="ySize" type="relative" value="1"/>
+			<param name="zSize" type="relative" value="1"/>
+		</size>
+		<extrude height="0.3"/>
+		<comp>
+			<param name="side" value="LedgeFace"/>
+			<param name="top" value="LedgeFace"/>
+		</comp>
+	</rule>
+	<rule name="LedgeLayer3">
+		<size centered="true">
+			<param name="xSize" type="absolute" value="scope.sx+0.3*1.15*2"/>
+			<param name="ySize" type="relative" value="1"/>
+			<param name="zSize" type="relative" value="1"/>
+		</size>
+		<extrude height="0.3*1.15"/>
+		<comp>
+			<param name="side" value="LedgeFace"/>
+			<param name="top" value="LedgeFace"/>
+		</comp>
+	</rule>
+</grammar>

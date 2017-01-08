@@ -317,13 +317,16 @@
     <ClCompile Include="GrammarWriter.cpp">
       <Filter>Source Files\rule</Filter>
     </ClCompile>
-    <ClCompile Include="Arch.cpp">
+    <ClCompile Include="InnerArchOperator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arch.cpp">
+      <Filter>Source Files\shape</Filter>
     </ClCompile>
     <ClCompile Include="ArchPrism.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shape</Filter>
     </ClCompile>
-    <ClCompile Include="InnerArchOperator.cpp">
+    <ClCompile Include="WindowPositioning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -604,12 +607,15 @@
       <Filter>Source Files\rule</Filter>
     </ClInclude>
     <ClInclude Include="Arch.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\shape</Filter>
     </ClInclude>
     <ClInclude Include="ArchPrism.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\shape</Filter>
     </ClInclude>
     <ClInclude Include="InnerArchOperator.h">
+      <Filter>Source Files\rule</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowPositioning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

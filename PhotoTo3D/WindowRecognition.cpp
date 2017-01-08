@@ -15,28 +15,28 @@ namespace winrec {
 		// cluster the tiles based on the grammar
 		int num_window_types = 0;
 		if (facade_id == 0) {
-			num_window_types = clusterWindowTypesA(win_rects);
+			num_window_types = FacadeA::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 1) {
-			num_window_types = clusterWindowTypesB(win_rects);
+			num_window_types = FacadeB::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 2) {
-			num_window_types = clusterWindowTypesC(win_rects);
+			num_window_types = FacadeC::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 3) {
-			num_window_types = clusterWindowTypesD(win_rects);
+			num_window_types = FacadeD::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 4) {
-			num_window_types = clusterWindowTypesE(win_rects);
+			num_window_types = FacadeE::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 5) {
-			num_window_types = clusterWindowTypesF(win_rects);
+			num_window_types = FacadeF::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 6) {
-			num_window_types = clusterWindowTypesG(win_rects);
+			num_window_types = FacadeG::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 7) {
-			num_window_types = clusterWindowTypesH(win_rects);
+			num_window_types = FacadeH::clusterWindowTypes(win_rects);
 		}
 
 		std::cout << "-------------------------------------" << std::endl;

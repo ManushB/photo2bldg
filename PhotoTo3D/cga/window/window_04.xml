@@ -44,27 +44,7 @@
 		</split>
 	</rule>
 	<rule name="WindowTileMainMain_04">
-		<extrude height="0.1"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowTileMainMainTop_04"/>
-		</comp>
-	</rule>
-	<rule name="WindowTileMainMainTop_04">
-		<offset offsetDistance="-offset_size" inside="WindowTileMainMainTopInside_04" border="WindowFrame"/>
-	</rule>
-	<rule name="WindowTileMainMainTopInside_04">
-		<extrude height="-0.1"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowTileMainMainTopInsideBottom_04"/>
-		</comp>
-	</rule>
-	<rule name="WindowTileMainMainTopInsideBottom_04">
-		<offset offsetDistance="-0.02" inside="WindowTileMainMainTopInsideBottomInside_04" border="WindowFrame"/>
-	</rule>
-	<rule name="WindowTileMainMainTopInsideBottomInside_04">
-		<extrude height="-0.05"/>
+		<extrude height="-0.2"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
 			<param name="top" value="WindowGlassArea_04"/>

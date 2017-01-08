@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+    <attr name="window_side_offset" range="0.05,0.05" value="0.05"/>
+    <attr name="window_top_offset" range="0.05,0.05" value="0.05"/>
+    <rule name="Window">
+        <split splitAxis="y">
+            <param name="DoorMain_29" type="relative" value="0.93"/>
+            <param name="DoorRoofLower_29" type="relative" value="0.05"/>
+            <param name="DoorRoofUpper_29" type="relative" value="0.02"/>
+        </split>
+	</rule>
+	<rule name="DoorRoofLower_29">
+        <split splitAxis="x">
+            <param name="Wall" type="relative" value="0.05"/>
+            <param name="DoorRoofLowerMain_29" type="relative" value="0.9"/>
+            <param name="Wall" type="relative" value="0.05"/>
+        </split>
+    </rule>
+    <rule name="DoorRoofLowerMain_29">
+        <extrude height="1.5"/>
+        <comp>
+            <param name="side" value="Wall"/>
+            <param name="top" value="Wall"/>
+        </comp>
+	</rule>
+	<rule name="DoorRoofUpper_29">
+        <extrude height="1.7"/>
+        <comp>
+            <param name="side" value="Wall"/>
+            <param name="top" value="Wall"/>
+        </comp>
+	</rule>
+	<rule name="DoorMain_29">
+        <split splitAxis="x">
+            <param name="Wall" type="relative" value="0.05"/>
+            <param name="DoorMainMain_29" type="relative" value="0.9"/>
+            <param name="Wall" type="relative" value="0.05"/>
+        </split>
+    </rule>
+	<rule name="DoorMainMain_29">
+        <extrude height="-0.2"/>
+        <comp>
+            <param name="side" value="Wall"/>
+            <param name="top" value="EntranceTop_29"/>
+        </comp>
+    </rule>
+    <rule name="EntranceTop_29">
+        <split splitAxis="y">
+            <param name="EntranceTopMain_29" type="relative" value="1-window_top_offset"/>
+            <param name="Wall" type="relative" value="window_top_offset"/>
+        </split>
+    </rule>
+    <rule name="EntranceTopMain_29">
+        <split splitAxis="x">
+            <param name="Wall" type="relative" value="window_side_offset"/>
+            <param name="EntranceTopMainMain_29" type="relative" value="1-window_side_offset*2"/>
+            <param name="Wall" type="relative" value="window_side_offset"/>
+        </split>
+    </rule>
+    <rule name="EntranceTopMainMain_29">
+        <extrude height="-0.6"/>
+        <comp>
+            <param name="side" value="Wall"/>
+            <param name="top" value="DoorGlass"/>
+        </comp>
+    </rule>
+</grammar>

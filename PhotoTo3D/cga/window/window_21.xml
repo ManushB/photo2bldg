@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+	<attr name="window_depth" value="0.2" range="0.2,0.2"/>
+	<rule name="Window">
+		<split splitAxis="x">
+			<param type="relative" value="0.32" name="WindowLeft_30"/>
+			<param type="relative" value="0.36" name="WindowOne_30"/>
+			<param type="relative" value="0.32" name="WindowRight_30"/>
+		</split>
+	</rule>
+	<rule name="WindowLeft_30">
+		<split splitAxis="x">
+			<param type="relative" value="0.8" name="WindowOne_30"/>
+			<param type="relative" value="0.2" name="Wall"/>
+		</split>
+	</rule>
+	<rule name="WindowRight_30">
+		<split splitAxis="x">
+			<param type="relative" value="0.2" name="Wall"/>
+			<param type="relative" value="0.8" name="WindowOne_30"/>
+		</split>
+	</rule>
+	<rule name="WindowOne_30">
+		<extrude height="-window_depth"/>
+		<comp>
+			<param name="side" value="WindowFrame"/>
+			<param name="top" value="WindowTileMainMainTopInsideBottom_30"/>
+		</comp>
+	</rule>
+	<rule name="WindowTileMainMainTopInsideBottom_30">
+		<offset offsetDistance="-0.02" inside="WindowTileMainMainTopInsideBottomInside_30" border="WindowFrame"/>
+	</rule>
+	<rule name="WindowTileMainMainTopInsideBottomInside_30">
+		<extrude height="-0.05"/>
+		<comp>
+			<param name="side" value="WindowFrame"/>
+			<param name="top" value="WindowGlassArea_30"/>
+		</comp>
+	</rule>
+	<rule name="WindowGlassArea_30">
+		<setupProjection axesSelector="scope.xy">
+			<param name="texWidth" type="relative" value="1"/>
+			<param name="texHeight" type="relative" value="1"/>
+		</setupProjection>
+		<split splitAxis="y">
+			<param type="relative" value="0.8" name="SeparatorAndWindowGlass_30" repeat="true"/>
+			<param type="relative" value="0.2" name="SeparatorAndWindowGlass_30" repeat="true"/>
+		</split>
+	</rule>
+	<rule name="SeparatorAndWindowGlass_30">
+		<split splitAxis="y">
+			<param type="relative" value="0.05" name="WindowGlassSeparateTile_30"/>
+			<param type="floating" value="0.9" name="WindowGlass"/>
+			<param type="relative" value="0.05" name="WindowGlassSeparateTile_30"/>
+		</split>
+	</rule>
+	<rule name="WindowGlassSeparateTile_30">
+		<extrude height="0.08"/>
+		<comp>
+			<param name="side" value="WindowFrame"/>
+			<param name="top" value="WindowFrame"/>
+		</comp>
+	</rule>
+</grammar>

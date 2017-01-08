@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+    <rule name="Window">
+        <extrude height="-0.5"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowTileMain_24" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowTileMain_24">
+        <offset offsetDistance="-0.05" inside="WindowTileMainInside_24" border="WindowFrame"/>
+    </rule>
+    <rule name="WindowTileMainInside_24">
+        <extrude height="-0.5"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowGlassArea_24" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowGlassArea_24">
+        <setupProjection axesSelector="scope.xy">
+            <param value="1" type="relative" name="texWidth"/>
+            <param value="1" type="relative" name="texHeight"/>
+        </setupProjection>
+        <split splitAxis="x">
+            <param value="0.2" type="relative" name="WindowGlassColumn_24" repeat="true"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassColumn_24">
+        <split splitAxis="y">
+            <param value="0.5" type="relative" name="WindowGlassCell_24" repeat="true"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassCell_24">
+        <split splitAxis="x">
+            <param value="0.025" type="relative" name="WindowGlassSeparateTile_24"/>
+            <param value="1" type="floating" name="WindowGlassCellColumnArea_24"/>
+            <param value="0.025" type="relative" name="WindowGlassSeparateTile_24"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassCellColumnArea_24">
+        <split splitAxis="y">
+            <param value="0.025" type="relative" name="WindowGlassSeparateTile_24"/>
+            <param value="1" type="floating" name="WindowGlass"/>
+            <param value="0.025" type="relative" name="WindowGlassSeparateTile_24"/>
+        </split>
+    </rule>
+    <rule name="WindowGlassSeparateTile_24">
+        <extrude height="0.1"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowFrame" name="top"/>
+        </comp>
+    </rule>
+</grammar>

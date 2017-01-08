@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<grammar type="window" version="1.0" author="Gen Nishida">
+    <rule name="Window">
+    	<innerArch inside="WindowMain_22" border="Wall"/>
+    </rule>
+    <rule name="WindowMain_22">
+        <extrude height="-0.05"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowInside_22" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowInside_22">
+		<offset offsetDistance="-0.2" inside="WindowInsideTop_22" border="WindowFrame"/>
+	</rule>
+	<rule name="WindowInsideTop_22">
+        <extrude height="-0.1"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowGlassArea_22" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowGlassArea_22">
+        <setupProjection axesSelector="scope.xy">
+            <param value="1" type="relative" name="texWidth"/>
+            <param value="1" type="relative" name="texHeight"/>
+        </setupProjection>
+        <copy name="WindowGlass"/>
+    </rule>
+</grammar>

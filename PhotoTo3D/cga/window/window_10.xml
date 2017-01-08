@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="window_depth" value="0.2" range="0.2,0.2"/>
+	<attr name="window_depth" value="0.5" range="0.5,0.5"/>
 	
 	<rule name="Window">
 		<split splitAxis="x">
@@ -10,14 +10,14 @@
 	</rule>
 	<rule name="WindowLeft_10">
 		<split splitAxis="x">
-			<param type="relative" value="0.9" name="WindowOne_10"/>
-			<param type="relative" value="0.1" name="Wall"/>
+			<param type="relative" value="0.88" name="WindowOne_10"/>
+			<param type="relative" value="0.12" name="Wall"/>
 		</split>
 	</rule>
 	<rule name="WindowRight_10">
 		<split splitAxis="x">
-			<param type="relative" value="0.1" name="Wall"/>
-			<param type="relative" value="0.9" name="WindowOne_10"/>
+			<param type="relative" value="0.12" name="Wall"/>
+			<param type="relative" value="0.88" name="WindowOne_10"/>
 		</split>
 	</rule>
 	<rule name="WindowOne_10">

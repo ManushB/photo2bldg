@@ -1,30 +1,82 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
-	<attr name="offset_size" value="0.02" range="0.02,0.02"/>
-	
-	<rule name="Window">
-		<split splitAxis="x">
-			<param type="relative" value="0.22" name="WindowOne"/>
-			<param type="relative" value="0.04" name="Wall"/>
-			<param type="relative" value="0.22" name="WindowOne"/>
-			<param type="relative" value="0.04" name="Wall"/>
-			<param type="relative" value="0.22" name="WindowOne"/>
-			<param type="relative" value="0.04" name="Wall"/>
-			<param type="relative" value="0.22" name="WindowOne"/>
-		</split>
-	</rule>
-	<rule name="WindowOne">
-		<extrude height="-0.05"/>
-		<comp>
-			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowGlassArea_05"/>
-		</comp>
-	</rule>
-	<rule name="WindowGlassArea_05">
-		<setupProjection axesSelector="scope.xy">
-			<param name="texWidth" type="relative" value="1"/>
-			<param name="texHeight" type="relative" value="1"/>
-		</setupProjection>
-		<copy name="WindowGlass"/>
-	</rule>
+    <attr range="0.020000,0.020000" value="0.02" name="offset_size"/>
+    <rule name="Window0">
+        <split splitAxis="x">
+            <param value="0.205" type="relative" name="WindowOne_05"/>
+            <param value="0.06" type="relative" name="WindowBetween_05"/>
+            <param value="0.205" type="relative" name="WindowOne_05"/>
+            <param value="0.06" type="relative" name="WindowBetween_05"/>
+            <param value="0.205" type="relative" name="WindowOne_05"/>
+            <param value="0.06" type="relative" name="WindowBetween_05"/>
+            <param value="0.205" type="relative" name="WindowOne_05"/>
+        </split>
+    </rule>
+    <rule name="WindowBetween_05">
+        <split splitAxis="y">
+            <param value="0.08" type="relative" name="Wall"/>
+            <param value="0.92" type="relative" name="WindowBetweenMain_05"/>
+    	</split>
+    </rule>
+    <rule name="WindowBetweenMain_05">
+    	<extrude height="0.05"/>
+        <comp>
+            <param value="Wall" name="side"/>
+            <param value="WindowBetweenTop_05" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowBetweenTop_05">
+    	<split splitAxis="x">
+            <param value="0.1" type="relative" name="Wall"/>
+            <param value="0.8" type="relative" name="WindowBetweenTopMiddle_05"/>
+            <param value="0.1" type="relative" name="Wall"/>
+    	</split>
+    </rule>
+    <rule name="WindowBetweenTopMiddle_05">
+    	<extrude height="0.05"/>
+        <comp>
+            <param value="Wall" name="side"/>
+            <param value="Wall" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowOne_05">
+    	<split splitAxis="y">
+            <param value="0.08" type="relative" name="WindowOneBottom_05"/>
+            <param value="0.92" type="relative" name="WindowOneMain_05"/>
+    	</split>
+    </rule>
+    <rule name="WindowOneBottom_05">
+    	<extrude height="0.1"/>
+        <comp>
+            <param value="Wall" name="side"/>
+            <param value="Wall" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowOneMain_05">
+        <extrude height="-0.1"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowOneTop" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowOneTop_05">
+    	<split splitAxis="y">
+            <param value="0.7" type="relative" name="WindowOneTopMain_05"/>
+            <param value="0.3" type="relative" name="WindowFrame"/>
+    	</split>
+    </rule>
+    <rule name="WindowOneTopMain_05">
+        <extrude height="-0.1"/>
+        <comp>
+            <param value="WindowFrame" name="side"/>
+            <param value="WindowGlassArea_05" name="top"/>
+        </comp>
+    </rule>
+    <rule name="WindowGlassArea_05">
+        <setupProjection axesSelector="scope.xy">
+            <param value="1" type="relative" name="texWidth"/>
+            <param value="1" type="relative" name="texHeight"/>
+        </setupProjection>
+        <copy name="WindowGlass"/>
+    </rule>
 </grammar>

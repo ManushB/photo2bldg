@@ -1,62 +1,60 @@
 <?xml version="1.0"?>
 <grammar version="1.0" author="Gen Nishida">
 	<!-- parameters -->
-	<attr name="p00_num_floors" value="5" range="0,100"/>
-	<attr name="p01_num_columns" value="6" range="0,100"/>
-	<attr name="p02_window_width" value="0.4" range="0,100"/>
-	<attr name="p03_window_height" value="0.4" range="0,100"/>
-	<attr name="p04_tile_side_margin" value="0.3" range="0,100"/>
-	<attr name="p05_tile_top_margin" value="0.3" range="0,100"/>
-	<attr name="p06_tile_bottom_margin" value="0.3" range="0,100"/>
-	<attr name="p07_floor_side" value="0.1" range="0,100"/>
-	<attr name="p08_tile_width" value="0.1" range="0,100"/>
-	<attr name="p09_top_wall_height" value="0.1" range="0,100"/>
-	<attr name="p10_floor_height" value="0.1" range="0,100"/>
-	<attr name="p11_base_height" value="0.1" range="0,100"/>
-
-	<!-- facade -->
-	<rule name="Facade">
-		<setupProjection axesSelector="scope.xy">
-			<param name="texWidth" type="absolute" value="5"/>
-			<param name="texHeight" type="absolute" value="5"/>
-		</setupProjection>
-		<split splitAxis="y">
-			<param type="floating" value="p11_base_height" name="Wall"/>
-			<param type="floating" value="p10_floor_height" name="Floor" repeat="true"/>
-			<param type="floating" value="p09_top_wall_height" name="Wall" />
-		</split>
-	</rule>
-	<rule name="Floor">
-		<split splitAxis="x">
-			<param type="floating" value="p07_floor_side" name="Wall"/>
-			<param type="floating" value="p08_tile_width" name="Tile" repeat="true"/>
-			<param type="floating" value="p07_floor_side" name="Wall"/>
-		</split>
-	</rule>
-	<rule name="Tile">
-		<split splitAxis="y">
-			<param type="floating" value="p06_tile_bottom_margin" name="Wall"/>
-			<param type="floating" value="p03_window_height" name="Tile2"/>
-			<param type="floating" value="p05_tile_top_margin" name="Wall" />
-		</split>
-	</rule>
-	<rule name="Tile2">
-		<split splitAxis="x">
-			<param type="floating" value="p04_tile_side_margin" name="Wall"/>
-			<param type="floating" value="p02_window_width" name="Window0"/>
-			<param type="floating" value="p04_tile_side_margin" name="Wall" />
-		</split>
-	</rule>
-	
+    <attr value="0" name="p00_GH" range="0,100"/>
+    <attr value="9.178" name="p01_FH" range="0,100"/>
+    <attr value="0" name="p02_AH" range="0,100"/>
+    <attr value="0.811" name="p03_SW" range="0,100"/>
+    <attr value="4.425" name="p04_TW" range="0,100"/>
+    <attr value="0.256" name="p05_WT" range="0,100"/>
+    <attr value="0.71" name="p06_WH" range="0,100"/>
+    <attr value="0.034" name="p07_WB" range="0,100"/>
+    <attr value="0.14" name="p08_WS" range="0,100"/>
+    <attr value="0.72" name="p09_WW" range="0,100"/>
+    
+   	<!-- facade -->
+    <rule name="Facade">
+        <setupProjection axesSelector="scope.xy">
+            <param value="5" type="absolute" name="texWidth"/>
+            <param value="5" type="absolute" name="texHeight"/>
+        </setupProjection>
+        <split splitAxis="y">
+            <param value="p00_GH" type="floating" name="Wall"/>
+            <param value="p01_FH" type="floating" name="Floor" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall"/>
+        </split>
+    </rule>
+    <rule name="Floor">
+        <split splitAxis="x">
+            <param value="p03_SW" type="floating" name="Wall"/>
+            <param value="p04_TW" type="floating" name="Tile" repeat="true"/>
+            <param value="p03_SW" type="floating" name="Wall"/>
+        </split>
+    </rule>
+    <rule name="Tile">
+        <split splitAxis="y">
+            <param value="p07_WB" type="floating" name="Wall"/>
+            <param value="p06_WH" type="floating" name="Tile2"/>
+            <param value="p05_WT" type="floating" name="Wall"/>
+        </split>
+    </rule>
+    <rule name="Tile2">
+        <split splitAxis="x">
+            <param value="p08_WS" type="floating" name="Wall"/>
+            <param value="p09_WW" type="floating" name="Window0"/>
+            <param value="p08_WS" type="floating" name="Wall"/>
+        </split>
+    </rule>
+    
 	<!-- facade 2 -->
-	<rule name="Facade2">
-		<setupProjection axesSelector="scope.xy">
-			<param name="texWidth" type="absolute" value="5"/>
-			<param name="texHeight" type="absolute" value="5"/>
-		</setupProjection>
-		<split splitAxis="y">
-			<param type="floating" value="p10_floor_height" name="Floor" repeat="true"/>
-			<param type="floating" value="p09_top_wall_height" name="Wall" />
-		</split>
-	</rule>
+    <rule name="Facade2">
+        <setupProjection axesSelector="scope.xy">
+            <param value="5" type="absolute" name="texWidth"/>
+            <param value="5" type="absolute" name="texHeight"/>
+        </setupProjection>
+        <split splitAxis="y">
+            <param value="p01_FH" type="floating" name="Floor" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall"/>
+        </split>
+    </rule>
 </grammar>
