@@ -880,7 +880,7 @@ namespace fs {
 		cv::cvtColor(temp, temp, cv::COLOR_Lab2BGR);
 		cv::Vec3b rgb_col = temp.at<cv::Vec3b>(0, 0);
 
-		return cv::Scalar(rgb_col[2], rgb_col[1], rgb_col[0]);
+		return cv::Scalar(std::min(255, (int)(rgb_col[2] * 1.2)), std::min(255, (int)(rgb_col[1] * 1.2)), std::min(255, (int)(rgb_col[0] * 1.2)));
 	}
 
 	bool isLocalMinimum(const cv::Mat& mat, int index, float threshold) {

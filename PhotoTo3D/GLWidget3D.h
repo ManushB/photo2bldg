@@ -46,6 +46,7 @@ public:
 	std::map<std::string, std::vector<cga::Grammar>> grammars;
 	QMap<std::string, int> grammar_ids;
 	std::map<std::string, std::vector<float>> pm_params;
+	QString facade_color;
 	std::vector<boost::shared_ptr<glutils::Face>> faces;
 	
 	// GUI options
@@ -60,6 +61,7 @@ public:
 	std::vector<vp::VanishingLine> silhouette;
 	int silhouetteWidth;
 	QColor silhouetteColor;
+	bool geometryGenerated;
 
 public:
 	GLWidget3D(QWidget *parent);
@@ -70,6 +72,7 @@ public:
 	void loadImage(const QString& filename);
 	void clearSilhouette();
 	void loadSilhouette(const QString& filename);
+	void loadSilhouetteOld(const QString& filename);
 	void saveSilhouette(const QString& filename);
 	void clearGeometry();
 	void loadCGA(const QString& filename);

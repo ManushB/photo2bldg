@@ -67,7 +67,7 @@
     <rule name="GroundLeftTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p23_DO2"/>
-            <param type="floating" name="Window4" value="p24_DW2"/>
+            <param type="floating" name="Window5" value="p24_DW2"/>
             <param type="floating" name="Wall" value="p25_DI2"/>
         </split>
     </rule>
@@ -81,7 +81,7 @@
     <rule name="GroundTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p09_WS"/>
-            <param type="floating" name="Window5" value="p10_WW"/>
+            <param type="floating" name="Window6" value="p10_WW"/>
             <param type="floating" name="Wall" value="p09_WS"/>
         </split>
     </rule>
@@ -95,7 +95,7 @@
     <rule name="GroundRightTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p25_DI2"/>
-            <param type="floating" name="Door1" value="p24_DW2"/>
+            <param type="floating" name="Window5" value="p24_DW2"/>
             <param type="floating" name="Wall" value="p23_DO2"/>
         </split>
     </rule>
@@ -136,7 +136,7 @@
     <rule name="SecondTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p09_WS"/>
-            <param type="floating" name="Window2" value="p10_WW"/>
+            <param type="floating" name="Window3" value="p10_WW"/>
             <param type="floating" name="Wall" value="p09_WS"/>
         </split>
     </rule>
@@ -150,7 +150,7 @@
     <rule name="SecondRightTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p16_WI2"/>
-            <param type="floating" name="Window2" value="p15_WW2"/>
+            <param type="floating" name="Window4" value="p15_WW2"/>
             <param type="floating" name="Wall" value="p14_WO2"/>
         </split>
     </rule>
@@ -171,7 +171,7 @@
     <rule name="LeftTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p14_WO2"/>
-            <param type="floating" name="Window1" value="p15_WW2"/>
+            <param type="floating" name="Window2" value="p15_WW2"/>
             <param type="floating" name="Wall" value="p16_WI2"/>
         </split>
     </rule>
@@ -185,7 +185,7 @@
     <rule name="Tile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p09_WS"/>
-            <param type="floating" name="Window1" value="p10_WW"/>
+            <param type="floating" name="Window3" value="p10_WW"/>
             <param type="floating" name="Wall" value="p09_WS"/>
         </split>
     </rule>
@@ -199,7 +199,7 @@
     <rule name="RightTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p16_WI2"/>
-            <param type="floating" name="Window1" value="p15_WW2"/>
+            <param type="floating" name="Window4" value="p15_WW2"/>
             <param type="floating" name="Wall" value="p14_WO2"/>
         </split>
     </rule>
@@ -240,7 +240,7 @@
     <rule name="TopTile2">
         <split splitAxis="x">
             <param type="floating" name="Wall" value="p09_WS"/>
-            <param type="floating" name="Window0" value="p10_WW"/>
+            <param type="floating" name="Window1" value="p10_WW"/>
             <param type="floating" name="Wall" value="p09_WS"/>
         </split>
     </rule>

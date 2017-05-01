@@ -32,6 +32,7 @@
     <addaction name="separator"/>
     <addaction name="actionClearSilhouette"/>
     <addaction name="actionLoadSilhouette"/>
+    <addaction name="actionLoadSilhouetteOld"/>
     <addaction name="actionSaveSilhouette"/>
     <addaction name="separator"/>
     <addaction name="actionOpenCGA"/>
@@ -254,6 +255,11 @@
   <action name="actionSaveCGA">
    <property name="text">
     <string>Save CGA</string>
+   </property>
+  </action>
+  <action name="actionLoadSilhouetteOld">
+   <property name="text">
+    <string>Load Silhouette Old</string>
    </property>
   </action>
  </widget>

@@ -32,12 +32,13 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	shiftPressed = false;
 	altPressed = false;
 
-	opacityOfBackground = 0.5f;
+	opacityOfBackground = 1.0f;
 	horizontalLeftColor = QColor(0, 0, 192);
 	horizontalRightColor = QColor(64, 64, 255);
 	verticalColor = QColor(140, 140, 255);
 	silhouetteWidth = 3;
-	silhouetteColor = QColor(255, 0, 0);
+	silhouetteColor = QColor(255, 255, 0);
+	geometryGenerated = false;
 
 	// This is necessary to prevent the screen overdrawn by OpenGL
 	setAutoFillBackground(false);
@@ -118,11 +119,19 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	cga::parseGrammar("cga/facade/facade_08.xml", grammars["facade"][7]);
 	*/
 
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Facade auxiliary
+	regressions["floors"].push_back(boost::shared_ptr<Regression>(new Regression("models/floors/deploy_01.prototxt", "models/floors/train_01_iter_40000.caffemodel")));
+	classifiers["win_exist"] = boost::shared_ptr<Classifier>(new Classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_80000.caffemodel", "models/window_existence/mean.binaryproto"));
+	regressions["win_pos"].push_back(boost::shared_ptr<Regression>(new Regression("models/window_position/deploy_01.prototxt", "models/window_position/train_01_iter_80000.caffemodel")));
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Window
 
 	// load caffe model
-	classifiers["window"] = boost::shared_ptr<Classifier>(new Classifier("models/window/deploy.prototxt", "models/window/train_iter_20000.caffemodel", "models/window/mean.binaryproto"));
+	classifiers["window"] = boost::shared_ptr<Classifier>(new Classifier("models/window/deploy.prototxt", "models/window/train_iter_40000.caffemodel", "models/window/mean.binaryproto"));
 
 	// load grammars
 	grammars["window"].resize(31);
@@ -140,7 +149,9 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Material
 	{
-		grammars["material"].resize(11);
+		grammars["material"].resize(1);
+		cga::parseGrammar("cga/material/material.xml", grammars["material"][0]);
+		/*
 		cga::parseGrammar("cga/material/bldg2.xml", grammars["material"][0]);
 		cga::parseGrammar("cga/material/bldg3.xml", grammars["material"][1]);
 		cga::parseGrammar("cga/material/bldg5.xml", grammars["material"][2]);
@@ -152,6 +163,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 		cga::parseGrammar("cga/material/bldg35.xml", grammars["material"][8]);
 		cga::parseGrammar("cga/material/bldg43.xml", grammars["material"][9]);
 		cga::parseGrammar("cga/material/bldg45.xml", grammars["material"][10]);
+		*/
 	}
 
 	// default grammar and pm values
@@ -160,7 +172,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	pm_params["mass"].resize(grammars["mass"][0].attrs.size(), 0.5);
 	grammar_ids["facade"] = 0;
 	pm_params["facade"].resize(grammars["facade"][0].attrs.size(), 0.5);
-	grammar_ids["material"] = 2;
+	grammar_ids["material"] = 0;
 }
 
 /**
@@ -431,19 +443,28 @@ void GLWidget3D::clearBackground() {
 }
 
 void GLWidget3D::loadImage(const QString& filename) {
-	imageOrig.load(filename);
+	// make the image square size
+	QImage temp;
+	temp.load(filename);
+	imageOrig = QImage(std::max(temp.width(), temp.height()), std::max(temp.width(), temp.height()), QImage::Format_RGB32);
+	imageOrig.fill(QColor(255, 255, 255));
+	QPainter temp_painter(&imageOrig);
+	temp_painter.drawImage((imageOrig.width() - temp.width()) / 2, (imageOrig.height() - temp.height()) / 2, temp);
 	image_loaded = true;
+
 
 	float scale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
 	QImage newImage = imageOrig.scaled(imageOrig.width() * scale, imageOrig.height() * scale);
 
 	image = QImage(width(), height(), QImage::Format_RGB32);
+	image.fill(QColor(255, 255, 255));
 	QPainter painter(&image);
 	painter.drawImage((width() - newImage.width()) / 2, (height() - newImage.height()) / 2, newImage);
 
-	opacityOfBackground = 0.5f;
+	opacityOfBackground = 1.0f;
+	geometryGenerated = false;
 
-	mainWin->setWindowTitle(QString("Photo to 3D - ") + filename);
+	//mainWin->setWindowTitle(QString("Photo to 3D - ") + filename);
 
 	update();
 }
@@ -477,6 +498,30 @@ void GLWidget3D::loadSilhouette(const QString& filename) {
 	update();
 }
 
+void GLWidget3D::loadSilhouetteOld(const QString& filename) {
+	silhouette.clear();
+
+	QFile file(filename);
+	if (file.open(QIODevice::ReadOnly)) {
+		QTextStream in(&file);
+
+		while (true) {
+			QString line = in.readLine();
+			if (line.isNull()) break;
+			QStringList list = line.split(QRegExp("(\t| )"));
+
+			glm::dvec2 start((list[0].toFloat() - 400.0f) / 800.0f, (list[1].toFloat() - 400.0f) / 800.0f);
+			glm::dvec2 end((list[2].toFloat() - 400.0f) / 800.0f, (list[3].toFloat() - 400.0f) / 800.0f);
+			if (start != end) {
+				silhouette.push_back(vp::VanishingLine(start.x, start.y, end.x, end.y, list[4].toInt()));
+			}
+		}
+
+		file.close();
+	}
+	update();
+}
+
 void GLWidget3D::saveSilhouette(const QString& filename) {
 	QFile file(filename);
 	if (file.open(QIODevice::WriteOnly)) {
@@ -492,6 +537,7 @@ void GLWidget3D::saveSilhouette(const QString& filename) {
 void GLWidget3D::clearGeometry() {
 	renderManager.removeObjects();
 	renderManager.updateShadowMap(this, light_dir, light_mvpMatrix);
+	geometryGenerated = false;
 	update();
 }
 
@@ -580,12 +626,15 @@ void GLWidget3D::undo() {
 void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
 	// adjust the original background image such that the ratio of width to height is equal to the ratio of the window
 	float imageScale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
-	resizeImageCanvasSize(imageOrig, width() / imageScale, height() / imageScale);
+	//resizeImageCanvasSize(imageOrig, width() / imageScale, height() / imageScale);
 
 	// recognition
+	time_t start = clock();
 	if (automaticRecognition) {
 		grammarSnippetId = massrec::recognition(classifiers["mass"], image_size, width(), height(), silhouette);
 	}
+	time_t end = clock();
+	std::cout << "mass recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 
 	grammar_ids.clear();
 
@@ -605,8 +654,11 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Mass grammar: #" << grammar_ids["mass"] + 1 << std::endl;
 
+	start = clock();
 	std::vector<float> params = massrec::parameterEstimation(this, regressions["mass"][grammar_ids["mass"]], &grammars["mass"][grammar_ids["mass"]], silhouette, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, refinement, maxIters, refinement_method);
 	utils::output_vector(params);
+	end = clock();
+	std::cout << "mass param estimation by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 
 	// set the camera
 	setupCamera(params, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
@@ -615,8 +667,11 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	pm_params["mass"].clear();
 	pm_params["mass"].insert(pm_params["mass"].begin(), params.begin() + 8, params.end());
 
+	start = clock();
 	faces = updateGeometry(GRAMMAR_TYPE_MASS, &grammars["mass"][grammar_ids["mass"]], &pm_params["mass"]);
-
+	end = clock();
+	std::cout << "update geometry: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+	
 	updateStatusBar();
 	update();
 }
@@ -777,6 +832,7 @@ void GLWidget3D::facadeReconstruction() {
 	float max_facade_area = 0;
 	glm::vec2 max_geometric_size;
 
+	time_t start = clock();
 	// rectify the facade image
 	for (int fi = 0; fi < faces.size(); ++fi) {
 		// non-quadratic face is not supported.
@@ -935,26 +991,36 @@ void GLWidget3D::facadeReconstruction() {
 			}
 		}
 	}
-
+	time_t end = clock();
+	std::cout << "facade rectifaction: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+	
 	// get the largest facade image
-	cv::imwrite("facade.png", max_facade);
+	//cv::imwrite("facade.png", max_facade);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ここから、Facade CNNと同じはず
 	cv::Mat facade_img = max_facade;
 
+	start = clock();
+	/*
 	Regression floors_regression("models/floors/deploy_01.prototxt", "models/floors/train_01_iter_40000.caffemodel");
-	Classifier win_exist_classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_40000.caffemodel", "models/window_existence/mean.binaryproto");
-	boost::shared_ptr<Regression> win_pos_regression = boost::shared_ptr<Regression>(new Regression("models/window_position/deploy_01.prototxt", "models/window_position/train_01_iter_70000.caffemodel"));
+	Classifier win_exist_classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_80000.caffemodel", "models/window_existence/mean.binaryproto");
+	boost::shared_ptr<Regression> win_pos_regression = boost::shared_ptr<Regression>(new Regression("models/window_position/deploy_01.prototxt", "models/window_position/train_01_iter_80000.caffemodel"));
+	*/
+	end = clock();
+	std::cout << "initialize facade CNNs: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 
 	// floor height / column width
+	start = clock();
 	cv::Mat resized_facade_img;
 	cv::resize(facade_img, resized_facade_img, cv::Size(227, 227));
-	std::vector<float> floor_params = floors_regression.Predict(resized_facade_img);
+	std::vector<float> floor_params = regressions["floors"][0]->Predict(resized_facade_img);
 	int num_floors = std::round(floor_params[0] + 0.3);
 	int num_columns = std::round(floor_params[1] + 0.38);
 	float average_floor_height = (float)facade_img.rows / num_floors;
 	float average_column_width = (float)facade_img.cols / num_columns;
+	end = clock();
+	std::cout << "floors CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 
 	//////////////////////////////////////////////////////////////////////////////////
 	// DEBUG
@@ -964,22 +1030,29 @@ void GLWidget3D::facadeReconstruction() {
 	//////////////////////////////////////////////////////////////////////////////////
 		
 	// subdivide the facade into tiles and windows
+	start = clock();
 	std::vector<float> x_splits;
 	std::vector<float> y_splits;
 	std::vector<std::vector<fs::WindowPos>> win_rects;
 	fs::subdivideFacade(max_facade, (float)max_facade.rows / num_floors, (float)max_facade.cols / num_columns, y_splits, x_splits, win_rects);
-
+	end = clock();
+	std::cout << "facade subdivision: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+	
 	// obtain the dominant facade color
-	std::cout << "OK" << std::endl;
-	cv::Scalar facade_color = fs::getDominantColor(facade_img, y_splits, x_splits, win_rects, 10);
-	std::cout << "Facade color = (" << QString("%1").arg((int)facade_color[0], 2, 16, QChar('0')).toUtf8().constData() << "," << QString("%1").arg((int)facade_color[1], 2, 16, QChar('0')).toUtf8().constData() << "," << QString("%1").arg((int)facade_color[2], 2, 16, QChar('0')).toUtf8().constData() << ")" << std::endl;
-
+	start = clock();
+	cv::Scalar col = fs::getDominantColor(facade_img, y_splits, x_splits, win_rects, 10);
+	facade_color = QString("#%1%2%3").arg((int)col[0], 2, 16, QChar('0')).arg((int)col[1], 2, 16, QChar('0')).arg((int)col[2], 2, 16, QChar('0'));
+	std::cout << "Facade color = " << facade_color.toUtf8().constData() << std::endl;
+	end = clock();
+	std::cout << "dominant color: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+	
 	// gray scale
 	cv::Mat facade_gray_img;
 	cv::cvtColor(facade_img, facade_gray_img, cv::COLOR_BGR2GRAY);
 	cv::cvtColor(facade_gray_img, facade_gray_img, cv::COLOR_GRAY2BGR);
 
 	// use window positioning CNN to locate windows
+	start = clock();
 	for (int i = 0; i < y_splits.size() - 1; ++i) {
 		for (int j = 0; j < x_splits.size() - 1; ++j) {
 			cv::Mat tile_img(facade_gray_img, cv::Rect(x_splits[j], y_splits[i], x_splits[j + 1] - x_splits[j] + 1, y_splits[i + 1] - y_splits[i] + 1));
@@ -988,7 +1061,7 @@ void GLWidget3D::facadeReconstruction() {
 			cv::resize(tile_img, resized_tile_img, cv::Size(227, 227));
 
 			// check the existence of window
-			std::vector<Prediction> pred_exist = win_exist_classifier.Classify(resized_tile_img, 2);
+			std::vector<Prediction> pred_exist = classifiers["win_exist"]->Classify(resized_tile_img, 2);
 			if (pred_exist[0].first == 1) {
 				win_rects[i][j].valid = fs::WindowPos::VALID;
 			}
@@ -999,7 +1072,7 @@ void GLWidget3D::facadeReconstruction() {
 			if (fs::WindowPos::VALID) {
 				// predict the window position
 				//std::vector<float> pred_params = win_pos_regression.Predict(resized_tile_img);
-				std::vector<float> pred_params = wp::parameterEstimation(win_pos_regression, resized_tile_img, true, 3000);
+				std::vector<float> pred_params = wp::parameterEstimation(regressions["win_pos"][0], resized_tile_img, true, 3000);
 				//utils::output_vector(pred_params);
 				win_rects[i][j].left = std::round(pred_params[0] * tile_img.cols);
 				win_rects[i][j].top = std::round(pred_params[1] * tile_img.rows);
@@ -1008,33 +1081,61 @@ void GLWidget3D::facadeReconstruction() {
 			}
 		}
 	}
-	
+	end = clock();
+	std::cout << "window position CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+		
 	// DEBUG: generate window image of the original size
+	/*
 	cv::Mat window_img;
 	fs::generateWindowImage(y_splits, x_splits, win_rects, max_facade.size(), window_img);
 	cv::imwrite("window.png", window_img);
+	*/
 
 	// generate input image for facade CNN
 	cv::Mat input_img;
 	fs::generateWindowImage(y_splits, x_splits, win_rects, cv::Size(227, 227), input_img);
-	cv::imwrite("window227.png", input_img);
+	//cv::imwrite("window227.png", input_img);
 
 	// recognize the facade grammar id
+	start = clock();
 	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"]);
+	end = clock();
+	std::cout << "facade recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
 
-	// parameter estimation
-	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y, y_splits.size() - 1, x_splits.size() - 1);
-	utils::output_vector(params);
 
+
+
+	// recognize window styles
+	start = clock();
+	std::vector<int> selected_win_types = winrec::recognition(max_facade, grammar_ids["facade"], y_splits, x_splits, win_rects, classifiers["window"]);
+	end = clock();
+	std::cout << "win recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+
+
+
+
+
+	// parameter estimation
+	start = clock();
+	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y, grammar_ids["mass"], y_splits.size() - 1, x_splits.size() - 1, num_floors, num_columns, selected_win_types);
+	end = clock();
+	std::cout << "facade param estimation by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+	utils::output_vector(params);
+	
 	// set PM parameter values
 	pm_params["facade"] = params;
 
 
+#if 0
 	// recognize window styles
+	start = clock();
 	std::vector<int> selected_win_types = winrec::recognition(max_facade, grammar_ids["facade"], y_splits, x_splits, win_rects, classifiers["window"]);
-	
+	end = clock();
+	std::cout << "win recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+#endif
+
 	for (int i = 0; i < selected_win_types.size(); ++i) {
 		char window_nt_name[256];
 		sprintf(window_nt_name, "Window%d", i);
@@ -1169,6 +1270,8 @@ std::vector<boost::shared_ptr<glutils::Face>> GLWidget3D::updateGeometry(int gra
 	// update shadow map
 	renderManager.updateShadowMap(this, light_dir, light_mvpMatrix);
 
+	geometryGenerated = true;
+
 	return faces;
 }
 
@@ -1225,19 +1328,37 @@ void GLWidget3D::updateGeometry() {
 		grammar_list.push_back(grammars["door"][0]);
 
 		// add material grammar snippet
+		grammars["material"][grammar_ids["material"]].attrs["facade_color"].value = facade_color.toUtf8().constData();
 		grammar_list.push_back(grammars["material"][grammar_ids["material"]]);
+
+
 	}
 
 	// generate 3d model
 	//std::vector<boost::shared_ptr<glutils::Face>> faces;
 	faces.clear();
 	cga.derive(grammar_list, true);
-	cga.generateGeometry(faces, true);
+	cga.generateGeometry(faces, false);
+	glutils::BoundingBox bbox = cga::computeBoundingBox(faces);
+	for (int i = 0; i < faces.size(); ++i) {
+		for (int j = 0; j < faces[i]->vertices.size(); ++j) {
+			faces[i]->vertices[j].position -= bbox.center();
+		}
+	}
 	renderManager.removeObjects();
 	renderManager.addFaces(faces, true);
 
+	// add ground plane
+	//if (showGroundPlane) {
+	std::vector<Vertex> vertices;
+	glutils::drawQuad(200, 200, glm::vec4(1, 1, 1, 1), glm::translate(glm::rotate(glm::mat4(), (float)(-3.14159265 * 0.5), glm::vec3(1, 0, 0)), glm::vec3(0, 0, -bbox.center().y)), vertices);
+	renderManager.addObject("ground_plane", "", vertices, true);
+	//}
+
 	// update shadow map
 	renderManager.updateShadowMap(this, light_dir, light_mvpMatrix);
+
+	geometryGenerated = true;
 }
 
 /**
@@ -1597,6 +1718,15 @@ void GLWidget3D::resizeGL(int width, int height) {
 	camera.updatePMatrix(width, height);
 
 	renderManager.resize(width, height);
+
+	// resize image
+	float scale = std::min((float)width / imageOrig.width(), (float)height / imageOrig.height());
+	QImage newImage = imageOrig.scaled(imageOrig.width() * scale, imageOrig.height() * scale);
+
+	image = QImage(width, height, QImage::Format_RGB32);
+	image.fill(QColor(255, 255, 255));
+	QPainter painter(&image);
+	painter.drawImage((width - newImage.width()) / 2, (height - newImage.height()) / 2, newImage);
 }
 
 void GLWidget3D::paintEvent(QPaintEvent *event) {
@@ -1624,23 +1754,26 @@ void GLWidget3D::paintEvent(QPaintEvent *event) {
 
 	// draw background image
 	if (image_loaded) {
-		painter.setOpacity(opacityOfBackground);
+		if (geometryGenerated) {
+			painter.setOpacity(0.5f);
+		}
+		else {
+			painter.setOpacity(1.0f);
+		}
 		painter.drawImage(0, 0, image);
 	}
 
 	// draw silhouette
 	painter.setPen(QPen(silhouetteColor, silhouetteWidth));
+	float scale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
+	float image_size = std::max(imageOrig.width(), imageOrig.height()) * scale;
 	for (auto line : silhouette) {
-		painter.drawLine(line.start.x, line.start.y, line.end.x, line.end.y);
+		int x1 = std::round(line.start.x * image_size + width() * 0.5);
+		int y1 = std::round(line.start.y * image_size + height() * 0.5);
+		int x2 = std::round(line.end.x * image_size + width() * 0.5);
+		int y2 = std::round(line.end.y * image_size + height() * 0.5);
+		painter.drawLine(x1, y1, x2, y2);
 	}
-
-	// draw the center of the building
-	/*
-	glm::vec2 pp = vp::projectPoint(camera.mvpMatrix, glm::dvec3(0, 0, 0));
-	painter.setPen(QPen(QColor(255, 0, 0), 1, Qt::SolidLine));
-	painter.setBrush(QBrush(QColor(255, 0, 0)));
-	painter.drawEllipse((pp.x + 1) * 0.5 * width() - 3, (1 - pp.y) * 0.5 * height() - 3, 7, 7);
-	*/
 
 	painter.end();
 
@@ -1655,14 +1788,19 @@ void GLWidget3D::mousePressEvent(QMouseEvent *e) {
 		camera.mousePress(e->x(), e->y());
 	}
 	else if (e->button() & Qt::LeftButton) {
+		float scale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
+		float screen_size = std::max(imageOrig.width(), imageOrig.height()) * scale;
+		float x1 = (float)(e->x() - width() * 0.5) / screen_size;
+		float y1 = (float)(e->y() - height() * 0.5) / screen_size;
+
 		if (shiftPressed) {
-			silhouette.push_back(vp::VanishingLine(e->x(), e->y(), e->x(), e->y(), vp::VanishingLine::TYPE_HORIZONTAL_RIGHT));
+			silhouette.push_back(vp::VanishingLine(x1, y1, x1, y1, vp::VanishingLine::TYPE_HORIZONTAL_RIGHT));
 		}
 		else if (altPressed) {
-			silhouette.push_back(vp::VanishingLine(e->x(), e->y(), e->x(), e->y(), vp::VanishingLine::TYPE_VERTICAL));
+			silhouette.push_back(vp::VanishingLine(x1, y1, x1, y1, vp::VanishingLine::TYPE_VERTICAL));
 		}
 		else {
-			silhouette.push_back(vp::VanishingLine(e->x(), e->y(), e->x(), e->y(), vp::VanishingLine::TYPE_HORIZONTAL_LEFT));
+			silhouette.push_back(vp::VanishingLine(x1, y1, x1, y1, vp::VanishingLine::TYPE_HORIZONTAL_LEFT));
 		}
 	}
 }
@@ -1684,7 +1822,12 @@ void GLWidget3D::mouseMoveEvent(QMouseEvent *e) {
 	}
 	else if (e->buttons() & Qt::LeftButton) {
 		if (silhouette.size() > 0) {
-			silhouette.back().end = glm::vec2(e->x(), e->y());
+			float scale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
+			float screen_size = std::max(imageOrig.width(), imageOrig.height()) * scale;
+			float x = (float)(e->x() - width() * 0.5) / screen_size;
+			float y = (float)(e->y() - height() * 0.5) / screen_size;
+
+			silhouette.back().end = glm::vec2(x, y);
 		}
 	}
 	

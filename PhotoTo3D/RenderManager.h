@@ -79,6 +79,7 @@ public:
 	void addObject(const QString& object_name, const QString& texture_file, const std::vector<Vertex>& vertices, bool lighting);
 	void removeObjects();
 	void removeObject(const QString& object_name);
+	glutils::BoundingBox computeBoundingBox();
 	void centerObjects();
 	void renderAll();
 	void renderAllExcept(const QString& object_name);

@@ -396,6 +396,20 @@ void RenderManager::removeObject(const QString& object_name) {
 	objects[object_name].clear();
 }
 
+glutils::BoundingBox RenderManager::computeBoundingBox() {
+	glutils::BoundingBox bbox;
+
+	for (auto it = objects.begin(); it != objects.end(); ++it) {
+		for (auto it2 = it.value().begin(); it2 != it.value().end(); ++it2) {
+			for (int k = 0; k < it2->vertices.size(); ++k) {
+				bbox.addPoint(it2->vertices[k].position);
+			}
+		}
+	}
+
+	return bbox;
+}
+
 void RenderManager::centerObjects() {
 	glm::vec3 minPt((std::numeric_limits<float>::max)(), (std::numeric_limits<float>::max)(), (std::numeric_limits<float>::max)());
 	glm::vec3 maxPt = -minPt;

@@ -55,6 +55,7 @@ public:
     QAction *actionBuildingReconstruction;
     QAction *actionSaveOBJ;
     QAction *actionSaveCGA;
+    QAction *actionLoadSilhouetteOld;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -132,6 +133,8 @@ public:
         actionSaveOBJ->setObjectName(QStringLiteral("actionSaveOBJ"));
         actionSaveCGA = new QAction(MainWindowClass);
         actionSaveCGA->setObjectName(QStringLiteral("actionSaveCGA"));
+        actionLoadSilhouetteOld = new QAction(MainWindowClass);
+        actionLoadSilhouetteOld->setObjectName(QStringLiteral("actionLoadSilhouetteOld"));
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindowClass->setCentralWidget(centralWidget);
@@ -162,6 +165,7 @@ public:
         menuFile->addSeparator();
         menuFile->addAction(actionClearSilhouette);
         menuFile->addAction(actionLoadSilhouette);
+        menuFile->addAction(actionLoadSilhouetteOld);
         menuFile->addAction(actionSaveSilhouette);
         menuFile->addSeparator();
         menuFile->addAction(actionOpenCGA);
@@ -225,6 +229,7 @@ public:
         actionBuildingReconstruction->setText(QApplication::translate("MainWindowClass", "Building Reconstruction", 0));
         actionSaveOBJ->setText(QApplication::translate("MainWindowClass", "Save OBJ", 0));
         actionSaveCGA->setText(QApplication::translate("MainWindowClass", "Save CGA", 0));
+        actionLoadSilhouetteOld->setText(QApplication::translate("MainWindowClass", "Load Silhouette Old", 0));
         menuFile->setTitle(QApplication::translate("MainWindowClass", "File", 0));
         menuOption->setTitle(QApplication::translate("MainWindowClass", "Tool", 0));
         menuRendering->setTitle(QApplication::translate("MainWindowClass", "Rendering", 0));

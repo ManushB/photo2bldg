@@ -55,11 +55,11 @@ namespace massrec {
 	}
 
 	int recognition(boost::shared_ptr<Classifier> classifier, int image_size, int screen_width, int screen_height, std::vector<vp::VanishingLine> silhouette) {
-		glm::vec2 scale((float)image_size / screen_width, (float)image_size / screen_height);
+		//glm::vec2 scale((float)image_size, (float)image_size / screen_height);
 		cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
 		for (auto stroke : silhouette) {
-			cv::Point p1(stroke.start.x * scale.x, stroke.start.y * scale.y);
-			cv::Point p2(stroke.end.x * scale.x, stroke.end.y * scale.y);
+			cv::Point p1(std::round(stroke.start.x * image_size + image_size * 0.5f), std::round(stroke.start.y * image_size + image_size * 0.5f));
+			cv::Point p2(std::round(stroke.end.x * image_size + image_size * 0.5f), std::round(stroke.end.y * image_size + image_size * 0.5f));
 
 			cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_AA);
 		}
@@ -88,19 +88,16 @@ namespace massrec {
 		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_CONTOUR;
 		glWidget->camera.distanceBase = cameraDistanceBase;
 
-		/*
-		// adjust the original background image such that the ratio of width to height is equal to the ratio of the window
-		float imageScale = std::min((float)glWidget->width() / imageOrig.width(), (float)height() / imageOrig.height());
-		resizeImageCanvasSize(imageOrig, width() / imageScale, height() / imageScale);
-
-		// grammar id
-		glWidget->grammar_ids["mass"] = gramamr_id;
-		*/
-
 		// create image of silhouette
 		cv::Mat silhouette_image(glWidget->height(), glWidget->width(), CV_8UC1, cv::Scalar(255));
+		float scale = std::min((float)glWidget->width() / glWidget->imageOrig.width(), (float)glWidget->height() / glWidget->imageOrig.height());
+		int screen_size = std::max(glWidget->imageOrig.width(), glWidget->imageOrig.height()) * scale;
 		for (auto line : silhouette) {
-			cv::line(silhouette_image, cv::Point(line.start.x, line.start.y), cv::Point(line.end.x, line.end.y), cv::Scalar(0), 1);
+			int x1 = line.start.x * screen_size + glWidget->width() * 0.5;
+			int y1 = line.start.y * screen_size + glWidget->height() * 0.5;
+			int x2 = line.end.x * screen_size + glWidget->width() * 0.5;
+			int y2 = line.end.y * screen_size + glWidget->height() * 0.5;
+			cv::line(silhouette_image, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0), 1);
 		}
 
 		// create distance map of silhouette
@@ -115,11 +112,11 @@ namespace massrec {
 		double diff_min = std::numeric_limits<double>::max();
 
 		// create input image to CNN
-		glm::vec2 scale((float)image_size / glWidget->width(), (float)image_size / glWidget->height());
+		//glm::vec2 scale((float)image_size / glWidget->width(), (float)image_size / glWidget->height());
 		cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
 		for (auto stroke : silhouette) {
-			cv::Point p1(stroke.start.x * scale.x, stroke.start.y * scale.y);
-			cv::Point p2(stroke.end.x * scale.x, stroke.end.y * scale.y);
+			cv::Point p1(std::round(stroke.start.x * image_size + image_size * 0.5f), std::round(stroke.start.y * image_size + image_size * 0.5f));
+			cv::Point p2(std::round(stroke.end.x * image_size + image_size * 0.5f), std::round(stroke.end.y * image_size + image_size * 0.5f));
 
 			if (silhouette_line_type == 0) {
 				cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_8);
@@ -193,11 +190,11 @@ namespace massrec {
 				try {
 					find_min_bobyqa(obj_function(glWidget, grammar, silhouette_dist_map, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin),
 						starting_point,
-						23,
+						best_params.size() * 4,
 						lower_bound,
 						upper_bound,
-						0.003,
-						0.00001,
+						0.03,
+						0.001,
 						maxIters
 						);
 				}

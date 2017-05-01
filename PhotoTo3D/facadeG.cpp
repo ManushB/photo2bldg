@@ -4,14 +4,14 @@
 std::pair<int, int> FacadeG::range_NF = std::make_pair(6, 20);
 std::pair<int, int> FacadeG::range_NC = std::make_pair(5, 20);
 
-cv::Mat FacadeG::generateFacade(int width, int height, int thickness, int max_NF, int max_NC, const std::vector<float>& params) {
+cv::Mat FacadeG::generateFacade(int width, int height, int thickness, int max_NF, int max_NC, std::vector<int>& selected_win_types, const std::vector<float>& params) {
 	std::vector<float> decoded_params;
-	decodeParams(width, height, max_NF, max_NC, params, decoded_params);
+	decodeParams(width, height, max_NF, max_NC, params, selected_win_types, decoded_params);
 
 	return generateFacade(1, width, height, thickness, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25], decoded_params[26], decoded_params[27], decoded_params[28]);
 }
 
-void FacadeG::decodeParams(float width, float height, int max_NF, int max_NC, const std::vector<float>& params, std::vector<float>& decoded_params) {
+void FacadeG::decodeParams(float width, float height, int max_NF, int max_NC, const std::vector<float>& params, std::vector<int>& selected_win_types, std::vector<float>& decoded_params) {
 	if (max_NF < 6) max_NF = 6;
 	if (max_NC < 5) max_NC = 5;
 
@@ -42,12 +42,28 @@ void FacadeG::decodeParams(float width, float height, int max_NF, int max_NC, co
 	float WW2 = SW / (params[16] + params[17] + params[18]) * params[17];
 	float WI2 = SW / (params[16] + params[17] + params[18]) * params[18];
 
-	float DT = GH / (params[19] + params[20] + params[21]) * params[19];
-	float DH = GH / (params[19] + params[20] + params[21]) * params[20];
-	float DB = GH / (params[19] + params[20] + params[21]) * params[21];
-	float DT2 = GH / (params[22] + params[23] + params[24]) * params[22];
-	float DH2 = GH / (params[22] + params[23] + params[24]) * params[23];
-	float DB2 = GH / (params[22] + params[23] + params[24]) * params[24];
+	float DT, DH, DB;
+	if (selected_win_types[6] < 25) {
+		DT = GH / (params[19] + params[20] + params[21]) * params[19];
+		DH = GH / (params[19] + params[20] + params[21]) * params[20];
+		DB = GH / (params[19] + params[20] + params[21]) * params[21];
+	}
+	else {
+		DT = GH / (params[19] + params[20]) * params[19];
+		DH = GH / (params[19] + params[20]) * params[20];
+		DB = 0.0f;
+	}
+	float DT2, DH2, DB2;
+	if (selected_win_types[5] < 25) {
+		DT2 = GH / (params[22] + params[23] + params[24]) * params[22];
+		DH2 = GH / (params[22] + params[23] + params[24]) * params[23];
+		DB2 = GH / (params[22] + params[23] + params[24]) * params[24];
+	}
+	else {
+		DT2 = GH / (params[22] + params[23]) * params[22];
+		DH2 = GH / (params[22] + params[23]) * params[23];
+		DB2 = 0.0f;
+	}
 	float DO2 = SW / (params[25] + params[26] + params[27]) * params[25];
 	float DW2 = SW / (params[25] + params[26] + params[27]) * params[26];
 	float DI2 = SW / (params[25] + params[26] + params[27]) * params[27];
@@ -513,22 +529,26 @@ int FacadeG::clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rec
 	}
 
 	for (int i = 1; i < win_rects.size() - 1; ++i) {
-		for (int j = 0; j < win_rects[i].size(); j += win_rects[i].size() - 1) {
-			win_rects[i][j].type = 2;
+		if (win_rects[i].size() > 0) {
+			win_rects[i][0].type = 2;
 		}
 
 		for (int j = 1; j < win_rects[i].size() - 1; ++j) {
 			win_rects[i][j].type = 3;
 		}
+
+		if (win_rects[i].size() > 0) {
+			win_rects[i].back().type = 4;
+		}
 	}
 
 	for (int j = 0; j < win_rects.back().size(); j += win_rects.back().size() - 1) {
-		win_rects.back()[j].type = 4;
-	}
-
-	for (int j = 1; j < win_rects.back().size() - 1; ++j) {
 		win_rects.back()[j].type = 5;
 	}
 
-	return 6;
+	for (int j = 1; j < win_rects.back().size() - 1; ++j) {
+		win_rects.back()[j].type = 6;
+	}
+
+	return 7;
 }

@@ -6,12 +6,12 @@ std::pair<int, int> FacadeB::range_NC = std::make_pair(1, 20);
 
 cv::Mat FacadeB::generateFacade(int width, int height, int thickness, int max_NF, int max_NC, const std::vector<float>& params) {
 	std::vector<float> decoded_params;
-	decodeParams(width, height, max_NF, max_NC, params, decoded_params);
+	decodeParams(width, height, 0, max_NF, max_NC, -1, -1, params, decoded_params);
 
 	return generateFacade(1, width, height, thickness, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15]);
 }
 
-void FacadeB::decodeParams(float width, float height, int max_NF, int max_NC, const std::vector<float>& params, std::vector<float>& decoded_params) {
+void FacadeB::decodeParams(float width, float height, int mass_gramamr_id, int max_NF, int max_NC, int num_floors, int num_columns, const std::vector<float>& params, std::vector<float>& decoded_params) {
 	if (max_NF < 2) max_NF = 2;
 	if (max_NC < 1) max_NC = 1;
 
@@ -22,12 +22,28 @@ void FacadeB::decodeParams(float width, float height, int max_NF, int max_NC, co
 	if (NC < range_NC.first) NC = range_NC.first;
 	if (NC > max_NC && max_NC <= 5) NC = max_NC;
 
+
+	std::cout << "NF:" << NF << std::endl;
+	std::cout << "NC:" << NC << std::endl;
+	std::cout << "num_floors:" << num_floors << std::endl;
+	std::cout << "num_columns:" << num_columns << std::endl;
+
+
+	///////////////
+	if (num_floors > 0 && num_columns > 0) {
+		NF = num_floors;
+		NC = num_columns;
+	}
+
+
 	float GH = (float)height / (params[2] + params[3] * (NF - 1) + params[4]) * params[2];
 	float FH = (float)height / (params[2] + params[3] * (NF - 1) + params[4]) * params[3];
 	float AH = (float)height / (params[2] + params[3] * (NF - 1) + params[4]) * params[4];
 	float SW = (float)width / (params[5] * 2 + params[6] * NC) * params[5];
+	if (mass_gramamr_id == 1) SW = 0.0f;
 	float TW = (float)width / (params[5] * 2 + params[6] * NC) * params[6];
-	int ND = std::round((float)(width - SW * 2) / width / params[7]);
+	//int ND = std::round((float)(width - SW * 2) / width / params[7]);
+	int ND = num_columns * params[6] / params[7];
 	float GW = (float)(width - SW * 2) / ND;
 
 	float WT = FH / (params[8] + params[9] + params[10]) * params[8];

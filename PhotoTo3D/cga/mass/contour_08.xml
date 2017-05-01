@@ -21,6 +21,10 @@
 			<param name="ySize" type="absolute" value="depth1"/>
 			<param name="zSize" type="absolute" value="0"/>
 		</size>
+		<shapeL>
+			<param name="frontWidth" type="absolute" value="width1+0.4-width2"/>
+			<param name="rightWidth" type="absolute" value="depth1+0.4-depth2"/>
+		</shapeL>
 		<extrude height="height1"/>
 		<comp>
 			<param name="side" value="Facade"/>

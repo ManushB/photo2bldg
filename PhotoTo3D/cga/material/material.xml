@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<grammar type="material" version="1.0" author="Gen Nishida">
+	<attr name="facade_color" value="#808080"/>
+	
+    <rule name="DoorGlass">
+        <color s="#202020"/>
+    </rule>
+    <rule name="LedgeFace">
+        <color s="facade_color"/>
+    </rule>
+    <rule name="RoofLedge">
+        <color s="facade_color"/>
+    </rule>
+    <rule name="RoofTop">
+        <setupProjection axesSelector="scope.xy">
+            <param type="relative" value="1" name="texWidth"/>
+            <param type="relative" value="1" name="texHeight"/>
+        </setupProjection>
+        <texture texturePath="material/bldg2/roof.tif"/>
+    </rule>
+    <rule name="Wall">
+        <color s="facade_color"/>
+    </rule>
+    <rule name="WindowFrame">
+        <color s="#f0e8e5"/>
+    </rule>
+    <rule name="WindowGlass">
+        <texture texturePath="material/bldg2/window_glass.png"/>
+    </rule>
+    <rule name="WindowSill">
+        <color s="facade_color"/>
+    </rule>
+</grammar>
