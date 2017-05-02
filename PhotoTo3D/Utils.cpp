@@ -499,6 +499,26 @@ namespace utils {
 		}
 	}
 
+	void scaleToFit(const cv::Mat& src, cv::Mat& dst, const cv::Size& size) {
+		cv::Scalar bg_color;
+		if (src.channels() == 1) {
+			bg_color = cv::Scalar(255);
+		}
+		else if (src.channels() == 3) {
+			bg_color = cv::Scalar(255, 255, 255);
+		}
+		else if (src.channels() == 4) {
+			bg_color = cv::Scalar(255, 255, 255, 255);
+		}
+		dst = cv::Mat(size, src.type(), bg_color);
+
+		float scale = std::min((float)dst.cols / src.cols, (float)dst.rows / src.rows);
+		cv::Size roi_size(src.cols * scale, src.rows * scale);
+
+		cv::Mat roi(dst, cv::Rect((dst.cols - roi_size.width) * 0.5, (dst.rows - roi_size.height) * 0.5, roi_size.width, roi_size.height));
+		cv::resize(src, roi, roi_size);
+	}
+
 	void output_vector(const std::vector<float>& values) {
 		for (int i = 0; i < values.size(); ++i) {
 			if (i > 0) std::cout << ", ";

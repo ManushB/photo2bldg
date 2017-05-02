@@ -35,6 +35,7 @@ namespace utils {
 	void cleanEdges(std::vector<std::pair<glm::vec2, glm::vec2>>& edges, float maxLineGap, float theta);
 	void cleanContours(std::vector<std::pair<glm::vec2, glm::vec2>>& edges, float maxLineGap, float theta);
 	void grayScale(const cv::Mat& img, cv::Mat& grayImg);
+	void scaleToFit(const cv::Mat& src, cv::Mat& dst, const cv::Size& size);
 
 	void output_vector(const std::vector<float>& values);
 }
