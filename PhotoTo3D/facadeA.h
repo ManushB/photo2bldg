@@ -13,10 +13,10 @@ protected:
 	FacadeA() {}
 
 public:
-	static cv::Mat generateFacade(int width, int height, int thickness, int max_NF, int max_NC, const std::vector<float>& params);
-	static void decodeParams(float width, float height, int max_NF, int max_NC, const std::vector<float>& params, std::vector<float>& decoded_params);
+	static cv::Mat generateFacade(int width, int height, int thickness, int num_floors, int num_columns, const std::vector<float>& params, const cv::Scalar& bg_color, const cv::Scalar& fg_color);
+	static void decodeParams(float width, float height, int num_floors, int num_columns, const std::vector<float>& params, std::vector<float>& decoded_params);
 	static cv::Mat generateRandomFacade(int width, int height, int thickness, std::vector<float>& params, float window_displacement = 0, float window_prob = 1);
-	static cv::Mat generateFacade(float scale, int width, int height, int thickness, float GH, float FH, float AH, float SW, float TW, float WT, float WH, float WB, float WS, float WW, float window_displacement = 0, float window_prob = 1);
+	static cv::Mat generateFacade(float scale, int width, int height, int thickness, const cv::Scalar& bg_color, const cv::Scalar& fg_color, float GH, float FH, float AH, float SW, float TW, float WT, float WH, float WB, float WS, float WW, float window_displacement = 0, float window_prob = 1);
 
 	static int clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rects);
 };

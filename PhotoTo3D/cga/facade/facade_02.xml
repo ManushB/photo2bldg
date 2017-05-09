@@ -86,8 +86,8 @@
             <param value="5" type="absolute" name="texHeight"/>
         </setupProjection>
         <split splitAxis="y">
-            <param value="p10_floor_height" type="floating" name="Floor" repeat="true"/>
-            <param value="p09_top_wall_height" type="floating" name="Wall"/>
+            <param value="p01_FH" type="floating" name="Floor" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall"/>
         </split>
     </rule>
 

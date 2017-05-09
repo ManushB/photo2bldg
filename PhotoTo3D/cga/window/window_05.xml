@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
     <attr range="0.020000,0.020000" value="0.02" name="offset_size"/>
-    <rule name="Window0">
+    <rule name="Window">
         <split splitAxis="x">
             <param value="0.205" type="relative" name="WindowOne_05"/>
             <param value="0.06" type="relative" name="WindowBetween_05"/>

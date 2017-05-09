@@ -519,6 +519,15 @@ namespace utils {
 		cv::resize(src, roi, roi_size);
 	}
 
+	void distanceMap(const cv::Mat& img, cv::Mat& distMap) {
+		cv::Mat gray_img;
+		grayScale(img, gray_img);
+
+		cv::threshold(gray_img, gray_img, 254, 255, CV_THRESH_BINARY);
+		cv::distanceTransform(gray_img, distMap, CV_DIST_L2, 3);
+		distMap.convertTo(distMap, CV_32F);
+	}
+
 	void output_vector(const std::vector<float>& values) {
 		for (int i = 0; i < values.size(); ++i) {
 			if (i > 0) std::cout << ", ";

@@ -123,7 +123,7 @@ GLWidget3D::GLWidget3D(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Facade auxiliary
 	regressions["floors"].push_back(boost::shared_ptr<Regression>(new Regression("models/floors/deploy_01.prototxt", "models/floors/train_01_iter_40000.caffemodel")));
-	classifiers["win_exist"] = boost::shared_ptr<Classifier>(new Classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_80000.caffemodel", "models/window_existence/mean.binaryproto"));
+	classifiers["win_exist"] = boost::shared_ptr<Classifier>(new Classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_40000.caffemodel", "models/window_existence/mean.binaryproto"));
 	regressions["win_pos"].push_back(boost::shared_ptr<Regression>(new Regression("models/window_position/deploy_01.prototxt", "models/window_position/train_01_iter_80000.caffemodel")));
 
 
@@ -1099,6 +1099,16 @@ void GLWidget3D::facadeReconstruction() {
 	// recognize the facade grammar id
 	start = clock();
 	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"]);
+	// HACK: for facade grammar recognition
+	// It is better to have different style for the 1st floor unless the number of floors is 1.
+	if (num_floors >= 2) {
+		if (grammar_ids["facade"] == 0) {
+			grammar_ids["facade"] = 1;
+		}
+		if (grammar_ids["facade"] == 4) {
+			grammar_ids["facade"] = 5;
+		}
+	}
 	end = clock();
 	std::cout << "facade recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	std::cout << "------------------------------------------------------------" << std::endl;
@@ -1127,14 +1137,6 @@ void GLWidget3D::facadeReconstruction() {
 	// set PM parameter values
 	pm_params["facade"] = params;
 
-
-#if 0
-	// recognize window styles
-	start = clock();
-	std::vector<int> selected_win_types = winrec::recognition(max_facade, grammar_ids["facade"], y_splits, x_splits, win_rects, classifiers["window"]);
-	end = clock();
-	std::cout << "win recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
-#endif
 
 	for (int i = 0; i < selected_win_types.size(); ++i) {
 		char window_nt_name[256];
