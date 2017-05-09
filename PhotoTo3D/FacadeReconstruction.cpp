@@ -64,7 +64,7 @@ namespace facarec {
 
 	std::vector<float> parameterEstimation1(float width, float height, int mass_grammar_id, int max_NF, int max_NC, int num_floors, int num_columns, std::vector<float> params, std::vector<int>& selected_win_types) {
 		std::vector<float> decoded_params;
-		FacadeA::decodeParams(width, height, num_floors, num_columns, params, decoded_params);
+		FacadeA::decodeParams(width, height, num_floors, num_columns, params, selected_win_types, decoded_params);
 
 		cv::Mat img = FacadeA::generateFacade(100, width, height, 3, cv::Scalar(255, 255, 255), cv::Scalar(0, 0, 0), decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9]);
 		cv::imwrite("estimated_facade.png", img);

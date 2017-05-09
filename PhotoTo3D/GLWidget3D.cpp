@@ -546,8 +546,8 @@ void GLWidget3D::clearGeometry() {
  * This is only for test usage.
  */
 void GLWidget3D::loadCGA(const QString& filename) {
-	cga::Grammar grammar;
-	cga::parseGrammar(filename.toUtf8().constData(), grammar);
+	std::vector<cga::Grammar> grammar_list;
+	cga::parseGrammar(filename.toUtf8().constData(), grammar_list);
 
 	cga::CGA cga;
 	cga.modelMat = glm::rotate(glm::mat4(), -3.1415926f * 0.5f, glm::vec3(1, 0, 0));
@@ -559,7 +559,7 @@ void GLWidget3D::loadCGA(const QString& filename) {
 	cga.stack.push_back(start);
 
 	// generate 3d model
-	cga.derive(grammar, true);
+	cga.derive(grammar_list, true);
 	std::vector<boost::shared_ptr<glutils::Face> > faces;
 	cga.generateGeometry(faces, true);
 	renderManager.addFaces(faces, true);
