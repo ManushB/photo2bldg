@@ -1010,7 +1010,7 @@ void GLWidget3D::facadeReconstruction() {
 	cv::resize(facade_img, resized_facade_img, cv::Size(227, 227));
 	std::vector<float> floor_params = regressions["floors"][0]->Predict(resized_facade_img);
 	int num_floors = std::round(floor_params[0] + 0.3);
-	int num_columns = std::round(floor_params[1] + 0.38);
+	int num_columns = std::round(floor_params[1] + 0.3);
 	float average_floor_height = (float)facade_img.rows / num_floors;
 	float average_column_width = (float)facade_img.cols / num_columns;
 	end = clock();
@@ -1032,13 +1032,22 @@ void GLWidget3D::facadeReconstruction() {
 	end = clock();
 	std::cout << "facade subdivision: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	
+	// update #floors and #columns
+	num_floors = y_splits.size() - 1;
+	num_columns = x_splits.size() - 1;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// DEBUG
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "updated after subdivision:" << std::endl;
+	std::cout << "#floors = " << num_floors << ", #columns = " << num_columns << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+	//////////////////////////////////////////////////////////////////////////////////
+
 	// obtain the dominant facade color
-	start = clock();
 	cv::Scalar col = fs::getDominantColor(facade_img, y_splits, x_splits, win_rects, 10);
 	facade_color = QString("#%1%2%3").arg((int)col[0], 2, 16, QChar('0')).arg((int)col[1], 2, 16, QChar('0')).arg((int)col[2], 2, 16, QChar('0'));
 	std::cout << "Facade color = " << facade_color.toUtf8().constData() << std::endl;
-	end = clock();
-	std::cout << "dominant color: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	
 	// gray scale
 	cv::Mat facade_gray_img;
@@ -1142,23 +1151,11 @@ void GLWidget3D::facadeReconstruction() {
 	// generate input image for facade CNN
 	cv::Mat input_img(227, 227, CV_8UC3, cv::Scalar(255, 255, 255));
 	fs::generateWindowImage(y_splits, x_splits, win_rects, 1, cv::Scalar(0, 0, 0), input_img);
-	//cv::Mat input_img;
-	//fs::generateWindowImage(y_splits, x_splits, win_rects, cv::Size(227, 227), input_img);
 	//cv::imwrite("window227.png", input_img);
 
 	// recognize the facade grammar id
 	start = clock();
-	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"]);
-	// HACK: for facade grammar recognition
-	// It is better to have different style for the 1st floor unless the number of floors is 1.
-	if (num_floors >= 2) {
-		if (grammar_ids["facade"] == 0) {
-			grammar_ids["facade"] = 1;
-		}
-		if (grammar_ids["facade"] == 4) {
-			grammar_ids["facade"] = 5;
-		}
-	}
+	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"], num_floors);
 	end = clock();
 	std::cout << "facade recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	std::cout << "------------------------------------------------------------" << std::endl;
@@ -1190,7 +1187,7 @@ void GLWidget3D::facadeReconstruction() {
 	cv::imwrite("estimated_facade.png", facade_parsing);
 
 	// decode the parameter values
-	params = facarec::decodeParameters(grammar_ids["facade"], max_geometric_size.x, max_geometric_size.y, num_floors, num_columns, params, selected_win_types);
+	params = facarec::decodeParameters(grammar_ids["facade"], max_geometric_size.x, max_geometric_size.y, num_floors, num_columns, params, selected_win_types, grammar_ids["mass"]);
 	std::cout << "width: " << max_geometric_size.x << ", height: " << max_geometric_size.y << std::endl;
 	utils::output_vector(params);
 	for (int i = 0; i < params.size(); ++i) {

@@ -14,14 +14,14 @@ void FacadeD::attachDoors(std::vector<float>& params, const std::vector<int>& se
 	}
 }
 
-cv::Mat FacadeD::generateFacade(int width, int height, int thickness, int num_floors, int num_columns, const std::vector<float>& params, std::vector<int>& selected_win_types, const cv::Scalar& bg_color, const cv::Scalar& fg_color) {
+cv::Mat FacadeD::generateFacade(int width, int height, int thickness, int num_floors, int num_columns, const std::vector<float>& params, const std::vector<int>& selected_win_types, const cv::Scalar& bg_color, const cv::Scalar& fg_color) {
 	std::vector<float> decoded_params;
-	decodeParams(width, height, num_floors, num_columns, params, selected_win_types, decoded_params);
+	decodeParams(width, height, num_floors, num_columns, params, selected_win_types, -1, decoded_params);
 
 	return generateFacade(width, height, thickness, bg_color, fg_color, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9], decoded_params[10], decoded_params[11], decoded_params[12], decoded_params[13], decoded_params[14], decoded_params[15], decoded_params[16], decoded_params[17], decoded_params[18], decoded_params[19], decoded_params[20], decoded_params[21], decoded_params[22], decoded_params[23], decoded_params[24], decoded_params[25], decoded_params[26]);
 }
 
-void FacadeD::decodeParams(float width, float height, int num_floors, int num_columns, const std::vector<float>& params, std::vector<int>& selected_win_types, std::vector<float>& decoded_params) {
+void FacadeD::decodeParams(float width, float height, int num_floors, int num_columns, std::vector<float> params, const std::vector<int>& selected_win_types, int mass_grammar_id, std::vector<float>& decoded_params) {
 	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
 	if (NF < range_NF.first) NF = range_NF.first;
 	int NC = std::round(params[1] * (range_NC.second - range_NC.first) + range_NC.first);
@@ -33,6 +33,13 @@ void FacadeD::decodeParams(float width, float height, int num_floors, int num_co
 		NF = num_floors;
 		NC = num_columns;
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// HACK
+	// enforce the minimum value for some parameters
+	params[3] = std::max(0.02f, params[3]);	// FH
+	params[7] = std::max(0.02f, params[7]);	// GW
+	params[8] = std::max(0.02f, params[8]);	// TW
 
 	float GH = (float)height / (params[2] + params[3] * (NF - 3) + params[4] + params[5]) * params[2];
 	float FH = (float)height / (params[2] + params[3] * (NF - 3) + params[4] + params[5]) * params[3];
@@ -75,6 +82,13 @@ void FacadeD::decodeParams(float width, float height, int num_floors, int num_co
 	float TWB = AH / (params[24] + params[25] + params[26]) * params[26];
 	float TWS = TW / (params[27] * 2 + params[28]) * params[27];
 	float TWW = TW / (params[27] * 2 + params[28]) * params[28];
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// HACK:
+	// For cylinder, remove the side margin
+	if (mass_grammar_id == 1) {
+		SW = 0.0f;
+	}
 
 	decoded_params.resize(27);
 	decoded_params[0] = GH;
