@@ -81,8 +81,6 @@ namespace massrec {
 	}
 
 	std::vector<float> parameterEstimation(GLWidget3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
-		time_t start = clock();
-
 		std::cout << "-----------------------------------------------------" << std::endl;
 
 		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_CONTOUR;
@@ -286,9 +284,6 @@ namespace massrec {
 			std::cout << "Dist = " << diff_min << std::endl;
 		}
 		
-		time_t end = clock();
-		std::cout << "Time: " << (double)(end - start) / CLOCKS_PER_SEC << "sec." << std::endl;
-
 		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_LINE;
 
 		return best_params;

@@ -48,16 +48,17 @@ void MainWindow::keyReleaseEvent(QKeyEvent* e) {
 
 void MainWindow::onClearBackground() {
 	glWidget->clearBackground();
+	setWindowTitle("PhotoTo3D");
 }
 
 void MainWindow::onOpenImage() {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open Image file..."), "", tr("Image Files (*.jpg *.png *.bmp)"));
 	if (filename.isEmpty()) return;
 
-	image_filename = filename;
-
 	glWidget->clearGeometry();
 	glWidget->loadImage(filename.toUtf8().constData());
+
+	setWindowTitle("PhotoTo3D - " + filename);
 }
 
 void MainWindow::onClearSilhouette() {

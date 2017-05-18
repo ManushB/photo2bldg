@@ -4,11 +4,22 @@
 std::pair<int, int> FacadeA::range_NF = std::make_pair(1, 20);
 std::pair<int, int> FacadeA::range_NC = std::make_pair(1, 20);
 
+void FacadeA::attachDoors(std::vector<float>& params, const std::vector<int>& selected_win_types) {
+	int NF = std::round(params[0] * (range_NF.second - range_NF.first) + range_NF.first);
+	if (NF > 1 || selected_win_types[0] < 25) {
+		// do nothing
+	}
+	else {
+		// remove the gap between the door and the ground
+		params[9] = 0;
+	}
+}
+
 cv::Mat FacadeA::generateFacade(int width, int height, int thickness, int num_floors, int num_columns, const std::vector<float>& params, std::vector<int>& selected_win_types, const cv::Scalar& bg_color, const cv::Scalar& fg_color) {
 	std::vector<float> decoded_params;
 	decodeParams(width, height, num_floors, num_columns, params, selected_win_types, decoded_params);
 	
-	return generateFacade(1, width, height, thickness, bg_color, fg_color, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9]);
+	return generateFacade(width, height, thickness, bg_color, fg_color, decoded_params[0], decoded_params[1], decoded_params[2], decoded_params[3], decoded_params[4], decoded_params[5], decoded_params[6], decoded_params[7], decoded_params[8], decoded_params[9]);
 }
 
 void FacadeA::decodeParams(float width, float height, int num_floors, int num_columns, const std::vector<float>& params, std::vector<int>& selected_win_types, std::vector<float>& decoded_params) {
@@ -109,11 +120,11 @@ cv::Mat FacadeA::generateRandomFacade(int width, int height, int thickness, std:
 	params.push_back(WS / TW);
 	params.push_back(WW / TW);
 
-	return generateFacade(1, width, height, thickness, GH, FH, AH, SW, TW, WT, WH, WB, WS, WW, window_displacement, window_prob);
+	return generateFacade(width, height, thickness, GH, FH, AH, SW, TW, WT, WH, WB, WS, WW, window_displacement, window_prob);
 }
 
-cv::Mat FacadeA::generateFacade(float scale, int width, int height, int thickness, const cv::Scalar& bg_color, const cv::Scalar& fg_color, float GH, float FH, float AH, float SW, float TW, float WT, float WH, float WB, float WS, float WW, float window_displacement, float window_prob) {
-	cv::Mat result(height * scale, width * scale, CV_8UC3, bg_color);
+cv::Mat FacadeA::generateFacade(int width, int height, int thickness, const cv::Scalar& bg_color, const cv::Scalar& fg_color, float GH, float FH, float AH, float SW, float TW, float WT, float WH, float WB, float WS, float WW, float window_displacement, float window_prob) {
+	cv::Mat result(height, width, CV_8UC3, bg_color);
 
 	int NF = std::round((float)(height - AH - GH) / FH);
 	int NC = std::round((float)(width - SW * 2) / TW);
@@ -123,10 +134,10 @@ cv::Mat FacadeA::generateFacade(float scale, int width, int height, int thicknes
 	// 窓を描画
 	for (int i = 0; i < NF; ++i) {
 		for (int j = 0; j < NC; ++j) {
-			float x1 = (SW + TW * j + WS) * scale;
-			float y1 = (height - GH - FH * i - WB - WH) * scale;
-			float x2 = (SW + (WS * 2 + WW) * j + WS + WW) * scale;
-			float y2 = (height - GH - FH * i - WB) * scale;
+			float x1 = SW + TW * j + WS;
+			float y1 = height - GH - FH * i - WB - WH;
+			float x2 = SW + (WS * 2 + WW) * j + WS + WW;
+			float y2 = height - GH - FH * i - WB;
 
 			if (window_displacement > 0) {
 				x1 += utils::genRand(-TW * window_displacement, TW * window_displacement);

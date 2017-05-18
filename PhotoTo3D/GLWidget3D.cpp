@@ -656,7 +656,6 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 
 	start = clock();
 	std::vector<float> params = massrec::parameterEstimation(this, regressions["mass"][grammar_ids["mass"]], &grammars["mass"][grammar_ids["mass"]], silhouette, image_size, cameraDistanceBase, xrotMin, xrotMax, yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax, silhouette_line_type, refinement, maxIters, refinement_method);
-	utils::output_vector(params);
 	end = clock();
 	std::cout << "mass param estimation by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 
@@ -871,11 +870,13 @@ void GLWidget3D::facadeReconstruction() {
 			view_dir /= glm::length(view_dir);
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			// DEBUG
+			/*
 			std::cout << "face " << fi << ": " << glm::dot(normal, view_dir);
 			if (glm::dot(normal, view_dir) < -0.2) {
 				std::cout << " *";
 			}
 			std::cout << std::endl;
+			*/
 			////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (glm::dot(normal, view_dir) < -0.2) {
 				visible = true;
@@ -970,9 +971,11 @@ void GLWidget3D::facadeReconstruction() {
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// DEBUG
 			// save each visible facade
+			/*
 			char fn[256];
 			sprintf(fn, "facade_%d.png", fi);
 			cv::imwrite(fn, textureImg);
+			*/
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -995,20 +998,11 @@ void GLWidget3D::facadeReconstruction() {
 	std::cout << "facade rectifaction: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	
 	// get the largest facade image
-	//cv::imwrite("facade.png", max_facade);
+	cv::imwrite("facade.png", max_facade);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ここから、Facade CNNと同じはず
 	cv::Mat facade_img = max_facade;
-
-	start = clock();
-	/*
-	Regression floors_regression("models/floors/deploy_01.prototxt", "models/floors/train_01_iter_40000.caffemodel");
-	Classifier win_exist_classifier("models/window_existence/deploy.prototxt", "models/window_existence/train_iter_80000.caffemodel", "models/window_existence/mean.binaryproto");
-	boost::shared_ptr<Regression> win_pos_regression = boost::shared_ptr<Regression>(new Regression("models/window_position/deploy_01.prototxt", "models/window_position/train_01_iter_80000.caffemodel"));
-	*/
-	end = clock();
-	std::cout << "initialize facade CNNs: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 
 	// floor height / column width
 	start = clock();
@@ -1084,6 +1078,57 @@ void GLWidget3D::facadeReconstruction() {
 	end = clock();
 	std::cout << "window position CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 		
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// HACK:
+	// refine the #floors / #columns
+	for (int i = 0; i < y_splits.size() - 1;) {
+		int win_nums = 0;
+		for (int j = 0; j < x_splits.size() - 1; ++j) {
+			if (win_rects[i][j].valid) win_nums++;
+		}
+
+		// if there are too small number of windows detected on this floor,
+		// assume that they are false detection, and remove them.
+		if (win_nums < (float)(x_splits.size() - 1) * 0.3) {
+			for (int j = 0; j < x_splits.size() - 1; ++j) {
+				win_rects[i][j].valid = fs::WindowPos::INVALID;
+			}
+			num_floors--;
+			if (i < y_splits.size() - 2) {
+				y_splits.erase(y_splits.begin() + i + 1);
+			}
+			else {
+				y_splits.erase(y_splits.begin() + i);
+			}
+			win_rects.erase(win_rects.begin() + i);
+		}
+		else {
+			i++;
+		}
+	}
+	for (int j = 0; j < x_splits.size() - 1; ++j) {
+		int win_nums = 0;
+		for (int i = 0; i < y_splits.size() - 1; ++i) {
+			if (win_rects[i][j].valid) win_nums++;
+		}
+
+		// if there are too small number of windows detected on this column,
+		// assume that they are false detection, and remove them.
+		if (win_nums < (float)(y_splits.size() - 1) * 0.3) {
+			for (int i = 0; i < y_splits.size() - 1; ++i) {
+				win_rects[i][j].valid = fs::WindowPos::INVALID;
+			}
+			num_columns--;
+		}
+	}
+
+	std::cout << "----------------------------------------------" << std::endl;
+	std::cout << "updated after removing non-window floors/columns:" << std::endl;
+	std::cout << "#updated floors = " << num_floors << ", #updated columns = " << num_columns << std::endl;
+	std::cout << "----------------------------------------------" << std::endl;
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+
 	// DEBUG: generate window image of the original size
 	/*
 	cv::Mat window_img;
@@ -1091,9 +1136,14 @@ void GLWidget3D::facadeReconstruction() {
 	cv::imwrite("window.png", window_img);
 	*/
 
+	cv::Mat initial_facade_parsing = cv::Mat(facade_img.rows, facade_img.cols, CV_8UC3, cv::Scalar(255, 255, 255));// cv::Scalar(0, 255, 255));
+	fs::generateWindowImage(y_splits, x_splits, win_rects, -1, cv::Scalar(0, 0, 0), initial_facade_parsing);
+
 	// generate input image for facade CNN
-	cv::Mat input_img;
-	fs::generateWindowImage(y_splits, x_splits, win_rects, cv::Size(227, 227), input_img);
+	cv::Mat input_img(227, 227, CV_8UC3, cv::Scalar(255, 255, 255));
+	fs::generateWindowImage(y_splits, x_splits, win_rects, 1, cv::Scalar(0, 0, 0), input_img);
+	//cv::Mat input_img;
+	//fs::generateWindowImage(y_splits, x_splits, win_rects, cv::Size(227, 227), input_img);
 	//cv::imwrite("window227.png", input_img);
 
 	// recognize the facade grammar id
@@ -1129,11 +1179,22 @@ void GLWidget3D::facadeReconstruction() {
 
 	// parameter estimation
 	start = clock();
-	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y, grammar_ids["mass"], y_splits.size() - 1, x_splits.size() - 1, num_floors, num_columns, selected_win_types);
+	std::vector<float> params = facarec::parameterEstimation(grammar_ids["facade"], regressions["facade"][grammar_ids["facade"]], input_img, max_geometric_size.x, max_geometric_size.y, num_floors, num_columns, initial_facade_parsing, selected_win_types);
 	end = clock();
 	std::cout << "facade param estimation by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
 	utils::output_vector(params);
-	
+
+	// generate final facade parsing image
+	cv::Mat facade_parsing;
+	facarec::generateFacadeImage(grammar_ids["facade"], facade_img.cols, facade_img.rows, num_floors, num_columns, params, selected_win_types, -1, cv::Scalar(0, 255, 255), cv::Scalar(0, 0, 255), facade_parsing);
+	cv::imwrite("estimated_facade.png", facade_parsing);
+
+	// decode the parameter values
+	params = facarec::decodeParameters(grammar_ids["facade"], max_geometric_size.x, max_geometric_size.y, num_floors, num_columns, params, selected_win_types);
+	for (int i = 0; i < params.size(); ++i) {
+		params[i] = params[i] / 100;
+	}
+
 	// set PM parameter values
 	pm_params["facade"] = params;
 
@@ -1327,7 +1388,7 @@ void GLWidget3D::updateGeometry() {
 		}
 
 		// add door grammar snippet
-		grammar_list.push_back(grammars["door"][0]);
+		//grammar_list.push_back(grammars["door"][0]);
 
 		// add material grammar snippet
 		grammars["material"][grammar_ids["material"]].attrs["facade_color"].value = facade_color.toUtf8().constData();

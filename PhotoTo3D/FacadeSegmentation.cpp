@@ -911,6 +911,53 @@ namespace fs {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// visualization
 
+	/**
+	* Generate window image
+	* Add window boundary lines on top of the given image.
+	*
+	* @param y_splits
+	* @param x_splits
+	* @param win_rects
+	* @param line_width
+	* @param line_color
+	* @param window_img
+	*/
+	void generateWindowImage(std::vector<float> y_splits, std::vector<float> x_splits, std::vector<std::vector<WindowPos>> win_rects, int line_width, const cv::Scalar& line_color, cv::Mat& window_img) {
+		int img_width = x_splits.back() + 1;
+		int img_height = y_splits.back() + 1;
+
+		// resize the window coordinates
+		for (int i = 0; i < win_rects.size(); ++i) {
+			for (int j = 0; j < win_rects[i].size(); ++j) {
+				win_rects[i][j].left = win_rects[i][j].left * (float)window_img.cols / img_width;
+				win_rects[i][j].right = win_rects[i][j].right * (float)window_img.cols / img_width;
+				win_rects[i][j].top = win_rects[i][j].top * (float)window_img.rows / img_height;
+				win_rects[i][j].bottom = win_rects[i][j].bottom * (float)window_img.rows / img_height;
+			}
+		}
+		for (int i = 0; i < x_splits.size(); ++i) {
+			x_splits[i] = x_splits[i] * (float)window_img.cols / img_width;
+		}
+		for (int i = 0; i < y_splits.size(); ++i) {
+			y_splits[i] = y_splits[i] * (float)window_img.rows / img_height;
+		}
+
+		// generate window image with specified size
+		//window_img = cv::Mat(window_img_size, CV_8UC3, cv::Scalar(255, 255, 255));
+		for (int i = 0; i < y_splits.size() - 1; ++i) {
+			for (int j = 0; j < x_splits.size() - 1; ++j) {
+				if (win_rects[i][j].valid == fs::WindowPos::VALID) {
+					int x = std::round(x_splits[j] + win_rects[i][j].left);
+					int y = std::round(y_splits[i] + win_rects[i][j].top);
+					int w = std::round(win_rects[i][j].right - win_rects[i][j].left + 1);
+					int h = std::round(win_rects[i][j].bottom - win_rects[i][j].top + 1);
+					cv::rectangle(window_img, cv::Rect(x, y, w, h), line_color, line_width);
+				}
+			}
+		}
+	}
+
+#if 0
 	void generateWindowImage(std::vector<float> y_splits, std::vector<float> x_splits, std::vector<std::vector<WindowPos>> win_rects, cv::Size window_img_size, cv::Mat& window_img) {
 		int img_width = x_splits.back() + 1;
 		int img_height = y_splits.back() + 1;
@@ -945,6 +992,7 @@ namespace fs {
 			}
 		}
 	}
+#endif
 
 	void outputFacadeStructure(cv::Mat img, const std::vector<float>& y_splits, const std::vector<float>& x_splits, const std::string& filename, cv::Scalar lineColor, int lineWidth) {
 		cv::Mat result;

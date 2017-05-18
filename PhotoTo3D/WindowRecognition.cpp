@@ -39,14 +39,11 @@ namespace winrec {
 			num_window_types = FacadeH::clusterWindowTypes(win_rects);
 		}
 
-		std::cout << "-------------------------------------" << std::endl;
-		std::cout << "facade: " << facade_id + 1 << std::endl;
-		std::cout << "-------------------------------------" << std::endl;
-		std::cout << "window:" << std::endl;
+		//std::cout << "window:" << std::endl;
 		std::map<int, std::vector<int>> win_type_votes;
 		for (int i = 0; i < y_splits.size() - 1; ++i) {
 			for (int j = 0; j < x_splits.size() - 1; ++j) {
-				if (j > 0) std::cout << ", ";
+				//if (j > 0) std::cout << ", ";
 				if (win_rects[i][j].valid == fs::WindowPos::VALID) {
 					int x = x_splits[j];
 					int w = x_splits[j + 1] - x_splits[j];
@@ -60,25 +57,25 @@ namespace winrec {
 
 					//////////////////////////////////////////////////////////////////
 					// DEBUG
-					char filename[256];
-					sprintf(filename, "results/tile_%d_%d.png", i, j);
-					cv::imwrite(filename, tile_img227);
+					//char filename[256];
+					//sprintf(filename, "results/tile_%d_%d.png", i, j);
+					//cv::imwrite(filename, tile_img227);
 					//////////////////////////////////////////////////////////////////
 
 
 					std::vector<Prediction> win_predictions = classifier->Classify(tile_img227, 13);
 					int win_id = win_predictions[0].first;
-					std::cout << win_id + 1 << "(" << win_rects[i][j].type << ")";
+					//std::cout << win_id + 1 << "(" << win_rects[i][j].type << ")";
 
 					win_type_votes[win_rects[i][j].type].push_back(win_id);
 				}
 				else {
-					std::cout << " " << "(" << win_rects[i][j].type << ")";
+					//std::cout << " " << "(" << win_rects[i][j].type << ")";
 				}
 			}
-			std::cout << std::endl;
+			//std::cout << std::endl;
 		}
-		std::cout << std::endl;
+		//std::cout << std::endl;
 
 		// find the maximum vote for each window group
 		std::vector<int> selected_win_types;
