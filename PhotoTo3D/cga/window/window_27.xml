@@ -4,81 +4,81 @@
     <attr value="0.05" range="0.05,0.05" name="window_top_offset"/>
     <rule name="Window">
         <split splitAxis="y">
-            <param value="0.6" name="DoorMain_19" type="relative"/>
+            <param value="0.6" name="DoorMain_27" type="relative"/>
             <param value="0.1" name="Wall" type="relative"/>
-            <param value="0.3" name="DoorTop_19" type="relative"/>
+            <param value="0.3" name="DoorTop_27" type="relative"/>
         </split>
     </rule>
-    <rule name="DoorTop_19">
+    <rule name="DoorTop_27">
         <extrude height="-0.1"/>
         <comp>
             <param name="side" value="WindowFrame"/>
-            <param name="top" value="DoorTopMain_19"/>
+            <param name="top" value="DoorTopMain_27"/>
         </comp>
     </rule>
-    <rule name="DoorTopMain_19">
-        <offset inside="DoorTopMainInside_19" offsetDistance="-0.1" border="WindowFrame"/>
+    <rule name="DoorTopMain_27">
+        <offset inside="DoorTopMainInside_27" offsetDistance="-0.1" border="WindowFrame"/>
     </rule>
-    <rule name="DoorTopMainInside_19">
+    <rule name="DoorTopMainInside_27">
         <extrude height="-0.1"/>
         <comp>
             <param value="WindowFrame" name="side"/>
-            <param value="WindowGlassArea_19" name="top"/>
+            <param value="WindowGlassArea_27" name="top"/>
         </comp>
     </rule>
-    <rule name="WindowGlassArea_19">
+    <rule name="WindowGlassArea_27">
         <setupProjection axesSelector="scope.xy">
             <param name="texWidth" type="relative" value="1"/>
             <param name="texHeight" type="relative" value="1"/>
         </setupProjection>
         <split splitAxis="x">
-            <param value="0.25" name="DoorTopGlassCell_19" type="relative"/>
-            <param value="0.5" name="DoorTopGlassCell_19" type="relative"/>
-            <param value="0.25" name="DoorTopGlassCell_19" type="relative"/>
+            <param value="0.25" name="DoorTopGlassCell_27" type="relative"/>
+            <param value="0.5" name="DoorTopGlassCell_27" type="relative"/>
+            <param value="0.25" name="DoorTopGlassCell_27" type="relative"/>
         </split>
     </rule>
-    <rule name="DoorTopGlassCell_19">
+    <rule name="DoorTopGlassCell_27">
         <split splitAxis="x">
-            <param value="0.025" name="DoorTopGlassSeparateTile_19" type="relative"/>
-            <param value="1" name="DoorTopGlassColumnArea_19" type="floating"/>
-            <param value="0.025" name="DoorTopGlassSeparateTile_19" type="relative"/>
+            <param value="0.025" name="DoorTopGlassSeparateTile_27" type="relative"/>
+            <param value="1" name="DoorTopGlassColumnArea_27" type="floating"/>
+            <param value="0.025" name="DoorTopGlassSeparateTile_27" type="relative"/>
         </split>
     </rule>
-    <rule name="DoorTopGlassColumnArea_19">
+    <rule name="DoorTopGlassColumnArea_27">
         <split splitAxis="y">
-            <param value="0.025" name="DoorTopGlassSeparateTile_19" type="relative"/>
+            <param value="0.025" name="DoorTopGlassSeparateTile_27" type="relative"/>
             <param value="1" name="WindowGlass" type="floating"/>
-            <param value="0.025" name="DoorTopGlassSeparateTile_19" type="relative"/>
+            <param value="0.025" name="DoorTopGlassSeparateTile_27" type="relative"/>
         </split>
     </rule>
-    <rule name="DoorTopGlassSeparateTile_19">
+    <rule name="DoorTopGlassSeparateTile_27">
         <extrude height="0.1"/>
         <comp>
             <param value="WindowFrame" name="side"/>
             <param value="WindowFrame" name="top"/>
         </comp>
     </rule>
-    <rule name="DoorMain_19">
+    <rule name="DoorMain_27">
         <extrude height="-0.2"/>
         <comp>
             <param value="Wall" name="side"/>
-            <param value="EntranceTop_19" name="top"/>
+            <param value="EntranceTop_27" name="top"/>
         </comp>
     </rule>
-    <rule name="EntranceTop_19">
+    <rule name="EntranceTop_27">
         <split splitAxis="y">
-            <param value="1-window_top_offset" name="EntranceTopMain_19" type="relative"/>
+            <param value="1-window_top_offset" name="EntranceTopMain_27" type="relative"/>
             <param value="window_top_offset" name="Wall" type="relative"/>
         </split>
     </rule>
-    <rule name="EntranceTopMain_19">
+    <rule name="EntranceTopMain_27">
         <split splitAxis="x">
             <param value="window_side_offset" name="Wall" type="relative"/>
-            <param value="1-window_side_offset*2" name="EntranceTopMainMain_19" type="relative"/>
+            <param value="1-window_side_offset*2" name="EntranceTopMainMain_27" type="relative"/>
             <param value="window_side_offset" name="Wall" type="relative"/>
         </split>
     </rule>
-    <rule name="EntranceTopMainMain_19">
+    <rule name="EntranceTopMainMain_27">
         <extrude height="-0.6"/>
         <comp>
             <param value="Wall" name="side"/>

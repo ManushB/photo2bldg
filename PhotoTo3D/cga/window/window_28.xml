@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <grammar type="window" version="1.0" author="Gen Nishida">
     <rule name="Window">
-    	<innerArch inside="DoorMain_20" border="Wall"/>
+    	<innerArch inside="DoorMain_28" border="Wall"/>
     </rule>
-    <rule name="DoorMain_20">
+    <rule name="DoorMain_28">
         <extrude height="-0.2"/>
         <comp>
             <param value="Wall" name="side"/>
-            <param value="EntranceTop_20" name="top"/>
+            <param value="EntranceTop_28" name="top"/>
         </comp>
     </rule>
-    <rule name="EntranceTop_20">
-		<offset offsetDistance="-0.05" inside="EntranceTopInside_20" border="Wall"/>
+    <rule name="EntranceTop_28">
+		<offset offsetDistance="-0.05" inside="EntranceTopInside_28" border="Wall"/>
 	</rule>
-	<rule name="EntranceTopInside_20">
+	<rule name="EntranceTopInside_28">
         <extrude height="-0.6"/>
         <comp>
             <param value="Wall" name="side"/>

@@ -6,23 +6,23 @@
         <extrude height="-0.2"/>
         <comp>
             <param value="Wall" name="side"/>
-            <param value="EntranceTop_32" name="top"/>
+            <param value="EntranceTop_26" name="top"/>
         </comp>
     </rule>
-    <rule name="EntranceTop_32">
+    <rule name="EntranceTop_26">
         <split splitAxis="y">
-            <param value="1-window_top_offset*0.5" type="relative" name="EntranceTopMain_32"/>
+            <param value="1-window_top_offset*0.5" type="relative" name="EntranceTopMain_26"/>
             <param value="window_top_offset*0.5" type="relative" name="Wall"/>
         </split>
     </rule>
-    <rule name="EntranceTopMain_32">
+    <rule name="EntranceTopMain_26">
         <split splitAxis="x">
             <param value="window_side_offset*0.5" type="relative" name="Wall"/>
-            <param value="1-window_side_offset" type="relative" name="EntranceTopMainMain_32"/>
+            <param value="1-window_side_offset" type="relative" name="EntranceTopMainMain_26"/>
             <param value="window_side_offset*0.5" type="relative" name="Wall"/>
         </split>
     </rule>
-    <rule name="EntranceTopMainMain_32">
+    <rule name="EntranceTopMainMain_26">
         <extrude height="-0.2"/>
         <comp>
             <param value="Wall" name="side"/>

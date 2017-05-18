@@ -3,108 +3,108 @@
     <attr name="offset_size" range="0.05,0.05" value="0.05"/>
     <rule name="Window">
         <split splitAxis="y">
-            <param name="WindowSillTile_28" type="relative" value="0.05"/>
-            <param name="WindowTileMain_28" type="relative" value="0.85"/>
-            <param name="WindowTop_28" type="relative" value="0.1"/>
+            <param name="WindowSillTile_20" type="relative" value="0.05"/>
+            <param name="WindowTileMain_20" type="relative" value="0.85"/>
+            <param name="WindowTop_20" type="relative" value="0.1"/>
         </split>
     </rule>
-    <rule name="WindowSillTile_28">
+    <rule name="WindowSillTile_20">
         <split splitAxis="y">
-            <param name="WindowSillTileLayer1_28" type="relative" value="0.5"/>
-            <param name="WindowSillTileLayer2_28" type="relative" value="0.5"/>
+            <param name="WindowSillTileLayer1_20" type="relative" value="0.5"/>
+            <param name="WindowSillTileLayer2_20" type="relative" value="0.5"/>
         </split>
     </rule>
-    <rule name="WindowSillTileLayer1_28">
+    <rule name="WindowSillTileLayer1_20">
         <split splitAxis="x">
             <param name="Wall" type="relative" value="0.05"/>
-            <param name="WindowSillTileLayer1Main_28" type="floating" value="1"/>
+            <param name="WindowSillTileLayer1Main_20" type="floating" value="1"/>
             <param name="Wall" type="relative" value="0.05"/>
         </split>
     </rule>
-    <rule name="WindowSillTileLayer1Main_28">
+    <rule name="WindowSillTileLayer1Main_20">
         <extrude height="0.1"/>
         <comp>
             <param name="side" value="WindowSill"/>
             <param name="top" value="WindowSill"/>
         </comp>
     </rule>
-    <rule name="WindowSillTileLayer2_28">
+    <rule name="WindowSillTileLayer2_20">
         <extrude height="0.2"/>
         <comp>
             <param name="side" value="WindowSill"/>
             <param name="top" value="WindowSill"/>
         </comp>
     </rule>
-    <rule name="WindowTop_28">
+    <rule name="WindowTop_20">
         <extrude height="0.2"/>
         <comp>
             <param name="side" value="WindowSill"/>
             <param name="top" value="WindowSill"/>
         </comp>
     </rule>
-    <rule name="WindowTileMain_28">
+    <rule name="WindowTileMain_20">
         <split splitAxis="x">
             <param name="Wall" type="relative" value="0.1"/>
-            <param name="WindowTileMainMain_28" type="floating" value="1"/>
+            <param name="WindowTileMainMain_20" type="floating" value="1"/>
             <param name="Wall" type="relative" value="0.1"/>
         </split>
     </rule>
-    <rule name="WindowTileMainMain_28">
+    <rule name="WindowTileMainMain_20">
         <extrude height="0.1"/>
         <comp>
             <param name="side" value="WindowFrame"/>
-            <param name="top" value="WindowTileMainMainTop_28"/>
+            <param name="top" value="WindowTileMainMainTop_20"/>
         </comp>
     </rule>
-    <rule name="WindowTileMainMainTop_28">
-        <offset inside="WindowTileMainMainTopInside_28" border="WindowFrame" offsetDistance="-offset_size"/>
+    <rule name="WindowTileMainMainTop_20">
+        <offset inside="WindowTileMainMainTopInside_20" border="WindowFrame" offsetDistance="-offset_size"/>
     </rule>
-    <rule name="WindowTileMainMainTopInside_28">
+    <rule name="WindowTileMainMainTopInside_20">
         <extrude height="-0.1"/>
         <comp>
             <param name="side" value="WindowFrame"/>
-            <param name="top" value="WindowTileMainMainTopInsideBottom_28"/>
+            <param name="top" value="WindowTileMainMainTopInsideBottom_20"/>
         </comp>
     </rule>
-    <rule name="WindowTileMainMainTopInsideBottom_28">
-        <offset inside="WindowTileMainMainTopInsideBottomInside_28" border="WindowFrame" offsetDistance="-0.02"/>
+    <rule name="WindowTileMainMainTopInsideBottom_20">
+        <offset inside="WindowTileMainMainTopInsideBottomInside_20" border="WindowFrame" offsetDistance="-0.02"/>
     </rule>
-    <rule name="WindowTileMainMainTopInsideBottomInside_28">
+    <rule name="WindowTileMainMainTopInsideBottomInside_20">
         <extrude height="-0.05"/>
         <comp>
             <param name="side" value="WindowFrame"/>
-            <param name="top" value="WindowGlassArea_28"/>
+            <param name="top" value="WindowGlassArea_20"/>
         </comp>
     </rule>
-    <rule name="WindowGlassArea_28">
+    <rule name="WindowGlassArea_20">
         <setupProjection axesSelector="scope.xy">
             <param name="texWidth" type="relative" value="1"/>
             <param name="texHeight" type="relative" value="1"/>
         </setupProjection>
         <split splitAxis="x">
-            <param name="WindowGlassColumnArea_28" type="relative" value="0.5" repeat="true"/>
+            <param name="WindowGlassColumnArea_20" type="relative" value="0.5" repeat="true"/>
         </split>
     </rule>
-    <rule name="WindowGlassCellArea_28">
+    <rule name="WindowGlassCellArea_20">
         <split splitAxis="x">
-            <param name="WindowGlassSeparateTile_28" type="relative" value="0.025"/>
-            <param name="WindowGlassCellColumnArea_28" type="floating" value="1"/>
-            <param name="WindowGlassSeparateTile_28" type="relative" value="0.025"/>
+            <param name="WindowGlassSeparateTile_20" type="relative" value="0.025"/>
+            <param name="WindowGlassCellColumnArea_20" type="floating" value="1"/>
+            <param name="WindowGlassSeparateTile_20" type="relative" value="0.025"/>
         </split>
     </rule>
-    <rule name="WindowGlassCellColumnArea_28">
+    <rule name="WindowGlassCellColumnArea_20">
         <split splitAxis="y">
-            <param name="WindowGlassSeparateTile_28" type="relative" value="0.05"/>
+            <param name="WindowGlassSeparateTile_20" type="relative" value="0.05"/>
             <param name="WindowGlass" type="floating" value="0.9"/>
-            <param name="WindowGlassSeparateTile_28" type="relative" value="0.05"/>
+            <param name="WindowGlassSeparateTile_20" type="relative" value="0.05"/>
         </split>
     </rule>
-    <rule name="WindowGlassColumnArea_28">
+    <rule name="WindowGlassColumnArea_20">
         <split splitAxis="y">
-            <param name="WindowGlassCellArea_28" type="relative" value="0.5" repeat="true"/>
+            <param name="WindowGlassCellArea_20" type="relative" value="0.5" repeat="true"/>
         </split>
     </rule>
-    <rule name="WindowGlassSeparateTile_28">
+    <rule name="WindowGlassSeparateTile_20">
         <extrude height="0.08"/>
         <comp>
             <param name="side" value="WindowFrame"/>

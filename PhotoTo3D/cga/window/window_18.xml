@@ -5,49 +5,49 @@
 		<extrude height="-window_depth"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowInsideBottom_31"/>
+			<param name="top" value="WindowInsideBottom_18"/>
 		</comp>
 	</rule>
-	<rule name="WindowInsideBottom_31">
-		<offset offsetDistance="-0.02" inside="WindowInsideBottomInside_31" border="WindowFrame"/>
+	<rule name="WindowInsideBottom_18">
+		<offset offsetDistance="-0.02" inside="WindowInsideBottomInside_18" border="WindowFrame"/>
 	</rule>
-	<rule name="WindowInsideBottomInside_31">
+	<rule name="WindowInsideBottomInside_18">
 		<extrude height="-0.05"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
-			<param name="top" value="WindowGlassArea_31"/>
+			<param name="top" value="WindowGlassArea_18"/>
 		</comp>
 	</rule>
-	<rule name="WindowGlassArea_31">
+	<rule name="WindowGlassArea_18">
 		<setupProjection axesSelector="scope.xy">
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
 		<split splitAxis="y">
-			<param type="relative" value="0.7" name="WindowGlassCellArea_31"/>
-			<param type="relative" value="0.3" name="WindowGlassTop_31"/>
+			<param type="relative" value="0.7" name="WindowGlassCellArea_18"/>
+			<param type="relative" value="0.3" name="WindowGlassTop_18"/>
 		</split>
 	</rule>
-	<rule name="WindowGlassTop_31">
+	<rule name="WindowGlassTop_18">
 		<split splitAxis="x">
-			<param type="relative" value="0.5" name="WindowGlassCellArea_31" repeat="true"/>
+			<param type="relative" value="0.5" name="WindowGlassCellArea_18" repeat="true"/>
 		</split>
 	</rule>
-	<rule name="WindowGlassCellArea_31">
+	<rule name="WindowGlassCellArea_18">
 		<split splitAxis="x">
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_31"/>
-			<param type="floating" value="1" name="WindowGlassCellColumnArea_31"/>
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_31"/>
+			<param type="relative" value="0.025" name="WindowGlassSeparateTile_18"/>
+			<param type="floating" value="1" name="WindowGlassCellColumnArea_18"/>
+			<param type="relative" value="0.025" name="WindowGlassSeparateTile_18"/>
 		</split>
 	</rule>
-	<rule name="WindowGlassCellColumnArea_31">
+	<rule name="WindowGlassCellColumnArea_18">
 		<split splitAxis="y">
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_31"/>
+			<param type="relative" value="0.025" name="WindowGlassSeparateTile_18"/>
 			<param type="floating" value="1" name="WindowGlass"/>
-			<param type="relative" value="0.025" name="WindowGlassSeparateTile_31"/>
+			<param type="relative" value="0.025" name="WindowGlassSeparateTile_18"/>
 		</split>
 	</rule>
-	<rule name="WindowGlassSeparateTile_31">
+	<rule name="WindowGlassSeparateTile_18">
 		<extrude height="0.08"/>
 		<comp>
 			<param name="side" value="WindowFrame"/>
