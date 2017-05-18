@@ -988,7 +988,7 @@ void GLWidget3D::facadeReconstruction() {
 				// compute the geometric size of the face
 				max_geometric_size.x = 0;
 				for (int i = 0; i < face_sizes.size(); ++i) {
-					max_geometric_size.x += face_sizes[i].x;
+					if (visibilities[i]) max_geometric_size.x += face_sizes[i].x;
 				}
 				max_geometric_size.y = face_sizes[0].y;
 			}
@@ -1191,6 +1191,8 @@ void GLWidget3D::facadeReconstruction() {
 
 	// decode the parameter values
 	params = facarec::decodeParameters(grammar_ids["facade"], max_geometric_size.x, max_geometric_size.y, num_floors, num_columns, params, selected_win_types);
+	std::cout << "width: " << max_geometric_size.x << ", height: " << max_geometric_size.y << std::endl;
+	utils::output_vector(params);
 	for (int i = 0; i < params.size(); ++i) {
 		params[i] = params[i] / 100;
 	}
