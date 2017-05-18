@@ -71,7 +71,7 @@
             <param value="window_top_offset" name="Wall" type="relative"/>
         </split>
     </rule>
-    <rule name="EntranceTopMain">
+    <rule name="EntranceTopMain_19">
         <split splitAxis="x">
             <param value="window_side_offset" name="Wall" type="relative"/>
             <param value="1-window_side_offset*2" name="EntranceTopMainMain_19" type="relative"/>
