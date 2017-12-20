@@ -165,7 +165,6 @@ public:
         menuFile->addSeparator();
         menuFile->addAction(actionClearSilhouette);
         menuFile->addAction(actionLoadSilhouette);
-        menuFile->addAction(actionLoadSilhouetteOld);
         menuFile->addAction(actionSaveSilhouette);
         menuFile->addSeparator();
         menuFile->addAction(actionOpenCGA);

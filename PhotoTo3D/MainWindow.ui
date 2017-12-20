@@ -32,7 +32,6 @@
     <addaction name="separator"/>
     <addaction name="actionClearSilhouette"/>
     <addaction name="actionLoadSilhouette"/>
-    <addaction name="actionLoadSilhouetteOld"/>
     <addaction name="actionSaveSilhouette"/>
     <addaction name="separator"/>
     <addaction name="actionOpenCGA"/>

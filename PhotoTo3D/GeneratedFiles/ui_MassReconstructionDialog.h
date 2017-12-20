@@ -20,16 +20,15 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_MassReconstructionDialog
 {
 public:
-    QLineEdit *lineEditGrammarSnippet;
     QLabel *label_13;
     QLineEdit *lineEditXMax;
-    QLabel *label_16;
     QLineEdit *lineEditOXMin;
     QLabel *label_15;
     QLabel *label_26;
@@ -77,15 +76,13 @@ public:
     QCheckBox *checkBoxAutomaticRecognition;
     QLineEdit *lineEditYMax;
     QRadioButton *radioButtonSilhouetteLine8;
+    QSpinBox *spinBoxGrammarId;
 
     void setupUi(QDialog *MassReconstructionDialog)
     {
         if (MassReconstructionDialog->objectName().isEmpty())
             MassReconstructionDialog->setObjectName(QStringLiteral("MassReconstructionDialog"));
         MassReconstructionDialog->resize(582, 493);
-        lineEditGrammarSnippet = new QLineEdit(MassReconstructionDialog);
-        lineEditGrammarSnippet->setObjectName(QStringLiteral("lineEditGrammarSnippet"));
-        lineEditGrammarSnippet->setGeometry(QRect(250, 10, 31, 20));
         label_13 = new QLabel(MassReconstructionDialog);
         label_13->setObjectName(QStringLiteral("label_13"));
         label_13->setGeometry(QRect(173, 110, 16, 20));
@@ -93,10 +90,6 @@ public:
         lineEditXMax = new QLineEdit(MassReconstructionDialog);
         lineEditXMax->setObjectName(QStringLiteral("lineEditXMax"));
         lineEditXMax->setGeometry(QRect(198, 290, 61, 20));
-        label_16 = new QLabel(MassReconstructionDialog);
-        label_16->setObjectName(QStringLiteral("label_16"));
-        label_16->setGeometry(QRect(290, 10, 41, 20));
-        label_16->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         lineEditOXMin = new QLineEdit(MassReconstructionDialog);
         lineEditOXMin->setObjectName(QStringLiteral("lineEditOXMin"));
         lineEditOXMin->setGeometry(QRect(108, 230, 61, 20));
@@ -258,8 +251,10 @@ public:
         radioButtonSilhouetteLine8 = new QRadioButton(MassReconstructionDialog);
         radioButtonSilhouetteLine8->setObjectName(QStringLiteral("radioButtonSilhouetteLine8"));
         radioButtonSilhouetteLine8->setGeometry(QRect(110, 360, 82, 17));
-        QWidget::setTabOrder(checkBoxAutomaticRecognition, lineEditGrammarSnippet);
-        QWidget::setTabOrder(lineEditGrammarSnippet, lineEditImageSize);
+        spinBoxGrammarId = new QSpinBox(MassReconstructionDialog);
+        spinBoxGrammarId->setObjectName(QStringLiteral("spinBoxGrammarId"));
+        spinBoxGrammarId->setGeometry(QRect(260, 10, 42, 22));
+        QWidget::setTabOrder(checkBoxAutomaticRecognition, lineEditImageSize);
         QWidget::setTabOrder(lineEditImageSize, lineEditCameraDistance);
         QWidget::setTabOrder(lineEditCameraDistance, lineEditXrotMin);
         QWidget::setTabOrder(lineEditXrotMin, lineEditXrotMax);
@@ -295,8 +290,7 @@ public:
     {
         MassReconstructionDialog->setWindowTitle(QApplication::translate("MassReconstructionDialog", "MassReconstructionDialog", 0));
         label_13->setText(QApplication::translate("MassReconstructionDialog", "~", 0));
-        label_16->setText(QApplication::translate("MassReconstructionDialog", "(1 - 10)", 0));
-        label_15->setText(QApplication::translate("MassReconstructionDialog", "Grammar snippet:", 0));
+        label_15->setText(QApplication::translate("MassReconstructionDialog", "Grammar:", 0));
         label_26->setText(QApplication::translate("MassReconstructionDialog", "O x:", 0));
         radioButtonSilhouetteLineAA->setText(QApplication::translate("MassReconstructionDialog", "Line AA", 0));
         label_9->setText(QApplication::translate("MassReconstructionDialog", "Zrot:", 0));

@@ -29,4 +29,5 @@ namespace facarec {
 
 	void generateFacadeImage(int grammar_id, int width, int height, int num_floors, int num_columns, const std::vector<float>& params, const std::vector<int>& selected_win_types, int thickness, const cv::Scalar& bg_color, const cv::Scalar& fg_color, cv::Mat& image);
 	std::vector<float> decodeParameters(int grammar_id, float width, float height, int num_floors, int num_columns, const std::vector<float>& params, const std::vector<int>& selected_win_types, int mass_grammar_id);
+	std::vector<cv::Scalar> getFacadeColors(int grammar_id, const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count);
 }

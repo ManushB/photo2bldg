@@ -253,3 +253,20 @@ int FacadeB::clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rec
 
 	return 2;
 }
+
+/**
+* Get the dominant facade color for each region.
+*
+* @param params		paramter values of the facade grammar #2
+*/
+std::vector<cv::Scalar> FacadeB::getFacadeColors(const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count) {
+	std::vector<cv::Scalar> ans;
+
+	int GH = params[0] * 100 / height * facade_img.rows;
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(0, 0, facade_img.cols, facade_img.rows - GH)), cluster_count));
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(0, facade_img.rows - GH, facade_img.cols, GH)), cluster_count));
+	cv::imwrite("facade0.png", cv::Mat(facade_img, cv::Rect(0, 0, facade_img.cols, facade_img.rows - GH)));
+	cv::imwrite("facade1.png", cv::Mat(facade_img, cv::Rect(0, facade_img.rows - GH, facade_img.cols, GH)));
+
+	return ans;
+}

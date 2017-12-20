@@ -20,4 +20,5 @@ public:
 	static cv::Mat generateFacade(int width, int height, int thickness, const cv::Scalar& bg_color, const cv::Scalar& fg_color, float GH, float FH, float AH, float SW, float TW, float WT, float WH, float WB, float WS, float WW, float WT2, float WH2, float WB2, float WO2, float WW2, float WI2, float DT, float DH, float DB, float DS, float DW, float DT2, float DH2, float DB2, float DO2, float DW2, float DI2, float window_displacement = 0, float window_prob = 1);
 
 	static int clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rects);
+	static std::vector<cv::Scalar> getFacadeColors(const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count);
 };

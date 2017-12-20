@@ -177,3 +177,7 @@ int FacadeA::clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rec
 
 	return 1;
 }
+
+std::vector<cv::Scalar> FacadeA::getFacadeColors(const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count) {
+	return{ fs::getDominantColor(facade_img, 10) };
+}

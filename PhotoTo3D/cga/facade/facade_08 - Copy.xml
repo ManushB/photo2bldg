@@ -30,25 +30,45 @@
             <param value="5" type="absolute" name="texWidth"/>
             <param value="5" type="absolute" name="texHeight"/>
         </setupProjection>
-        <split splitAxis="y">
-            <param value="p00_GH" type="floating" name="GroundFloorAndLedge"/>
-            <param value="p01_FH" type="floating" name="Floor" repeat="true"/>
-            <param value="p02_AH" type="floating" name="Wall"/>
+        <split splitAxis="x">
+            <param value="p03_SW" type="floating" name="ColumnWall"/>
+            <param value="p04_TW" type="floating" name="Column" repeat="true"/>
+            <param value="p05_TW2" type="floating" name="CenterColumn"/>
+            <param value="p04_TW" type="floating" name="Column" repeat="true"/>
+            <param value="p03_SW" type="floating" name="ColumnWall"/>
         </split>
     </rule>
-    <rule name="GroundFloorAndLedge">
+    <rule name="ColumnWall">
         <split splitAxis="y">
-            <param type="relative" name="GroundFloor" value="0.92"/>
+            <param value="p00_GH" type="floating" name="GroundWallAndLedge"/>
+            <param value="p01_FH" type="floating" name="Wall1" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall1"/>
+        </split>
+    </rule>
+    <rule name="GroundWallAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="Wall3" value="0.92"/>
             <param type="relative" name="Ledge" value="0.08"/>
         </split>
     </rule>
-    <rule name="GroundFloor">
-        <split splitAxis="x">
-            <param value="p03_SW" type="floating" name="Wall3"/>
-            <param value="p04_TW" type="floating" name="GroundTile" repeat="true"/>
-            <param value="p05_TW2" type="floating" name="GroundCenterTile"/>
-            <param value="p04_TW" type="floating" name="GroundTile" repeat="true"/>
-            <param value="p03_SW" type="floating" name="Wall3"/>
+    <rule name="Column">
+        <split splitAxis="y">
+            <param value="p00_GH" type="floating" name="GroundTileAndLedge"/>
+            <param value="p01_FH" type="floating" name="Tile" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall1"/>
+        </split>
+    </rule>
+    <rule name="CenterColumn">
+        <split splitAxis="y">
+            <param value="p00_GH" type="floating" name="GroundCenterTileAndLedge"/>
+            <param value="p01_FH" type="floating" name="CenterTile" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall0"/>
+        </split>
+    </rule>
+    <rule name="GroundTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="GroundTile" value="0.92"/>
+            <param type="relative" name="Ledge" value="0.08"/>
         </split>
     </rule>
     <rule name="GroundTile">
@@ -65,6 +85,12 @@
             <param type="floating" name="Wall3" value="p09_WS"/>
         </split>
     </rule>
+    <rule name="GroundCenterTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="GroundCenterTile" value="0.92"/>
+            <param type="relative" name="Ledge" value="0.08"/>
+        </split>
+    </rule>
     <rule name="GroundCenterTile">
         <split splitAxis="y">
             <param type="floating" name="Wall2" value="p21_DB2"/>
@@ -77,15 +103,6 @@
             <param type="floating" name="Wall2" value="p14_WS2"/>
             <param type="floating" name="Window2" value="p15_WW2"/>
             <param type="floating" name="Wall2" value="p14_WS2"/>
-        </split>
-    </rule>
-    <rule name="Floor">
-        <split splitAxis="x">
-            <param value="p03_SW" type="floating" name="Wall1"/>
-            <param value="p04_TW" type="floating" name="Tile" repeat="true"/>
-            <param value="p05_TW2" type="floating" name="CenterTile"/>
-            <param value="p04_TW" type="floating" name="Tile" repeat="true"/>
-            <param value="p03_SW" type="floating" name="Wall1"/>
         </split>
     </rule>
     <rule name="Tile">

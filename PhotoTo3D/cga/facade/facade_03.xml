@@ -43,44 +43,44 @@
     </rule>
     <rule name="GroundFloor">
         <split splitAxis="x">
-            <param name="Wall" type="floating" value="p03_SW"/>
+            <param name="Wall2" type="floating" value="p03_SW"/>
             <param name="GroundTile" type="floating" value="p05_GW" repeat="true"/>
-            <param name="Wall" type="floating" value="p03_SW"/>
+            <param name="Wall2" type="floating" value="p03_SW"/>
         </split>
     </rule>
     <rule name="GroundTile">
         <split splitAxis="y">
-            <param name="Wall" type="floating" value="p13_DB"/>
+            <param name="Wall2" type="floating" value="p13_DB"/>
             <param name="GroundTile2" type="floating" value="p12_DH"/>
-            <param name="Wall" type="floating" value="p11_DT"/>
+            <param name="Wall2" type="floating" value="p11_DT"/>
         </split>
     </rule>
     <rule name="GroundTile2">
         <split splitAxis="x">
-            <param name="Wall" type="floating" value="p14_DS"/>
+            <param name="Wall2" type="floating" value="p14_DS"/>
             <param name="Window2" type="floating" value="p15_DW"/>
-            <param name="Wall" type="floating" value="p14_DS"/>
+            <param name="Wall2" type="floating" value="p14_DS"/>
         </split>
     </rule>
     <rule name="Floor">
         <split splitAxis="x">
-            <param name="Wall" type="floating" value="p03_SW"/>
+            <param name="Wall1" type="floating" value="p03_SW"/>
             <param name="Tile" type="floating" value="p04_TW" repeat="true"/>
-            <param name="Wall" type="floating" value="p03_SW"/>
+            <param name="Wall1" type="floating" value="p03_SW"/>
         </split>
     </rule>
     <rule name="Tile">
         <split splitAxis="y">
-            <param name="Wall" type="floating" value="p08_WB"/>
+            <param name="Wall1" type="floating" value="p08_WB"/>
             <param name="Tile2" type="floating" value="p07_WH"/>
-            <param name="Wall" type="floating" value="p06_WT"/>
+            <param name="Wall1" type="floating" value="p06_WT"/>
         </split>
     </rule>
     <rule name="Tile2">
         <split splitAxis="x">
-            <param name="Wall" type="floating" value="p09_WS"/>
+            <param name="Wall1" type="floating" value="p09_WS"/>
             <param name="Window1" type="floating" value="p10_WW"/>
-            <param name="Wall" type="floating" value="p09_WS"/>
+            <param name="Wall1" type="floating" value="p09_WS"/>
         </split>
     </rule>
     <rule name="TopFloorAndLedge">
@@ -91,23 +91,23 @@
     </rule>
     <rule name="TopFloor">
         <split splitAxis="x">
-            <param name="Wall" type="floating" value="p03_SW"/>
+            <param name="Wall0" type="floating" value="p03_SW"/>
             <param name="TopTile" type="floating" value="p04_TW" repeat="true"/>
-            <param name="Wall" type="floating" value="p03_SW"/>
+            <param name="Wall0" type="floating" value="p03_SW"/>
         </split>
     </rule>
     <rule name="TopTile">
         <split splitAxis="y">
-            <param name="Wall" type="floating" value="p18_TWB"/>
+            <param name="Wall0" type="floating" value="p18_TWB"/>
             <param name="TopTile2" type="floating" value="p17_TWH"/>
-            <param name="Wall" type="floating" value="p16_TWT"/>
+            <param name="Wall0" type="floating" value="p16_TWT"/>
         </split>
     </rule>
     <rule name="TopTile2">
         <split splitAxis="x">
-            <param name="Wall" type="floating" value="p19_TWS"/>
+            <param name="Wall0" type="floating" value="p19_TWS"/>
             <param name="Window0" type="floating" value="p20_TWW"/>
-            <param name="Wall" type="floating" value="p19_TWS"/>
+            <param name="Wall0" type="floating" value="p19_TWS"/>
         </split>
     </rule>
     <rule name="Ledge">

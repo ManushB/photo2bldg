@@ -37,24 +37,52 @@
             <param type="absolute" name="texWidth" value="5"/>
             <param type="absolute" name="texHeight" value="5"/>
         </setupProjection>
-        <split splitAxis="y">
-            <param type="absolute" name="GroundFloorAndLedge" value="p00_GH"/>
-            <param type="absolute" name="SecondFloorAndLedge" value="p02_FH2"/>
-            <param type="floating" name="Floor" value="p01_FH" repeat="true"/>
-            <param type="absolute" name="TopFloorAndLedge" value="p03_AH"/>
+        <split splitAxis="x">
+            <param type="absolute" name="LeftColumn" value="p04_SW"/>
+            <param type="floating" repeat="true" name="Column" value="p05_TW"/>
+            <param type="absolute" name="RightColumn" value="p04_SW"/>
         </split>
     </rule>
-    <rule name="GroundFloorAndLedge">
+    <rule name="Column">
         <split splitAxis="y">
-            <param type="relative" name="GroundFloor" value="0.92"/>
+            <param type="absolute" name="GroundTileAndLedge" value="p00_GH"/>
+            <param type="absolute" name="SecondTileAndLedge" value="p02_FH2"/>
+            <param type="floating" name="Tile" value="p01_FH" repeat="true"/>
+            <param type="absolute" name="TopTileAndLedge" value="p03_AH"/>
+        </split>
+    </rule>
+    <rule name="LeftColumn">
+        <split splitAxis="y">
+            <param type="absolute" name="GroundLeftTileAndLedge" value="p00_GH"/>
+            <param type="absolute" name="SecondLeftTileAndLedge" value="p02_FH2"/>
+            <param type="floating" name="LeftTile" value="p01_FH" repeat="true"/>
+            <param type="absolute" name="TopLeftTileAndLedge" value="p03_AH"/>
+        </split>
+    </rule>
+    <rule name="RightColumn">
+        <split splitAxis="y">
+            <param type="absolute" name="GroundRightTileAndLedge" value="p00_GH"/>
+            <param type="absolute" name="SecondRightTileAndLedge" value="p02_FH2"/>
+            <param type="floating" name="RightTile" value="p01_FH" repeat="true"/>
+            <param type="absolute" name="TopRightTileAndLedge" value="p03_AH"/>
+        </split>
+    </rule>
+    <rule name="GroundTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="GroundTile" value="0.92"/>
             <param type="relative" name="Ledge" value="0.08"/>
         </split>
     </rule>
-    <rule name="GroundFloor">
-        <split splitAxis="x">
-            <param type="absolute" name="GroundLeftTile" value="p04_SW"/>
-            <param type="floating" repeat="true" name="GroundTile" value="p05_TW"/>
-            <param type="absolute" name="GroundRightTile" value="p04_SW"/>
+    <rule name="GroundLeftTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="GroundLeftTile" value="0.92"/>
+            <param type="relative" name="Ledge" value="0.08"/>
+        </split>
+    </rule>
+    <rule name="GroundRightTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="GroundRightTile" value="0.92"/>
+            <param type="relative" name="Ledge" value="0.08"/>
         </split>
     </rule>
     <rule name="GroundLeftTile">
@@ -99,17 +127,22 @@
             <param type="floating" name="Wall6" value="p23_DO2"/>
         </split>
     </rule>
-    <rule name="SecondFloorAndLedge">
+    <rule name="SecondTileAndLedge">
         <split splitAxis="y">
-            <param type="relative" name="SecondFloor" value="0.92"/>
+            <param type="relative" name="SecondTile" value="0.92"/>
             <param type="relative" name="Ledge" value="0.08"/>
         </split>
     </rule>
-    <rule name="SecondFloor">
-        <split splitAxis="x">
-            <param type="absolute" name="SecondLeftTile" value="p04_SW"/>
-            <param type="floating" name="SecondTile" value="p05_TW" repeat="true"/>
-            <param type="absolute" name="SecondRightTile" value="p04_SW"/>
+    <rule name="SecondLeftTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="SecondLeftTile" value="0.92"/>
+            <param type="relative" name="Ledge" value="0.08"/>
+        </split>
+    </rule>
+    <rule name="SecondRightTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="SecondRightTile" value="0.92"/>
+            <param type="relative" name="Ledge" value="0.08"/>
         </split>
     </rule>
     <rule name="SecondLeftTile">
@@ -154,13 +187,6 @@
             <param type="floating" name="Wall4" value="p14_WO2"/>
         </split>
     </rule>
-    <rule name="Floor">
-        <split splitAxis="x">
-            <param type="absolute" name="LeftTile" value="p04_SW"/>
-            <param type="floating" repeat="true" name="Tile" value="p05_TW"/>
-            <param type="absolute" name="RightTile" value="p04_SW"/>
-        </split>
-    </rule>
     <rule name="LeftTile">
         <split splitAxis="y">
             <param type="floating" name="Wall2" value="p08_WB"/>
@@ -203,17 +229,22 @@
             <param type="floating" name="Wall2" value="p14_WO2"/>
         </split>
     </rule>
-    <rule name="TopFloorAndLedge">
+    <rule name="TopTileAndLedge">
         <split splitAxis="y">
             <param type="relative" name="Ledge" value="0.08"/>
-            <param type="relative" name="TopFloor" value="0.92"/>
+            <param type="relative" name="TopTile" value="0.92"/>
         </split>
     </rule>
-    <rule name="TopFloor">
-        <split splitAxis="x">
-            <param type="floating" name="TopLeftTile" value="p04_SW"/>
-            <param type="floating" name="TopTile" value="p05_TW" repeat="true"/>
-            <param type="floating" name="TopRightTile" value="p04_SW"/>
+    <rule name="TopLeftTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="Ledge" value="0.08"/>
+            <param type="relative" name="TopLeftTile" value="0.92"/>
+        </split>
+    </rule>
+    <rule name="TopRightTileAndLedge">
+        <split splitAxis="y">
+            <param type="relative" name="Ledge" value="0.08"/>
+            <param type="relative" name="TopRightTile" value="0.92"/>
         </split>
     </rule>
     <rule name="TopLeftTile">
@@ -269,7 +300,14 @@
             <param type="floating" name="Floor" value="p01_FH" repeat="true"/>
         </split>
     </rule>
-
+    <rule name="Floor">
+        <split splitAxis="x">
+            <param type="absolute" name="LeftTile" value="p04_SW"/>
+            <param type="floating" repeat="true" name="Tile" value="p05_TW"/>
+            <param type="absolute" name="RightTile" value="p04_SW"/>
+        </split>
+    </rule>
+    
     <!-- ledge -->
     <rule name="Ledge">
         <split splitAxis="y">

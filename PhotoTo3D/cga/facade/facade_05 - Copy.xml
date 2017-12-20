@@ -24,24 +24,38 @@
             <param value="5" type="absolute" name="texWidth"/>
             <param value="5" type="absolute" name="texHeight"/>
         </setupProjection>
-        <split splitAxis="y">
-            <param value="p00_GH" type="floating" name="Wall"/>
-            <param value="p01_FH" type="floating" name="Floor" repeat="true"/>
-            <param value="p02_AH" type="floating" name="Wall"/>
+        <split splitAxis="x">
+            <param value="p03_SW" type="floating" name="LeftColumn"/>
+            <param value="p04_TW" type="floating" name="Column" repeat="true"/>
+            <param value="p03_SW" type="floating" name="RightColumn"/>
         </split>
     </rule>
-    <rule name="Floor">
-        <split splitAxis="x">
-            <param value="p03_SW" type="floating" name="LeftTile"/>
-            <param value="p04_TW" type="floating" name="Tile" repeat="true"/>
-            <param value="p03_SW" type="floating" name="RightTile"/>
+    <rule name="Column">
+        <split splitAxis="y">
+            <param value="p00_GH" type="floating" name="Wall1"/>
+            <param value="p01_FH" type="floating" name="Tile" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall1"/>
+        </split>
+    </rule>
+    <rule name="LeftColumn">
+        <split splitAxis="y">
+            <param value="p00_GH" type="floating" name="Wall0"/>
+            <param value="p01_FH" type="floating" name="LeftTile" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall0"/>
+        </split>
+    </rule>
+    <rule name="RightColumn">
+        <split splitAxis="y">
+            <param value="p00_GH" type="floating" name="Wall0"/>
+            <param value="p01_FH" type="floating" name="RightTile" repeat="true"/>
+            <param value="p02_AH" type="floating" name="Wall0"/>
         </split>
     </rule>
     <rule name="LeftTile">
         <split splitAxis="y">
-            <param value="p12_WB2" type="floating" name="Wall0"/>
+            <param value="p12_WB2" type="floating" name="Wall"/>
             <param value="p11_WH2" type="floating" name="LeftTile2"/>
-            <param value="p10_WT2" type="floating" name="Wall0"/>
+            <param value="p10_WT2" type="floating" name="Wall"/>
         </split>
     </rule>
     <rule name="LeftTile2">

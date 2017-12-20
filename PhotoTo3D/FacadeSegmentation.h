@@ -36,7 +36,8 @@ namespace fs {
 	void getSplitLines(const cv::Mat_<float>& mat, float threshold, std::vector<float>& split_positions);
 	void refineSplitLines(std::vector<float>& split_positions, float threshold);
 	void distributeSplitLines(std::vector<float>& split_positions, float threshold);
-	cv::Scalar getDominantColor(const cv::Mat& img, std::vector<float> y_splits, std::vector<float> x_splits, std::vector<std::vector<WindowPos>> win_rects, int clusterCount);
+	cv::Scalar getDominantColor(const cv::Mat& img, int cluster_count);
+	void getWallImage(cv::Mat img, std::vector<float> y_splits, std::vector<float> x_splits, std::vector<std::vector<WindowPos>> win_rects, cv::Mat& result);
 	bool isLocalMinimum(const cv::Mat& mat, int index, float threshold);
 
 	// visualization

@@ -311,3 +311,15 @@ int FacadeC::clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rec
 
 	return 3;
 }
+
+std::vector<cv::Scalar> FacadeC::getFacadeColors(const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count) {
+	std::vector<cv::Scalar> ans;
+
+	int GH = params[0] * 100 / height * facade_img.rows;
+	int AH = params[2] * 100 / height * facade_img.rows;
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(0, 0, facade_img.cols, AH)), cluster_count));
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(0, AH, facade_img.cols, facade_img.rows - AH - GH)), cluster_count));
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(0, facade_img.rows - GH, facade_img.cols, GH)), cluster_count));
+
+	return ans;
+}

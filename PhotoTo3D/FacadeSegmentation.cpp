@@ -820,48 +820,55 @@ namespace fs {
 		}
 	}
 
-	cv::Scalar getDominantColor(const cv::Mat& img, std::vector<float> y_splits, std::vector<float> x_splits, std::vector<std::vector<WindowPos>> win_rects, int clusterCount) {
+	/**
+	* Get the dominant color in the image.
+	* Note: exclude the black color.
+	*
+	* @param img				image
+	* @param cluster_count		#clusters
+	* @return					dominant color
+	*/
+	cv::Scalar getDominantColor(const cv::Mat& img, int cluster_count) {
 		cv::Mat lab_img;
 		cv::cvtColor(img, lab_img, cv::COLOR_BGR2Lab);
 
-		// k-means
-		std::vector<std::vector<float>> raw_samples;
-		for (int i = 0; i < y_splits.size() - 1; ++i) {
-			for (int j = 0; j < x_splits.size() - 1; ++j) {
-				if (win_rects[i][j].valid != fs::WindowPos::VALID) continue;
+		// setup data
+		std::vector<std::vector<float>> samples;
+		int cnt = 0;
+		for (int r = 0; r < img.rows; r++) {
+			for (int c = 0; c < img.cols; c++) {
+				if (img.at<cv::Vec3b>(r, c)[0] < 10) continue;
+				cv::Vec3b& col = lab_img.at<cv::Vec3b>(r, c);
 
-				for (int v = 0; v < y_splits[i + 1] - y_splits[i]; ++v) {
-					for (int u = 0; u < x_splits[j + 1] - x_splits[j]; ++u) {
-						if (v >= win_rects[i][j].top && v <= win_rects[i][j].bottom && u >= win_rects[i][j].left && u <= win_rects[i][j].right) continue;
-
-						cv::Vec3b col = lab_img.at<cv::Vec3b>(y_splits[i] + v, x_splits[j] + u);
-
-						std::vector<float> v(3);
-						for (int k = 0; k < 3; ++k) {
-							v[k] = col[k];
-						}
-						raw_samples.push_back(v);
-					}
+				std::vector<float> v(3);
+				for (int k = 0; k < 3; ++k) {
+					v[k] = col[k];
 				}
-			}
-		}
-		cv::Mat samples(raw_samples.size(), 3, CV_32F);
-		for (int i = 0; i < raw_samples.size(); ++i) {
-			for (int k = 0; k < 3; ++k) {
-				samples.at<float>(i, k) = raw_samples[i][k];
+				samples.push_back(v);
+				cnt++;
 			}
 		}
 
+		// convert data to a matrix
+		cv::Mat samples_mat(samples.size(), 3, CV_32F);
+		for (int i = 0; i < samples.size(); ++i) {
+			for (int k = 0; k < 3; ++k) {
+				samples_mat.at<float>(i, k) = samples[i][k];
+			}
+		}
+
+		// run k-means
 		cv::Mat labels;
 		int attempts = 5;
 		cv::Mat centers;
-		cv::kmeans(samples, clusterCount, labels, cv::TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 10000, 0.0001), attempts, cv::KMEANS_PP_CENTERS, centers);
+		cv::kmeans(samples_mat, cluster_count, labels, cv::TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 10000, 0.0001), attempts, cv::KMEANS_PP_CENTERS, centers);
 		std::vector<int> hist(centers.rows, 0);
 		for (int i = 0; i < labels.rows; ++i) {
 			int l = labels.at<int>(i, 0);
 			hist[l]++;
 		}
 
+		// find the largest cluster
 		int max_count = 0;
 		int max_idx = -1;
 		for (int i = 0; i < hist.size(); ++i) {
@@ -881,6 +888,18 @@ namespace fs {
 		cv::Vec3b rgb_col = temp.at<cv::Vec3b>(0, 0);
 
 		return cv::Scalar(std::min(255, (int)(rgb_col[2] * 1.2)), std::min(255, (int)(rgb_col[1] * 1.2)), std::min(255, (int)(rgb_col[0] * 1.2)));
+	}
+
+	void getWallImage(cv::Mat img, std::vector<float> y_splits, std::vector<float> x_splits, std::vector<std::vector<WindowPos>> win_rects, cv::Mat& result) {
+		result = img.clone();
+
+		for (int i = 0; i < y_splits.size() - 1; ++i) {
+			for (int j = 0; j < x_splits.size() - 1; ++j) {
+				if (win_rects[i][j].valid != fs::WindowPos::VALID) continue;
+
+				cv::rectangle(result, cv::Rect(x_splits[j] + win_rects[i][j].left, y_splits[i] + win_rects[i][j].top, win_rects[i][j].right - win_rects[i][j].left + 1, win_rects[i][j].bottom - win_rects[i][j].top + 1), cv::Scalar(0, 0, 0), -1);
+			}
+		}
 	}
 
 	bool isLocalMinimum(const cv::Mat& mat, int index, float threshold) {

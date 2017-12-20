@@ -47,6 +47,7 @@ public:
 	QMap<std::string, int> grammar_ids;
 	std::map<std::string, std::vector<float>> pm_params;
 	QString facade_color;
+	std::vector<QString> facade_colors;
 	std::vector<boost::shared_ptr<glutils::Face>> faces;
 	
 	// GUI options
@@ -72,16 +73,14 @@ public:
 	void loadImage(const QString& filename);
 	void clearSilhouette();
 	void loadSilhouette(const QString& filename);
-	void loadSilhouetteOld(const QString& filename);
 	void saveSilhouette(const QString& filename);
 	void clearGeometry();
 	void loadCGA(const QString& filename);
 	void saveCGA(const QString& filename);
 	void saveOBJ(const QString& filename);
 	void undo();
-	void massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method);
-	void autoTest(int grammar_id, int image_size, const QString& param_filename, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement);
-	void facadeReconstruction();
+	void massReconstruction(bool automaticRecognition, int grammarId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method);
+	void facadeReconstruction(bool automaticRecognition, int grammarId, bool adjustContrast, bool useMultileFacadeColors);
 	bool renderImage(cga::Grammar* grammar, std::vector<float>* pm_params, cv::Mat& rendered_image, bool discardIfTopFaceIsVisible = false, bool discardIfBottomFaceIsVisible = false);
 	double distanceMap(cv::Mat rendered_image, const cv::Mat& reference_dist_map);
 	std::vector<boost::shared_ptr<glutils::Face>> updateGeometry(int grammar_type, cga::Grammar* mass_grammar, std::vector<float>* mass_params, cga::Grammar* facade_grammar = NULL, std::vector<float>* facade_params = NULL, cga::Grammar* window_grammar = NULL, std::vector<float>* window_params = NULL);

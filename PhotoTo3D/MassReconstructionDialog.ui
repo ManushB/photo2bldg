@@ -13,16 +13,6 @@
   <property name="windowTitle">
    <string>MassReconstructionDialog</string>
   </property>
-  <widget class="QLineEdit" name="lineEditGrammarSnippet">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>10</y>
-     <width>31</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_13">
    <property name="geometry">
     <rect>
@@ -49,22 +39,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="label_16">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>10</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>(1 - 10)</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="lineEditOXMin">
    <property name="geometry">
     <rect>
@@ -85,7 +59,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Grammar snippet:</string>
+    <string>Grammar:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -682,11 +656,20 @@
     <string>Line 8</string>
    </property>
   </widget>
+  <widget class="QSpinBox" name="spinBoxGrammarId">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>10</y>
+     <width>42</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>checkBoxAutomaticRecognition</tabstop>
-  <tabstop>lineEditGrammarSnippet</tabstop>
   <tabstop>lineEditImageSize</tabstop>
   <tabstop>lineEditCameraDistance</tabstop>
   <tabstop>lineEditXrotMin</tabstop>

@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <grammar type="material" version="1.0" author="Gen Nishida">
 	<attr name="facade_color" value="#808080"/>
+	<attr name="facade_color0" value="#808080"/>
+	<attr name="facade_color1" value="#808080"/>
+	<attr name="facade_color2" value="#808080"/>
+	<attr name="facade_color3" value="#808080"/>
+	<attr name="facade_color4" value="#808080"/>
+	<attr name="facade_color5" value="#808080"/>
+	<attr name="facade_color6" value="#808080"/>
+	<attr name="facade_color7" value="#808080"/>
+	<attr name="facade_color8" value="#808080"/>
+	<attr name="facade_color9" value="#808080"/>
 	
     <rule name="DoorGlass">
         <color s="#202020"/>
@@ -20,6 +30,36 @@
     </rule>
     <rule name="Wall">
         <color s="facade_color"/>
+    </rule>
+    <rule name="Wall0">
+        <color s="facade_color0"/>
+    </rule>
+    <rule name="Wall1">
+        <color s="facade_color1"/>
+    </rule>
+    <rule name="Wall2">
+        <color s="facade_color2"/>
+    </rule>
+    <rule name="Wall3">
+        <color s="facade_color3"/>
+    </rule>
+    <rule name="Wall4">
+        <color s="facade_color4"/>
+    </rule>
+    <rule name="Wall5">
+        <color s="facade_color5"/>
+    </rule>
+    <rule name="Wall6">
+        <color s="facade_color6"/>
+    </rule>
+    <rule name="Wall7">
+        <color s="facade_color7"/>
+    </rule>
+    <rule name="Wall8">
+        <color s="facade_color8"/>
+    </rule>
+    <rule name="Wall9">
+        <color s="facade_color9"/>
     </rule>
     <rule name="WindowFrame">
         <color s="#f0e8e5"/>

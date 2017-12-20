@@ -24,7 +24,6 @@ public slots:
 	void onOpenImage();
 	void onClearSilhouette();
 	void onLoadSilhouette();
-	void onLoadSilhouetteOld();
 	void onSaveSilhouette();
 	void onOpenCGA();
 	void onSaveCGA();
@@ -32,7 +31,6 @@ public slots:
 	void onUndo();
 	void onBuildingReconstruction();
 	void onMassReconstruction();
-	void onAutoTest();
 	void onFacadeReconstruction();
 	void onOption();
 	void onRenderingChanged();

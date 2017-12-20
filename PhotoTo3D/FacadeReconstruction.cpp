@@ -248,4 +248,34 @@ namespace facarec {
 		return decoded_params;
 	}
 
+	std::vector<cv::Scalar> getFacadeColors(int grammar_id, const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count) {
+		if (grammar_id == 0) {
+			return FacadeA::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 1) {
+			return FacadeB::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 2) {
+			return FacadeC::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 3) {
+			return FacadeD::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 4) {
+			return FacadeE::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 5) {
+			return FacadeF::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 6) {
+			return FacadeG::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else if (grammar_id == 7) {
+			return FacadeH::getFacadeColors(params, facade_img, width, height, cluster_count);
+		}
+		else {
+			return{};
+		}
+	}
+
 }

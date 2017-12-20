@@ -12,8 +12,9 @@ MassReconstructionDialog::MassReconstructionDialog(QWidget *parent) : QDialog(pa
 	groupRefinement->addButton(ui.radioButtonRefinementRandom);
 
 	ui.checkBoxAutomaticRecognition->setChecked(true);
-	ui.lineEditGrammarSnippet->setText("1");
-	ui.lineEditGrammarSnippet->setEnabled(!ui.checkBoxAutomaticRecognition->isChecked());
+	ui.spinBoxGrammarId->setRange(1, 10);
+	ui.spinBoxGrammarId->setValue(6);
+	ui.spinBoxGrammarId->setEnabled(!ui.checkBoxAutomaticRecognition->isChecked());
 	ui.lineEditImageSize->setText("227");
 	ui.lineEditCameraDistance->setText("25");
 	ui.lineEditXrotMin->setText("-40");
@@ -52,7 +53,7 @@ MassReconstructionDialog::~MassReconstructionDialog() {
 }
 
 void MassReconstructionDialog::onAutomaticRecognition() {
-	ui.lineEditGrammarSnippet->setEnabled(!ui.checkBoxAutomaticRecognition->isChecked());
+	ui.spinBoxGrammarId->setEnabled(!ui.checkBoxAutomaticRecognition->isChecked());
 }
 
 void MassReconstructionDialog::onRefinement() {

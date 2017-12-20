@@ -16,7 +16,7 @@ public:
 	MassReconstructionDialog(QWidget *parent = 0);
 	~MassReconstructionDialog();
 	
-	public slots:
+public slots:
 	void onAutomaticRecognition();
 	void onRefinement();
 	void onOK();

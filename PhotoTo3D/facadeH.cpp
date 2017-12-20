@@ -397,3 +397,19 @@ int FacadeH::clusterWindowTypes(std::vector<std::vector<fs::WindowPos>>& win_rec
 
 	return 4;
 }
+
+std::vector<cv::Scalar> FacadeH::getFacadeColors(const std::vector<float>& params, const cv::Mat& facade_img, float width, float height, int cluster_count) {
+	std::vector<cv::Scalar> ans;
+
+	int GH = params[0] * 100 / height * facade_img.rows;
+	int TW2 = params[5] * 100 / width * facade_img.cols;
+	int LEFT = (facade_img.cols - TW2) / 2;
+	cv::Mat copy_facade_img = facade_img.clone();
+	cv::rectangle(copy_facade_img, cv::Rect(LEFT, 0, TW2, copy_facade_img.rows), cv::Scalar(0, 0, 0), -1);
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(LEFT, 0, TW2, facade_img.rows - GH)), cluster_count));
+	ans.push_back(fs::getDominantColor(cv::Mat(copy_facade_img, cv::Rect(0, 0, copy_facade_img.cols, copy_facade_img.rows - GH)), cluster_count));
+	ans.push_back(fs::getDominantColor(cv::Mat(facade_img, cv::Rect(LEFT, facade_img.rows - GH, TW2, GH)), cluster_count));
+	ans.push_back(fs::getDominantColor(cv::Mat(copy_facade_img, cv::Rect(0, copy_facade_img.rows - GH, copy_facade_img.cols, GH)), cluster_count));
+
+	return ans;
+}
