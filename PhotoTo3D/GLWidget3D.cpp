@@ -498,30 +498,6 @@ void GLWidget3D::loadSilhouette(const QString& filename) {
 	update();
 }
 
-void GLWidget3D::loadSilhouetteOld(const QString& filename) {
-	silhouette.clear();
-
-	QFile file(filename);
-	if (file.open(QIODevice::ReadOnly)) {
-		QTextStream in(&file);
-
-		while (true) {
-			QString line = in.readLine();
-			if (line.isNull()) break;
-			QStringList list = line.split(QRegExp("(\t| )"));
-
-			glm::dvec2 start((list[0].toFloat() - 400.0f) / 800.0f, (list[1].toFloat() - 400.0f) / 800.0f);
-			glm::dvec2 end((list[2].toFloat() - 400.0f) / 800.0f, (list[3].toFloat() - 400.0f) / 800.0f);
-			if (start != end) {
-				silhouette.push_back(vp::VanishingLine(start.x, start.y, end.x, end.y, list[4].toInt()));
-			}
-		}
-
-		file.close();
-	}
-	update();
-}
-
 void GLWidget3D::saveSilhouette(const QString& filename) {
 	QFile file(filename);
 	if (file.open(QIODevice::WriteOnly)) {
@@ -623,7 +599,7 @@ void GLWidget3D::undo() {
  * Use the silhouette as an input to the pretrained network, and obtain the probabilities as output.
  * Then, display the options ordered by the probabilities.
  */
-void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippetId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
+void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
 	// adjust the original background image such that the ratio of width to height is equal to the ratio of the window
 	float imageScale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
 	//resizeImageCanvasSize(imageOrig, width() / imageScale, height() / imageScale);
@@ -631,7 +607,7 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	// recognition
 	time_t start = clock();
 	if (automaticRecognition) {
-		grammarSnippetId = massrec::recognition(classifiers["mass"], image_size, width(), height(), silhouette);
+		grammarId = massrec::recognition(classifiers["mass"], image_size, width(), height(), silhouette);
 	}
 	time_t end = clock();
 	std::cout << "mass recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
@@ -639,17 +615,7 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	grammar_ids.clear();
 
 	// grammar id
-	grammar_ids["mass"] = grammarSnippetId;
-
-	// Hack
-	// For cylinder, we fix the rotation around Y axis
-	/*
-	if (grammar_ids["mass"] == 1) {
-		float yrot = (yrotMin + yrotMax) * 0.5;
-		yrotMin = yrot;
-		yrotMax = yrot;
-	}
-	*/
+	grammar_ids["mass"] = grammarId;
 
 	std::cout << "------------------------------------------------------------" << std::endl;
 	std::cout << "Mass grammar: #" << grammar_ids["mass"] + 1 << std::endl;
@@ -675,154 +641,7 @@ void GLWidget3D::massReconstruction(bool automaticRecognition, int grammarSnippe
 	update();
 }
 
-void GLWidget3D::autoTest(int grammar_id, int image_size, const QString& param_filename, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement) {
-	QFile param_file(param_filename);
-	param_file.open(QIODevice::ReadOnly);
-	QTextStream param_in(&param_file);
-	
-	while (!param_in.atEnd()) {
-		QString line = param_in.readLine();
-		QStringList list = line.split(",");
-		int id = list[0].toInt();
-
-		std::vector<float> param_values;
-		for (int k = 1; k < list.size(); ++k) {
-			param_values.push_back(list[k].toFloat());
-		}
-
-		// normalize the camera parameter values
-		param_values[0] = (param_values[0] - xrotMin) / (xrotMax - xrotMin);
-		param_values[1] = (param_values[1] - yrotMin) / (yrotMax - yrotMin);
-		param_values[2] = (param_values[2] - zrotMin) / (zrotMax - zrotMin);
-		param_values[3] = (param_values[3] - fovMin) / (fovMax - fovMin);
-		param_values[4] = (param_values[4] - oxMin) / (oxMax - oxMin);
-		param_values[5] = (param_values[5] - oyMin) / (oyMax - oyMin);
-		param_values[6] = (param_values[6] - xMin) / (xMax - xMin);
-		param_values[7] = (param_values[7] - yMin) / (yMax - yMin);
-
-		// normalize the PM parameter values
-		int k = 8;
-		for (auto it = grammars["mass"][grammar_id].attrs.begin(); it != grammars["mass"][grammar_id].attrs.end(); ++it, ++k) {
-			param_values[k] = (param_values[k] - it->second.range_start) / (it->second.range_end - it->second.range_start);
-		}
-
-		// read silhouette
-		QString filename = QString("data/%1.ctr").arg(id, 2, 10, QChar('0'));
-		loadSilhouette(filename);
-
-		// create image of silhouette
-		cv::Mat silhouette_image(height(), width(), CV_8UC1, cv::Scalar(255));
-		for (auto line : silhouette) {
-			cv::line(silhouette_image, cv::Point(line.start.x, line.start.y), cv::Point(line.end.x, line.end.y), cv::Scalar(0), 1);
-		}
-
-		// create distance map of silhouette
-		cv::Mat silhouette_dist_map;
-		cv::threshold(silhouette_image, silhouette_image, 254, 255, CV_THRESH_BINARY);
-		cv::distanceTransform(silhouette_image, silhouette_dist_map, CV_DIST_L2, 3);
-		silhouette_dist_map.convertTo(silhouette_dist_map, CV_64F);
-
-		// create input image to CNN
-		glm::vec2 scale((float)image_size / width(), (float)image_size / height());
-		cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
-		for (auto stroke : silhouette) {
-			cv::Point p1(stroke.start.x * scale.x, stroke.start.y * scale.y);
-			cv::Point p2(stroke.end.x * scale.x, stroke.end.y * scale.y);
-
-			if (silhouette_line_type == 0) {
-				cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_8);
-			}
-			else {
-				cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_AA);
-			}
-		}
-
-		// estimate paramter values by CNN
-		std::vector<float> cur_params = regressions["mass"][grammar_id]->Predict(input);
-
-		if (refinement) {
-			renderManager.renderingMode = RenderManager::RENDERING_MODE_CONTOUR;
-
-			double diff_min = std::numeric_limits<double>::max();
-
-			// setup the camera
-			setupCamera(cur_params, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
-
-			cv::Mat rendered_image;
-			renderImage(&grammars["mass"][grammar_id], &std::vector<float>(cur_params.begin() + 8, cur_params.end()), rendered_image);
-
-			// compute the difference
-			double diff = distanceMap(rendered_image, silhouette_dist_map);
-
-			// coordinate descent
-			float delta = 0.002;
-			for (int iter2 = 0; iter2 < 10; ++iter2) {
-				for (int k = 0; k < cur_params.size(); ++k) {
-					// option 1
-					std::vector<float> next_params1 = cur_params;
-					next_params1[k] -= delta;
-					setupCamera(next_params1, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
-					cv::Mat rendered_image1;
-					double diff1 = std::numeric_limits<double>::max();
-					if (renderImage(&grammars["mass"][grammar_id], &std::vector<float>(next_params1.begin() + 8, next_params1.end()), rendered_image1, true, true)) {
-						diff1 = distanceMap(rendered_image1, silhouette_dist_map);
-					}
-
-					// option 2
-					std::vector<float> next_params2 = cur_params;
-					next_params2[k] += delta;
-					setupCamera(next_params2, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
-					cv::Mat rendered_image2;
-					double diff2 = std::numeric_limits<double>::max();
-					if (renderImage(&grammars["mass"][grammar_id], &std::vector<float>(next_params2.begin() + 8, next_params2.end()), rendered_image2, true, true)) {
-						diff2 = distanceMap(rendered_image2, silhouette_dist_map);
-					}
-
-					if (diff1 < diff2 && diff1 < diff) {
-						diff = diff1;
-						cur_params = next_params1;
-					}
-					else if (diff2 < diff1 && diff2 < diff) {
-						diff = diff2;
-						cur_params = next_params2;
-					}
-				}
-
-				delta *= 0.8;
-			}
-
-			renderManager.renderingMode = RenderManager::RENDERING_MODE_LINE;
-		}
-
-		// show the absolute error
-		printf("------------------------------------------------\n");
-		printf("Blg: %d\n", id);
-		printf("Ground truth:\n");
-		for (int k = 0; k < param_values.size(); ++k) {
-			if (k > 0) printf(", ");
-			printf("%.4f", param_values[k]);
-		}
-		printf("\n");
-		printf("Estimated values:\n");
-		for (int k = 0; k < cur_params.size(); ++k) {
-			if (k > 0) printf(", ");
-			printf("%.4f", cur_params[k]);
-		}
-		printf("\n");
-		printf("Error:\n");
-		float total_error = 0.0f;
-		for (int k = 0; k < param_values.size(); ++k) {
-			if (k > 0) printf(", ");
-			float error = fabs(param_values[k] - cur_params[k]);
-			printf("%.3f", error);
-			total_error += error;
-		}
-		printf("\n");
-		printf("Avg abs error: %.3f\n", total_error / param_values.size());
-	}
-}
-
-void GLWidget3D::facadeReconstruction() {
+void GLWidget3D::facadeReconstruction(bool automaticRecognition, int grammarId, bool adjustContrast, bool useMultileFacadeColors) {
 	// convert image to cv::Mat object
 	cv::Mat imageMat = cv::Mat(image.height(), image.width(), CV_8UC4, const_cast<uchar*>(image.bits()), image.bytesPerLine()).clone();
 	cv::cvtColor(imageMat, imageMat, cv::COLOR_BGRA2BGR);
@@ -885,7 +704,6 @@ void GLWidget3D::facadeReconstruction() {
 				// rectify the facade image
 				cv::Mat transformMat;
 				cv::Mat rectifiedImage = cvutils::rectify_image(imageMat, pts, transformMat, glm::length(pts3d[1] - pts3d[0]) / glm::length(pts3d[2] - pts3d[1]));
-				rectifiedImage = cvutils::adjust_contrast(rectifiedImage);
 
 				rectified_images.push_back(rectifiedImage);
 
@@ -1045,10 +863,12 @@ void GLWidget3D::facadeReconstruction() {
 	//////////////////////////////////////////////////////////////////////////////////
 
 	// obtain the dominant facade color
+	/*
 	cv::Scalar col = fs::getDominantColor(facade_img, y_splits, x_splits, win_rects, 10);
 	facade_color = QString("#%1%2%3").arg((int)col[0], 2, 16, QChar('0')).arg((int)col[1], 2, 16, QChar('0')).arg((int)col[2], 2, 16, QChar('0'));
 	std::cout << "Facade color = " << facade_color.toUtf8().constData() << std::endl;
-	
+	*/
+
 	// gray scale
 	cv::Mat facade_gray_img;
 	cv::cvtColor(facade_img, facade_gray_img, cv::COLOR_BGR2GRAY);
@@ -1154,16 +974,18 @@ void GLWidget3D::facadeReconstruction() {
 	//cv::imwrite("window227.png", input_img);
 
 	// recognize the facade grammar id
-	start = clock();
-	grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"], num_floors);
-	end = clock();
-	std::cout << "facade recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
-	std::cout << "------------------------------------------------------------" << std::endl;
-	std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
-
-
-
-
+	if (automaticRecognition) {
+		start = clock();
+		grammar_ids["facade"] = facarec::recognition(classifiers["facade"], input_img, grammar_ids["mass"], num_floors);
+		end = clock();
+		std::cout << "facade recognition by CNN: " << (double)(end - start) / CLOCKS_PER_SEC << " sec." << std::endl;
+		std::cout << "------------------------------------------------------------" << std::endl;
+		std::cout << "Facade grammar: #" << grammar_ids["facade"] + 1 << std::endl;
+	}
+	else {
+		grammar_ids["facade"] = grammarId;
+	}
+	
 	// recognize window styles
 	start = clock();
 	std::vector<int> selected_win_types = winrec::recognition(max_facade, grammar_ids["facade"], y_splits, x_splits, win_rects, classifiers["window"]);
@@ -1197,6 +1019,36 @@ void GLWidget3D::facadeReconstruction() {
 	// set PM parameter values
 	pm_params["facade"] = params;
 
+	////////////////////////////////////////////////////////////////////////////////
+	// 2017/8/23
+	// get the facade image excluding windows
+	cv::Mat facade_wall_img = facade_img;
+	if (adjustContrast) {
+		facade_wall_img = cvutils::adjust_contrast(facade_wall_img);
+	}
+	fs::getWallImage(facade_wall_img, y_splits, x_splits, win_rects, facade_wall_img);
+	cv::imwrite("facade_wall.png", facade_wall_img);
+
+	// extract a dominant color for the entire region of facade
+	cv::Scalar col = fs::getDominantColor(facade_wall_img, 10);
+	facade_color = QString("#%1%2%3").arg((int)col[0], 2, 16, QChar('0')).arg((int)col[1], 2, 16, QChar('0')).arg((int)col[2], 2, 16, QChar('0'));
+	std::cout << "--------------------------------------------" << std::endl;
+	std::cout << "Facade colors:" << std::endl;
+	std::cout << "Facade color " << " = " << facade_color.toUtf8().constData() << std::endl;
+
+	// extract color for each region of the facade
+	std::vector<cv::Scalar> cols = facarec::getFacadeColors(grammar_ids["facade"], params, facade_wall_img, max_geometric_size.x, max_geometric_size.y, 10);
+	facade_colors.resize(cols.size());
+	for (int i = 0; i < cols.size(); i++) {
+		if (useMultileFacadeColors) {
+			facade_colors[i] = QString("#%1%2%3").arg((int)cols[i][0], 2, 16, QChar('0')).arg((int)cols[i][1], 2, 16, QChar('0')).arg((int)cols[i][2], 2, 16, QChar('0'));
+		}
+		else {
+			facade_colors[i] = facade_color;
+		}
+		std::cout << "Facade color " << i << " = " << facade_colors[i].toUtf8().constData() << std::endl;
+	}
+	////////////////////////////////////////////////////////////////////////////////
 
 	for (int i = 0; i < selected_win_types.size(); ++i) {
 		char window_nt_name[256];
@@ -1391,6 +1243,10 @@ void GLWidget3D::updateGeometry() {
 
 		// add material grammar snippet
 		grammars["material"][grammar_ids["material"]].attrs["facade_color"].value = facade_color.toUtf8().constData();
+		for (int i = 0; i < facade_colors.size(); i++) {
+			QString s = QString("facade_color%1").arg(i);
+			grammars["material"][grammar_ids["material"]].attrs[s.toUtf8().constData()].value = facade_colors[i].toUtf8().constData();
+		}
 		grammar_list.push_back(grammars["material"][grammar_ids["material"]]);
 
 
@@ -1491,7 +1347,7 @@ void GLWidget3D::textureMapping() {
 				// rectify the facade image
 				cv::Mat transformMat;
 				cv::Mat rectifiedImage = cvutils::rectify_image(imageMat, pts, transformMat, glm::length(pts3d[1] - pts3d[0]) / glm::length(pts3d[2] - pts3d[1]));
-				rectifiedImage = cvutils::adjust_contrast(rectifiedImage);
+				//rectifiedImage = cvutils::adjust_contrast(rectifiedImage);
 
 				rectified_images.push_back(rectifiedImage);
 			}
