@@ -77,17 +77,17 @@ ipch/
 *.vspx
 
 # 3rd party libraries
-3rdparty/
+#3rdparty/
 lib/
 caffelib/
-src/
-include/
+#src/
+#include/
 
 # models
 models/
 models.bak/
 
-bin/
+#bin/
 
 # TFS 2012 Local Workspace
 $tf/
