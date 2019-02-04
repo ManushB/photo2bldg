@@ -79,7 +79,7 @@ ipch/
 # 3rd party libraries
 #3rdparty/
 #lib/
-caffelib/
+#caffelib/
 #src/
 #include/
 
