@@ -97,22 +97,22 @@ void RenderManager::init(const std::string& vertex_file, const std::string& geom
 	fragDataNamesP1.push_back("def_normal");
 	fragDataNamesP1.push_back("def_originPos");
 	fragDataNamesP1.push_back("def_intensity");
-	programs["pass1"] = shader.createProgram("../shaders/lc_vert_pass1.glsl", "../shaders/lc_frag_pass1.glsl", fragDataNamesP1);
+	programs["pass1"] = shader.createProgram("shaders/vert_pass1.glsl", "shaders/frag_pass1.glsl", fragDataNamesP1);
 	// PASS 2
 	std::vector<QString> fragDataNamesP2;
 	fragDataNamesP2.push_back("def_AO");
-	programs["ssao"] = shader.createProgram("../shaders/lc_vert_ssao.glsl", "../shaders/lc_frag_ssao.glsl", fragDataNamesP2);
+	programs["ssao"] = shader.createProgram("shaders/vert_ssao.glsl", "shaders/frag_ssao.glsl", fragDataNamesP2);
 	// PASS 3
-	programs["blur"] = shader.createProgram("../shaders/lc_vert_blur.glsl", "../shaders/lc_frag_blur.glsl");
+	programs["blur"] = shader.createProgram("shaders/vert_blur.glsl", "shaders/frag_blur.glsl");
 
 	// Line rendering
-	programs["line"] = shader.createProgram("../shaders/lc_vert_line.glsl", "../shaders/lc_frag_line.glsl");
+	programs["line"] = shader.createProgram("shaders/vert_line.glsl", "shaders/frag_line.glsl");
 
 	// Contour rendering
-	programs["contour"] = shader.createProgram("../shaders/lc_vert_contour.glsl", "../shaders/lc_frag_contour.glsl");
+	programs["contour"] = shader.createProgram("shaders/vert_contour.glsl", "shaders/frag_contour.glsl");
 
 	// Shadow mapping
-	programs["shadow"] = shader.createProgram("../shaders/lc_vert_shadow.glsl", "../shaders/lc_frag_shadow.glsl");
+	programs["shadow"] = shader.createProgram("shaders/vert_shadow.glsl", "shaders/frag_shadow.glsl");
 
 	glUseProgram(programs["pass1"]);
 
