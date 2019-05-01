@@ -1,1 +1,0 @@
-PATH=$(PATH);$(QTDIR)/bin;../glew;../opencv;$(CGAL_DIR)/bin;$(CGAL_DIR)/auxiliary/gmp/lib;$(BOOST_LIBRARYDIR);../3rdparty/bin
