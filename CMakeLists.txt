@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.14.0)
 set(CMAKE_CXX_STANDARD 17)
 
 project(photo2bldg)
@@ -20,13 +20,15 @@ find_package(Qt5Xml REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(CUDA 10.0 REQUIRED)
+find_package(CUDA 9.0 REQUIRED)
 find_package(Caffe REQUIRED)
-find_package(dlib REQUIRED)
+find_package(dlib 19.17 REQUIRED)
 find_package(CGAL REQUIRED COMPONENTS Core)
+find_package(glm 0.9.9 REQUIRED)
 include_directories(${Caffe_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS})
 add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+add_definitions(-DGLM_FORCE_CTOR_INIT)
 
 # Get sources
 file(GLOB SOURCES src/*.cpp)
