@@ -1,5 +1,5 @@
 ﻿#include "ShadowMapping.h"
-#include "GLWidget3D.h"
+#include "GL3D.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
@@ -62,7 +62,7 @@ void ShadowMapping::init(int programId, int width, int height) {
  * @param glWidget3D		GLWidget3Dクラス。このクラスのdrawScene(1)を呼び出してシーンを描画し、シャドウマップを生成する。
  * @param light_dir			光の進行方向
  */
-void ShadowMapping::update(GLWidget3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix) {
+void ShadowMapping::update(GL3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix) {
 	int origWidth = glWidget3D->width();
 	int origHeigh = glWidget3D->height();
 				

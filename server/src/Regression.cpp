@@ -24,11 +24,12 @@ Regression::Regression(const string& model_file, const string& trained_file) {
 }
 
 std::vector<float> Regression::Predict(const cv::Mat& img) {
-	Blob<float>* input_layer = net_->input_blobs()[0];
-	input_layer->Reshape(1, num_channels_,
+    Blob<float>* input_layer = net_->input_blobs()[0];
+
+    input_layer->Reshape(1, num_channels_,
 		input_geometry_.height, input_geometry_.width);
 	/* Forward dimension change to all layers. */
-	net_->Reshape();
+    net_->Reshape();
 
 	std::vector<cv::Mat> input_channels;
 	WrapInputLayer(&input_channels);

@@ -4,7 +4,7 @@
 #include <QGLWidget>
 #include <glm/glm.hpp>
 
-class GLWidget3D;
+class GL3D;
 
 class ShadowMapping {
 public:
@@ -20,7 +20,7 @@ public:
 	ShadowMapping();
 
 	void init(int programId, int width, int height);
-	void update(GLWidget3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix);
+	void update(GL3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix);
 };
 
 

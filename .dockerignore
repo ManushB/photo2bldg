@@ -1,0 +1,8 @@
+/build/*
+install.*
+old_ui/*
+client/*
+src/models/*
+cmake-build-debug/*
+doc/*
+preinstall.sh

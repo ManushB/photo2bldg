@@ -64,12 +64,13 @@ public:
 	float uKernelSize;
 	std::vector<float> uKernelOffsets;
 
+	GLuint default_fb;
 
 public:
 	RenderManager();
 	~RenderManager();
 
-	void init(const std::string& vertex_file, const std::string& geometry_file, const std::string& fragment_file, bool useShadow, int shadowMapSize = 4096);
+	void init(GLuint default_fb, const std::string& vertex_file, const std::string& geometry_file, const std::string& fragment_file, bool useShadow, int shadowMapSize = 4096);
 	
 	// ssao
 	void resize(int width,int height);
@@ -84,7 +85,7 @@ public:
 	void renderAll();
 	void renderAllExcept(const QString& object_name);
 	void render(const QString& object_name);
-	void updateShadowMap(GLWidget3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix);
+	void updateShadowMap(GL3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix);
 	
 
 private:

@@ -1,6 +1,7 @@
 #ifndef MASSRECONSTRUCTIONDIALOG_H
 #define MASSRECONSTRUCTIONDIALOG_H
 
+#include <QButtonGroup>
 #include <QDialog>
 #include "ui_MassReconstructionDialog.h"
 

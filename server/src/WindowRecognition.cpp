@@ -13,13 +13,17 @@ namespace winrec {
 
 	std::vector<int> recognition(const cv::Mat& img, int facade_id, const std::vector<float>& y_splits, const std::vector<float>& x_splits, std::vector<std::vector<fs::WindowPos>>& win_rects, boost::shared_ptr<Classifier> classifier) {
 		// cluster the tiles based on the grammar
-		int num_window_types = 0;
-		if (facade_id == 0) {
+        int num_window_types = 0;
+        std::cout << facade_id << std::endl;
+
+        if (facade_id == 0) {
 			num_window_types = FacadeA::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 1) {
-			num_window_types = FacadeB::clusterWindowTypes(win_rects);
-		}
+            std::cout << "here 2" << std::endl;
+            num_window_types = FacadeB::clusterWindowTypes(win_rects);
+            std::cout << "here 3" << std::endl;
+        }
 		else if (facade_id == 2) {
 			num_window_types = FacadeC::clusterWindowTypes(win_rects);
 		}
@@ -39,11 +43,12 @@ namespace winrec {
 			num_window_types = FacadeH::clusterWindowTypes(win_rects);
 		}
 
-		//std::cout << "window:" << std::endl;
+        //std::cout << "window:" << std::endl;
 		std::map<int, std::vector<int>> win_type_votes;
 		for (int i = 0; i < y_splits.size() - 1; ++i) {
 			for (int j = 0; j < x_splits.size() - 1; ++j) {
-				//if (j > 0) std::cout << ", ";
+
+                //if (j > 0) std::cout << ", ";
 				if (win_rects[i][j].valid == fs::WindowPos::VALID) {
 					int x = x_splits[j];
 					int w = x_splits[j + 1] - x_splits[j];
@@ -63,7 +68,7 @@ namespace winrec {
 					//////////////////////////////////////////////////////////////////
 
 
-					std::vector<Prediction> win_predictions = classifier->Classify(tile_img227, 13);
+                    std::vector<Prediction> win_predictions = classifier->Classify(tile_img227, 13);
 					int win_id = win_predictions[0].first;
 					//std::cout << win_id + 1 << "(" << win_rects[i][j].type << ")";
 
@@ -77,7 +82,7 @@ namespace winrec {
 		}
 		//std::cout << std::endl;
 
-		// find the maximum vote for each window group
+        // find the maximum vote for each window group
 		std::vector<int> selected_win_types;
 		for (int i = 0; i < num_window_types; ++i) {
 			std::map<int, int> votes;	// mapping from window type to #votes

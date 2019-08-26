@@ -1,6 +1,6 @@
 ﻿#include "MassReconstruction.h"
 #include "RenderManager.h"
-#include "GLWidget3D.h"
+#include "GL3D.h"
 #include "Grammar.h"
 #include "Utils.h"
 
@@ -8,7 +8,7 @@ namespace massrec {
 
 	int NUM_GRAMMARS = 10;
 
-	obj_function::obj_function(GLWidget3D* glWidget, cga::Grammar* grammar, cv::Mat silhouette_dist_map, float xrotMax, float xrotMin, float yrotMax, float yrotMin, float zrotMax, float zrotMin, float fovMax, float fovMin, float oxMax, float oxMin, float oyMax, float oyMin, float xMax, float xMin, float yMax, float yMin) {
+	obj_function::obj_function(GL3D* glWidget, cga::Grammar* grammar, cv::Mat silhouette_dist_map, float xrotMax, float xrotMin, float yrotMax, float yrotMin, float zrotMax, float zrotMin, float fovMax, float fovMin, float oxMax, float oxMin, float oyMax, float oyMin, float xMax, float xMin, float yMax, float yMin) {
 		this->glWidget = glWidget;
 		this->grammar = grammar;
 		this->silhouette_dist_map = silhouette_dist_map;
@@ -57,14 +57,14 @@ namespace massrec {
 
 	int recognition(boost::shared_ptr<Classifier> classifier, int image_size, int screen_width, int screen_height, std::vector<vp::VanishingLine> silhouette) {
 		//glm::vec2 scale((float)image_size, (float)image_size / screen_height);
-		cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
-		for (auto stroke : silhouette) {
-			cv::Point p1(std::round(stroke.start.x * image_size + image_size * 0.5f), std::round(stroke.start.y * image_size + image_size * 0.5f));
+        cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
+
+        for (auto stroke : silhouette) {
+            cv::Point p1(std::round(stroke.start.x * image_size + image_size * 0.5f), std::round(stroke.start.y * image_size + image_size * 0.5f));
 			cv::Point p2(std::round(stroke.end.x * image_size + image_size * 0.5f), std::round(stroke.end.y * image_size + image_size * 0.5f));
 
 			cv::line(input, p1, p2, cv::Scalar(0, 0, 0), 1, cv::LINE_AA);
 		}
-
 
 		std::vector<Prediction> predictions = classifier->Classify(input, NUM_GRAMMARS);
 		
@@ -81,17 +81,21 @@ namespace massrec {
 
 	}
 
-	std::vector<float> parameterEstimation(GLWidget3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
+//	void pE(GL3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax) {
+//        std::cout << "here" << std::endl;
+//    }
+
+	std::vector<float> parameterEstimation(GL3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
 		std::cout << "-----------------------------------------------------" << std::endl;
 
 		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_CONTOUR;
 		glWidget->camera.distanceBase = cameraDistanceBase;
-
 		// create image of silhouette
 		cv::Mat silhouette_image(glWidget->height(), glWidget->width(), CV_8UC1, cv::Scalar(255));
 		float scale = std::min((float)glWidget->width() / glWidget->imageOrig.width(), (float)glWidget->height() / glWidget->imageOrig.height());
 		int screen_size = std::max(glWidget->imageOrig.width(), glWidget->imageOrig.height()) * scale;
-		for (auto line : silhouette) {
+
+        for (auto line : silhouette) {
 			int x1 = line.start.x * screen_size + glWidget->width() * 0.5;
 			int y1 = line.start.y * screen_size + glWidget->height() * 0.5;
 			int x2 = line.end.x * screen_size + glWidget->width() * 0.5;
@@ -99,7 +103,7 @@ namespace massrec {
 			cv::line(silhouette_image, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0), 1);
 		}
 
-		// create distance map of silhouette
+        // create distance map of silhouette
 		cv::Mat silhouette_dist_map;
 		cv::threshold(silhouette_image, silhouette_image, 254, 255, CV_THRESH_BINARY);
 		cv::distanceTransform(silhouette_image, silhouette_dist_map, CV_DIST_L2, 3);
@@ -110,7 +114,7 @@ namespace massrec {
 		std::vector<float> best_params;
 		double diff_min = std::numeric_limits<double>::max();
 
-		// create input image to CNN
+        // create input image to CNN
 		//glm::vec2 scale((float)image_size / glWidget->width(), (float)image_size / glWidget->height());
 		cv::Mat input = cv::Mat(image_size, image_size, CV_8UC3, cv::Scalar(255, 255, 255));
 		for (auto stroke : silhouette) {
@@ -125,9 +129,9 @@ namespace massrec {
 			}
 		}
 
-		// estimate paramter values by CNN
+        // estimate paramter values by CNN
 		std::vector<float> params = regression->Predict(input);
-		//utils::output_vector(params);
+        //utils::output_vector(params);
 
 		// 固定の場合には、ダミーでパラメータを入れちゃう
 		if (xrotMin == xrotMax) {
@@ -163,18 +167,19 @@ namespace massrec {
 		glWidget->renderImage(grammar, &params2, rendered_image);
 
 		double diff = glWidget->distanceMap(rendered_image, silhouette_dist_map);
-		if (diff < diff_min) {
+        std::cout << "Diff: " << diff << "--" << diff_min << std::endl;
+        if (diff < diff_min) {
 			diff_min = diff;
 			best_params = params;
 		}
 
-		std::vector<float> init_params = best_params;
+        std::vector<float> init_params = best_params;
 
 		std::cout << "Initial estimate:" << std::endl;
 		utils::output_vector(best_params);
 		std::cout << "Dist = " << diff_min << std::endl;
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// refine the parameter estimation
 		if (refinement) {
 			if (refinement_method == 0) {	// BOBYQA
@@ -205,11 +210,11 @@ namespace massrec {
 				for (int k = 0; k < best_params.size(); ++k) {
 					best_params[k] = starting_point(k, 0);
 				}
-			}
+            }
 			else {	// Random Walk
 				double diff_min = std::numeric_limits<double>::max();
 				printf("find good values by random sampling: ");
-				for (int iter = 0; iter < maxIters; ++iter) {
+                for (int iter = 0; iter < maxIters; ++iter) {
 					printf("\rfind good initial values by random sampling: %d", iter + 1);
 
 					// randomly pick the initial values around the initial estimate by CNN
@@ -219,8 +224,7 @@ namespace massrec {
 							cur_params[k] += utils::genRand(-0.02, +0.02);
 						}
 					}
-
-					// setup the camera
+                    // setup the camera
 					glWidget->setupCamera(cur_params, xrotMax, xrotMin, yrotMax, yrotMin, zrotMax, zrotMin, fovMax, fovMin, oxMax, oxMin, oyMax, oyMin, xMax, xMin, yMax, yMin);
 
 					cv::Mat rendered_image;
@@ -230,7 +234,7 @@ namespace massrec {
 					// compute the difference
 					double diff = glWidget->distanceMap(rendered_image, silhouette_dist_map);
 
-					// coordinate descent
+                    // coordinate descent
 					float delta = 0.002;
 					for (int iter2 = 0; iter2 < 10; ++iter2) {
 						for (int k = 0; k < cur_params.size(); ++k) {
@@ -244,6 +248,7 @@ namespace massrec {
 							if (glWidget->renderImage(grammar, &next_params1_2, rendered_image1, true, true)) {
 								diff1 = glWidget->distanceMap(rendered_image1, silhouette_dist_map);
 							}
+
 
 							// option 2
 							std::vector<float> next_params2 = cur_params;
@@ -269,7 +274,7 @@ namespace massrec {
 						delta *= 0.8;
 					}
 
-					if (diff < diff_min) {
+                    if (diff < diff_min) {
 						diff_min = diff;
 						best_params = cur_params;
 					}
@@ -289,7 +294,7 @@ namespace massrec {
 			utils::output_vector(best_params);
 			std::cout << "Dist = " << diff_min << std::endl;
 		}
-		
+
 		glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_LINE;
 
 		return best_params;

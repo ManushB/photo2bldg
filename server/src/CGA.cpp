@@ -1,6 +1,6 @@
 ﻿#include "CGA.h"
 #include "GLUtils.h"
-#include "OBJLoader.h"
+//#include "OBJLoader.h"
 #include <map>
 #include <iostream>
 #include <random>

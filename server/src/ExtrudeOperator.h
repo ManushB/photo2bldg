@@ -1,16 +1,18 @@
 #pragma once
 
 #include "Grammar.h"
-#include <map>
+#include <QDomDocument>
+#include <QDomElement>
 
 namespace cga {
 
-class CompOperator : public Operator {
+class ExtrudeOperator : public Operator {
 private:
-	std::map<std::string, std::string> name_map;
+	std::string height;
 
 public:
-	CompOperator(const std::map<std::string, std::string>& name_map);
+	ExtrudeOperator(const std::string& height);
+
 	boost::shared_ptr<Shape> apply(boost::shared_ptr<Shape>& shape, const Grammar& grammar, std::list<boost::shared_ptr<Shape> >& stack);
 	QDomElement toXml(QDomDocument& doc);
 };

@@ -80,7 +80,8 @@ RenderManager::~RenderManager() {
 	glDeleteVertexArrays(1,&secondPassVAO);
 }
 
-void RenderManager::init(const std::string& vertex_file, const std::string& geometry_file, const std::string& fragment_file, bool useShadow, int shadowMapSize) {
+void RenderManager::init(GLuint default_fb, const std::string& vertex_file, const std::string& geometry_file, const std::string& fragment_file, bool useShadow, int shadowMapSize) {
+    this->default_fb = default_fb;
 	this->useShadow = useShadow;
 	this->softShadow = true;
 	renderingMode = RENDERING_MODE_BASIC;
@@ -279,7 +280,7 @@ void RenderManager::resize(int winWidth, int winHeight){
 		printf("+1ERROR: GL_FRAMEBUFFER_COMPLETE false\n");
 		exit(0);
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
 
 	// FRAME BUFFER AO
 	fragDataFB_AO = 0;
@@ -296,7 +297,7 @@ void RenderManager::resize(int winWidth, int winHeight){
 		printf("+2ERROR: GL_FRAMEBUFFER_COMPLETE false\n");
 		exit(0);
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
 
 	//////////////////////////////////////////////////////////////////////////////////
 	// Noise
@@ -502,7 +503,7 @@ void RenderManager::render(const QString& object_name) {
 	}
 }
 
-void RenderManager::updateShadowMap(GLWidget3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix) {
+void RenderManager::updateShadowMap(GL3D* glWidget3D, const glm::vec3& light_dir, const glm::mat4& light_mvpMatrix) {
 	if (useShadow) {
 		shadow.update(glWidget3D, light_dir, light_mvpMatrix);
 	}
