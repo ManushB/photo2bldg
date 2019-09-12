@@ -81,7 +81,7 @@ RenderManager::~RenderManager() {
 }
 
 void RenderManager::init(GLuint default_fb, const std::string& vertex_file, const std::string& geometry_file, const std::string& fragment_file, bool useShadow, int shadowMapSize) {
-    this->default_fb = default_fb;
+        this->default_fb = default_fb;
 	this->useShadow = useShadow;
 	this->softShadow = true;
 	renderingMode = RENDERING_MODE_BASIC;
@@ -245,6 +245,8 @@ void RenderManager::resize(int winWidth, int winHeight){
 	glBindTexture(GL_TEXTURE_2D, fragDepthTex);
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, winWidth, winHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, winWidth, winHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -263,14 +265,15 @@ void RenderManager::resize(int winWidth, int winHeight){
 	/////////////////////////////////////////
 
 	// FRAME BUFFER
-	fragDataFB = 0;
+	//fragDataFB = 1;
 	glGenFramebuffers(1, &fragDataFB);
-		
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fragDataTex[0], 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, fragDataTex[1], 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, fragDataTex[2], 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, fragDataTex[3], 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fragDepthTex, 0);
+
+//  Unused code. Remove it if not necessary
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fragDataTex[0], 0);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, fragDataTex[1], 0);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, fragDataTex[2], 0);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, fragDataTex[3], 0);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fragDepthTex, 0);
 	// Set the list of draw buffers.
 	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, DrawBuffers); // "3" is the size of DrawBuffers
@@ -283,11 +286,12 @@ void RenderManager::resize(int winWidth, int winHeight){
 	glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
 
 	// FRAME BUFFER AO
-	fragDataFB_AO = 0;
+	fragDataFB_AO = 1;
 	glGenFramebuffers(1, &fragDataFB_AO);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fragAOTex, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fragDepthTex, 0);
+//  Unused code. Remove it if not necessary
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fragAOTex, 0);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fragDepthTex, 0);
 	// Set the list of draw buffers.
 	GLenum DrawBuffers_AO[] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, DrawBuffers_AO); // "3" is the size of DrawBuffers
@@ -301,7 +305,7 @@ void RenderManager::resize(int winWidth, int winHeight){
 
 	//////////////////////////////////////////////////////////////////////////////////
 	// Noise
-	fragNoiseTex = 0;
+	fragNoiseTex = 1;
 	glActiveTexture(GL_TEXTURE7);
 	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &fragNoiseTex);

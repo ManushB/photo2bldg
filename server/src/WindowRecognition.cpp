@@ -14,15 +14,12 @@ namespace winrec {
 	std::vector<int> recognition(const cv::Mat& img, int facade_id, const std::vector<float>& y_splits, const std::vector<float>& x_splits, std::vector<std::vector<fs::WindowPos>>& win_rects, boost::shared_ptr<Classifier> classifier) {
 		// cluster the tiles based on the grammar
         int num_window_types = 0;
-        std::cout << facade_id << std::endl;
 
         if (facade_id == 0) {
 			num_window_types = FacadeA::clusterWindowTypes(win_rects);
 		}
 		else if (facade_id == 1) {
-            std::cout << "here 2" << std::endl;
             num_window_types = FacadeB::clusterWindowTypes(win_rects);
-            std::cout << "here 3" << std::endl;
         }
 		else if (facade_id == 2) {
 			num_window_types = FacadeC::clusterWindowTypes(win_rects);

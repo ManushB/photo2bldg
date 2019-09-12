@@ -22,7 +22,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtGui/QPainter>
-//#include "OBJWriter.h"
+#include "OBJWriter.h"
 //#include "GrammarWriter.h"
 
 void Server::openImage(const QString& filename) {
@@ -74,6 +74,10 @@ void Server::saveImage(const QString& filename) {
     glWidget->output.save(filename);
 }
 
+void Server::saveObj(const QString& filename) {
+    OBJWriter::write(glWidget->faces, filename.toUtf8().constData());
+}
+
 void Server::onBuildingReconstruction(bool* bool_params, int* int_params) {
     glWidget->massReconstruction(bool_params[0], int_params[0] - 1,
                                  227, 25, -40, 0, -70, -20, -10, 10, 20, 90, -0.8, 0.8, -0.8, 0.8, -15, 15, -15, 15, 1, true, 3000, 0);
@@ -82,7 +86,11 @@ void Server::onBuildingReconstruction(bool* bool_params, int* int_params) {
     glWidget->facadeReconstruction(bool_params[1], int_params[2], bool_params[2], bool_params[3]);
 
     glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_SSAO;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, glWidget->default_fb);
     glWidget->update();
+    glWidget->output = glWidget->grabFrameBuffer();
+
     return;
 }
 
@@ -241,12 +249,66 @@ int GL3D::update(){
 }
 
 QImage GL3D::grabFrameBuffer() {
-    glBindTexture(GL_TEXTURE_2D, default_texture);
+
     QImage tmp = QImage(width(), height(), QImage::Format_RGBA8888);
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp.bits());
-    glBindTexture(GL_TEXTURE_2D, 0);
+    //glUseProgram(0);
+    //glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
+    //glBindTexture(GL_TEXTURE_2D, default_texture);
+    //glBindFramebuffer(GL_FRAMEBUFFER, renderManager.fragDataFB);
+    glReadPixels(0, 0, width(), height(), GL_RGBA, GL_UNSIGNED_BYTE, tmp.bits());
+    convertFromGLImage(tmp, width(), height(), true, true);
+    //glClearColor(0.6, 0.0, 0.6, 1.0);
+    //glClear(GL_COLOR_BUFFER_BIT);
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp.bits());
+    //glBindTexture(GL_TEXTURE_2D, 0);
+
     return tmp;
 }
+
+void GL3D::convertFromGLImage(QImage &img, int w, int h, bool alpha_format, bool include_alpha)
+{
+    Q_ASSERT(!img.isNull());
+    if (QSysInfo::ByteOrder == QSysInfo::BigEndian) {
+        // OpenGL gives RGBA; Qt wants ARGB
+        uint *p = (uint*)img.bits();
+        uint *end = p + w*h;
+        if (alpha_format && include_alpha) {
+            while (p < end) {
+                uint a = *p << 24;
+                *p = (*p >> 8) | a;
+                p++;
+            }
+        } else {
+            // This is an old legacy fix for PowerPC based Macs, which
+            // we shouldn't remove
+            while (p < end) {
+                *p = 0xff000000 | (*p>>8);
+                ++p;
+            }
+        }
+    } else {
+        // OpenGL gives ABGR (i.e. RGBA backwards); Qt wants ARGB
+        for (int y = 0; y < h; y++) {
+            uint *q = (uint*)img.scanLine(y);
+            for (int x=0; x < w; ++x) {
+                const uint pixel = *q;
+                if (alpha_format && include_alpha) {
+                    *q = ((pixel << 16) & 0xff0000) | ((pixel >> 16) & 0xff)
+                         | (pixel & 0xff00ff00);
+                } else {
+                    *q = 0xff000000 | ((pixel << 16) & 0xff0000)
+                         | ((pixel >> 16) & 0xff) | (pixel & 0x00ff00);
+                }
+
+                q++;
+            }
+        }
+
+    }
+    img = img.mirrored();
+}
+
 
 ///**
 /// * Draw the scene.
@@ -370,6 +432,7 @@ void GL3D::render() {
     else if (renderManager.renderingMode == RenderManager::RENDERING_MODE_LINE || renderManager.renderingMode == RenderManager::RENDERING_MODE_HATCHING) {
         glUseProgram(renderManager.programs["line"]);
 
+        //glBindFramebuffer(GL_FRAMEBUFFER, renderManager.fragDataFB);
         glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
         glClearColor(1, 1, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -426,8 +489,10 @@ void GL3D::render() {
         glDepthFunc(GL_LEQUAL);
     }
     else if (renderManager.renderingMode == RenderManager::RENDERING_MODE_CONTOUR) {
+
         glUseProgram(renderManager.programs["contour"]);
 
+        //glBindFramebuffer(GL_FRAMEBUFFER, renderManager.fragDataFB);
         glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
         glClearColor(1, 1, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -442,6 +507,14 @@ void GL3D::render() {
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, renderManager.fragDepthTex);
 
+        // Debug
+//	    cv::Mat tst = cv::Mat(500,500, CV_32FC1);
+//      glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, tst.data);
+//      double mn_bnd, mx_bnd;
+//      cv::minMaxLoc(tst, &mn_bnd, &mx_bnd, NULL, NULL);
+//      std::cout << "Min Bound " << mn_bnd <<std::endl;
+//      std::cout << "Max Bound " << mx_bnd <<std::endl;
+
         glBindVertexArray(renderManager.secondPassVAO);
 
         glDrawArrays(GL_QUADS, 0, 4);
@@ -453,6 +526,7 @@ void GL3D::render() {
     // Blur
 
     if (renderManager.renderingMode == RenderManager::RENDERING_MODE_BASIC || renderManager.renderingMode == RenderManager::RENDERING_MODE_SSAO) {
+        //glBindFramebuffer(GL_FRAMEBUFFER, renderManager.fragDataFB);
         glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -524,7 +598,7 @@ void GL3D::massReconstruction(bool automaticRecognition, int grammarId, int imag
 	float imageScale = std::min((float)width() / imageOrig.width(), (float)height() / imageOrig.height());
 	resizeImageCanvasSize(imageOrig, width() / imageScale, height() / imageScale);
 
-	// recognition
+    // recognition
 	time_t start = clock();
 
     if (automaticRecognition) {
@@ -564,7 +638,7 @@ void GL3D::massReconstruction(bool automaticRecognition, int grammarId, int imag
 
 void GL3D::facadeReconstruction(bool automaticRecognition, int grammarId, bool adjustContrast, bool useMultileFacadeColors) {
 	// convert image to cv::Mat object
-	cv::Mat imageMat = cv::Mat(image.height(), image.width(), CV_8UC4, const_cast<uchar*>(image.bits()), image.bytesPerLine()).clone();
+    cv::Mat imageMat = cv::Mat(image.height(), image.width(), CV_8UC4, const_cast<uchar*>(image.bits()), image.bytesPerLine()).clone();
 	cv::cvtColor(imageMat, imageMat, cv::COLOR_BGRA2BGR);
 
     cv::Mat max_facade;
@@ -1005,7 +1079,9 @@ bool GL3D::renderImage(cga::Grammar* grammar, std::vector<float>* pm_params, cv:
     }
 
     render();
+    glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
     QImage img = grabFrameBuffer();
+
     rendered_image = cv::Mat(img.height(), img.width(), CV_8UC4, img.bits(), img.bytesPerLine()).clone();
     cv::cvtColor(rendered_image, rendered_image, cv::COLOR_BGRA2BGR);
 
@@ -1341,22 +1417,16 @@ void GL3D::initializeGL() {
     const GLubyte* text = glGetString(GL_VERSION);
     printf("VERSION: %s\n", text);
 
-    glGenRenderbuffers(1, &default_rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, default_rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width(), height());
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glGenTextures(1, &default_texture);
-    glBindTexture(GL_TEXTURE_2D, default_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width(), height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    
     glGenFramebuffers(1, &default_fb);
     glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, default_texture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, default_rbo);
 
+    glGenTextures(1, &default_texture);
+    glBindTexture(GL_TEXTURE_2D, default_texture);
+    
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-
+    
     glEnable(GL_TEXTURE_2D);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -1375,6 +1445,21 @@ void GL3D::initializeGL() {
     glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glDisable(GL_TEXTURE_2D_ARRAY);
 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width(), height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, default_texture, 0);
+    
+    glGenRenderbuffers(1, &default_rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, default_rbo);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, default_rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width(), height());
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+	    std::cout << "Error in check buffer"<<std::endl;
+	    exit(0);
+    }
     ////////////////////////////////
     renderManager.init(default_fb, "", "", "", true, 8192);
     renderManager.resize(this->width(), this->height());
@@ -1417,6 +1502,7 @@ void GL3D::paintEvent() {
     glPushMatrix();
 
     render();
+
     //REMOVE
     glActiveTexture(GL_TEXTURE0);
 
@@ -1468,3 +1554,4 @@ void GL3D::resizeImageCanvasSize(QImage& image, int width, int height) {
     QPainter painter(&image);
     painter.drawImage((image.width() - tmp.width()) / 2, (image.height() - tmp.height()) / 2, tmp);
 }
+

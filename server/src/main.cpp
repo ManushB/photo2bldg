@@ -53,19 +53,18 @@ int main(int argc, char *argv[])
 
     eglMakeCurrent(eglDpy, eglSurf, eglSurf, eglCtx);
 
-    if (argc <= 4 || argc > 7)
+    if (argc <= 5 || argc > 8)
     {
-        std::cerr << "Usage: Photo2Bldg [sourceImage] [sourceSilhouette] [outputFile] [function]"
+        std::cerr << "Usage: Photo2Bldg [sourceImage] [sourceSilhouette] [outputFile] [outputObj] [function]"
                   << std::endl;
         return 0;
     }
     QApplication a(argc, argv);
 
     const QString sourceImg = argv[1];
-//    const QString sImg = QString::fromStdString(sourceImg);
     const QString  sourceSilhouette = argv[2];
-//    const QString silh = QString::fromStdString(sourceSilhouette);
     const QString result = argv[3];
+    const QString result_obj = argv[4];
     char* function = argv[4];
     bool checked_params [4] = {true, true, true, true};
     int value_params [2] = {200, 200};
@@ -76,6 +75,7 @@ int main(int argc, char *argv[])
     s->openSilhouette(sourceSilhouette.toUtf8().constData());
     s->onBuildingReconstruction(checked_params, value_params);
     s->saveImage(result);
+    s->saveObj(result_obj);
     eglTerminate(eglDpy);
 
 //    return a.exec();

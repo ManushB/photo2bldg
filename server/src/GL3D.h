@@ -25,6 +25,7 @@ public:
     void openImage(const QString& filename);
     void openSilhouette(const QString& filename);
     void saveImage(const QString& filename);
+    void saveObj(const QString& filename);
     void onBuildingReconstruction(bool* bool_params, int* int_params);
 
     GL3D* glWidget;
@@ -90,6 +91,7 @@ public:
     int height();
     int update();
     QImage grabFrameBuffer();
+    void convertFromGLImage(QImage &img, int w, int h, bool alpha_format, bool include_alpha);
 
 protected:
     void initializeGL();

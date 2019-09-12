@@ -81,10 +81,6 @@ namespace massrec {
 
 	}
 
-//	void pE(GL3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax) {
-//        std::cout << "here" << std::endl;
-//    }
-
 	std::vector<float> parameterEstimation(GL3D* glWidget, boost::shared_ptr<Regression> regression, cga::Grammar* grammar, const std::vector<vp::VanishingLine>& silhouette, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method) {
 		std::cout << "-----------------------------------------------------" << std::endl;
 
