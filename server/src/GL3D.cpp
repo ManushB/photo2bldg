@@ -78,12 +78,16 @@ void Server::saveObj(const QString& filename) {
     OBJWriter::write(glWidget->faces, filename.toUtf8().constData());
 }
 
-void Server::onBuildingReconstruction(bool* bool_params, int* int_params) {
-    glWidget->massReconstruction(bool_params[0], int_params[0] - 1,
-                                 227, 25, -40, 0, -70, -20, -10, 10, 20, 90, -0.8, 0.8, -0.8, 0.8, -15, 15, -15, 15, 1, true, 3000, 0);
+void Server::onBuildingReconstruction(BuildRec *buildRec) {
+    glWidget->massReconstruction(buildRec->checkBoxMassGrammarAutomaticDetection, buildRec->spinBoxMassGrammarId - 1,
+                                 227, 25, -40, 0, -70, -20,
+                                 -10, 10, 20, 90, -0.8, 0.8, -0.8,
+                                 0.8, -15, 15, -15, 15, 1, true,
+                                 3000, 0);
 
     glWidget->grammar_type = GL3D::GRAMMAR_TYPE_FACADE;
-    glWidget->facadeReconstruction(bool_params[1], int_params[2], bool_params[2], bool_params[3]);
+    glWidget->facadeReconstruction(buildRec->checkBoxFacadeGrammarAutomaticDetection, buildRec->spinBoxFacadeGrammarId,
+            buildRec->checkBoxAdjustContrast, buildRec->checkBoxUseMultipleColors);
 
     glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_SSAO;
     
@@ -93,6 +97,52 @@ void Server::onBuildingReconstruction(bool* bool_params, int* int_params) {
 
     return;
 }
+
+void Server::onMassReconstruction(MassRec *massRec) {
+    bool automaticRecognition = massRec->checkBoxAutomaticDetection;
+    int grammarId = massRec->spinBoxGrammarId - 1;
+    int image_size = massRec->lineEditImageSize;
+    float cameraDistanceBase = massRec->lineEditCameraDistance;
+    float xrotMin = massRec->lineEditXrotMin;
+    float xrotMax = massRec->lineEditXrotMax;
+    float yrotMin = massRec->lineEditYrotMin;
+    float yrotMax = massRec->lineEditYrotMax;
+    float zrotMin = massRec->lineEditZrotMin;
+    float zrotMax = massRec->lineEditZrotMax;
+    float fovMin = massRec->lineEditFovMin;
+    float fovMax = massRec->lineEditFovMax;
+    float oxMin = massRec->lineEditOXMin;
+    float oxMax = massRec->lineEditOXMax;
+    float oyMin = massRec->lineEditOYMin;
+    float oyMax = massRec->lineEditOYMax;
+    float xMin = massRec->lineEditXMin;
+    float xMax = massRec->lineEditXMax;
+    float yMin = massRec->lineEditYMin;
+    float yMax = massRec->lineEditYMax;
+    int silhouette_line_type = massRec->radioButtonSilhouetteLine8 ? 0 : 1;
+    bool refinement = massRec->checkBoxRefinement;
+    int maxIters = massRec->lineEditIterations;
+    int refinement_method = massRec->radioButtonRefinementBobyqa ? 0 : 1;
+
+    glWidget->massReconstruction(automaticRecognition, grammarId, image_size, cameraDistanceBase, xrotMin, xrotMax,
+            yrotMin, yrotMax, zrotMin, zrotMax, fovMin, fovMax, oxMin, oxMax, oyMin, oyMax, xMin, xMax, yMin, yMax,
+            silhouette_line_type, refinement, maxIters, refinement_method);
+    glBindFramebuffer(GL_FRAMEBUFFER, glWidget->default_fb);
+    glWidget->update();
+    glWidget->output = glWidget->grabFrameBuffer();
+
+}
+
+void Server::onFacadeReconstruction() {
+    glWidget->grammar_type = GL3D::GRAMMAR_TYPE_FACADE;
+
+    glWidget->facadeReconstruction(true, 0, true, false);
+    glBindFramebuffer(GL_FRAMEBUFFER, glWidget->default_fb);
+    glWidget->update();
+    glWidget->output = glWidget->grabFrameBuffer();
+}
+
+
 
 GL3D::GL3D() {
 //    mainWin = (Server*)parent;
@@ -249,20 +299,9 @@ int GL3D::update(){
 }
 
 QImage GL3D::grabFrameBuffer() {
-
     QImage tmp = QImage(width(), height(), QImage::Format_RGBA8888);
-    //glUseProgram(0);
-    //glBindFramebuffer(GL_FRAMEBUFFER, default_fb);
-    //glBindTexture(GL_TEXTURE_2D, default_texture);
-    //glBindFramebuffer(GL_FRAMEBUFFER, renderManager.fragDataFB);
     glReadPixels(0, 0, width(), height(), GL_RGBA, GL_UNSIGNED_BYTE, tmp.bits());
     convertFromGLImage(tmp, width(), height(), true, true);
-    //glClearColor(0.6, 0.0, 0.6, 1.0);
-    //glClear(GL_COLOR_BUFFER_BIT);
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp.bits());
-    //glBindTexture(GL_TEXTURE_2D, 0);
-
     return tmp;
 }
 

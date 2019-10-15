@@ -1,6 +1,7 @@
 #pragma once
 
-//#include <GL/glew.h>
+#include <GL/glew.h>
+#include <GL/glu.h>
 //#include "src/Shader.h"
 //#include "src/Vertex.h"
 #include <QGLWidget>
@@ -8,15 +9,16 @@
 #include <QKeyEvent>
 #include <vector>
 #include <QImage>
-//#include "src/Camera.h"
+#include "Camera.h"
 //#include "src/ShadowMapping.h"
 //#include "src/RenderManager.h"
 //#include "src/CGA.h"
-//#include <opencv/cv.h>
-//#include <opencv/highgui.h>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 //#include "src/Classifier.h"
 //#include "src/Regression.h"
 #include "VanishingPoint.h"
+#include "OBJReader.h"
 
 class  Client;
 
@@ -26,9 +28,18 @@ public:
 	enum { GRAMMAR_TYPE_MASS = 0, GRAMMAR_TYPE_FACADE };
 
 	Client* mainWin;
+	OBJReader objReader;
 
-	// camera
-//	Camera camera;
+    double prevMouseX, prevMouseY;
+    bool mouseLeftPressed;
+    bool mouseMiddlePressed;
+    bool mouseRightPressed;
+    float curr_quat[4];
+    float prev_quat[4];
+    float eye[3], lookat[3], up[3];
+
+    // camera
+	Camera camera;
 	glm::vec3 light_dir;
 	glm::mat4 light_mvpMatrix;
 
@@ -64,11 +75,19 @@ public:
 	QColor silhouetteColor;
 	bool geometryGenerated;
 
+	// Inputs to QProcess
+	QString inputImg;
+	QString inputCtr;
+	QString inputObj;
+    QString wrkDir;
+    QString inputPrm;
+
+
 public:
 	GLWidget3D(QWidget *parent);
 
-	void drawScene();
-	void render();
+//	void drawScene();
+//	void render();
 	void clearBackground();
 	void loadImage(const QString& filename);
 	void clearSilhouette();
@@ -77,23 +96,25 @@ public:
 	void clearGeometry();
 	void loadCGA(const QString& filename);
 	void saveCGA(const QString& filename);
-	void saveOBJ(const QString& filename);
+    void loadOBJ(const QString& filename);
+    void saveOBJ(const QString& filename);
 	void undo();
 //  bool renderImage(cga::Grammar* grammar, std::vector<float>* pm_params, cv::Mat& rendered_image, bool discardIfTopFaceIsVisible = false, bool discardIfBottomFaceIsVisible = false);
 //	double distanceMap(cv::Mat rendered_image, const cv::Mat& reference_dist_map);
 	void updateGeometry();
 	void updateStatusBar();
 	void resizeImageCanvasSize(QImage& image, int width, int height);
-    void massReconstruction(bool automaticRecognition, int grammarId, int image_size, float cameraDistanceBase, float xrotMin, float xrotMax, float yrotMin, float yrotMax, float zrotMin, float zrotMax, float fovMin, float fovMax, float oxMin, float oxMax, float oyMin, float oyMax, float xMin, float xMax, float yMin, float yMax, int silhouette_line_type, bool refinement, int maxIters, int refinement_method);
 
     void keyPressEvent(QKeyEvent* e);
 	void keyReleaseEvent(QKeyEvent* e);
+	void execProcess();
 
 
 protected:
 	void initializeGL();
 	void resizeGL(int width, int height);
-	void paintEvent(QPaintEvent *event);
+    void paintGL();
+    void paintEvent(QPaintEvent *event);
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent *e);

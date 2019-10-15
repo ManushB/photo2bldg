@@ -1,10 +1,10 @@
 #include "GL3D.h"
+#include "XmlParser.h"
 #include <QtWidgets/QApplication>
 #include <EGL/egl.h>
 #include <GL/glew.h>
-//#include <GL/glut.h>
-//#include <GL/gl.h>
 #include <iostream>
+#include <QFile>
 
 static const EGLint configAttribs[] = {
         EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
@@ -24,6 +24,8 @@ static const EGLint pbufferAttribs[] = {
         EGL_HEIGHT, pbufferHeight,
         EGL_NONE,
 };
+
+
 
 int main(int argc, char *argv[])
 {
@@ -55,32 +57,39 @@ int main(int argc, char *argv[])
 
     if (argc <= 5 || argc > 8)
     {
-        std::cerr << "Usage: Photo2Bldg [sourceImage] [sourceSilhouette] [outputFile] [outputObj] [function]"
+        std::cerr << "Usage: Photo2Bldg [sourceImage] [sourceSilhouette] [paramtersFile] [outputImg] [outputObj]"
                   << std::endl;
         return 0;
     }
     QApplication a(argc, argv);
 
     const QString sourceImg = argv[1];
-    const QString  sourceSilhouette = argv[2];
-    const QString result = argv[3];
-    const QString result_obj = argv[4];
-    char* function = argv[4];
-    bool checked_params [4] = {true, true, true, true};
-    int value_params [2] = {200, 200};
+    const QString sourceSilhouette = argv[2];
+    const QString result = argv[4];
+    const QString result_obj = argv[5];
+    QString parametersFile = argv[3];
 
-    Server* s = new Server();
+    XmlParser xmlpr;
+    xmlpr.readFile(parametersFile);
+
+    auto* s = new Server();
     s->glWidget = new GL3D();
     s->openImage(sourceImg);
     s->openSilhouette(sourceSilhouette.toUtf8().constData());
-    s->onBuildingReconstruction(checked_params, value_params);
+    if (xmlpr.function == xmlpr.BUILDING_RECONSTRUCTION){
+        s->onBuildingReconstruction(&xmlpr.buildRec);
+    } else if (xmlpr.function == xmlpr.MASS_RECONSTRUCTION){
+        s->onMassReconstruction(&xmlpr.massRec);
+    } else if (xmlpr.function == xmlpr.FACADE_RECONSTRUCTION) {
+        s->onMassReconstruction(&xmlpr.massRec);
+        s->onFacadeReconstruction();
+    } else {
+        std::cout << "Function: " << xmlpr.function.toUtf8().constData() << " is not available" << std::endl;
+    }
     s->saveImage(result);
     s->saveObj(result_obj);
     eglTerminate(eglDpy);
 
-//    return a.exec();
-
     // 6. Terminate EGL when finished
     return 0;
-
 }

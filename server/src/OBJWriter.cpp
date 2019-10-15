@@ -22,7 +22,8 @@ std::string Material::to_string() {
 		ss << "Ka " << color.r << " " << color.g << " " << color.b << std::endl;
 		ss << "Kd " << color.r << " " << color.g << " " << color.b << std::endl;
 		ss << "Ks " << color.r << " " << color.g << " " << color.b << std::endl;
-		ss << "Ke " << color.r << " " << color.g << " " << color.b << std::endl;
+		// ke values of 1 means full emission, texture will be white
+		//ss << "Ke " << color.r << " " << color.g << " " << color.b << std::endl;
 		ss << "d 1" << std::endl;
 		ss << "Ns 20" << std::endl;
 		ss << "illum 2" << std::endl;
@@ -31,7 +32,8 @@ std::string Material::to_string() {
 		ss << "Ka 1 1 1" << std::endl;
 		ss << "Kd 1 1 1" << std::endl;
 		ss << "Ks 1 1 1" << std::endl;
-		ss << "Ke 1 1 1" << std::endl;
+		// ke values of 1 means full emission, texture will be white
+                //ss << "Ke 1 1 1" << std::endl;
 		ss << "d 1" << std::endl;
 		ss << "Ns 20" << std::endl;
 		ss << "illum 2" << std::endl;

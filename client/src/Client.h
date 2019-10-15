@@ -27,11 +27,12 @@ public slots:
     void onSaveSilhouette();
     void onOpenCGA();
     void onSaveCGA();
+    void onLoadOBJ();
     void onSaveOBJ();
     void onUndo();
-//    void onBuildingReconstruction();
+    void onBuildingReconstruction();
     void onMassReconstruction();
-//    void onFacadeReconstruction();
+    void onFacadeReconstruction();
 //    void onOption();
 //    void onRenderingChanged();
 };

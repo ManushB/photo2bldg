@@ -14,11 +14,14 @@
 #include "Classifier.h"
 #include "Regression.h"
 #include "VanishingPoint.h"
+#include "XmlParser.h"
 #include <QtCore/QString>
 #include <QtCore/QMap>
 #include <QtGui/QImage>
 #include <QObject>
+
 class GL3D;
+
 
 class Server {
 public:
@@ -26,7 +29,9 @@ public:
     void openSilhouette(const QString& filename);
     void saveImage(const QString& filename);
     void saveObj(const QString& filename);
-    void onBuildingReconstruction(bool* bool_params, int* int_params);
+    void onBuildingReconstruction(BuildRec* buildRec);
+    void onMassReconstruction(MassRec* massRec);
+    void onFacadeReconstruction();
 
     GL3D* glWidget;
 };
