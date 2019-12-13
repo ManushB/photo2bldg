@@ -416,12 +416,10 @@ void GLWidget3D::saveSilhouette(const QString &filename) {
 void GLWidget3D::execProcess() {
     QProcess p;
 
-    std::cout << inputImg.toUtf8().constData() << std::endl;
     char cmd[200];
     sprintf(cmd, "submit photo2bldg %s %s %s", inputImg.toUtf8().constData(), inputCtr.toUtf8().constData(),
             inputPrm.toUtf8().constData());
 
-    std::cout << cmd << std::endl;
     //p.execute("submit photo2bldg /home/mygeohub/manush/photo2bldg/client/data/02.jpg /home/mygeohub/manush/photo2bldg/client/data/02.ctr");
     p.setWorkingDirectory(wrkDir);
     this->setCursor(Qt::WaitCursor);
@@ -429,7 +427,6 @@ void GLWidget3D::execProcess() {
     this->setCursor(Qt::ArrowCursor);
 
     if (p.exitStatus() == QProcess::NormalExit) {
-        std::cout << p.readAllStandardOutput().toStdString() << std::endl;
 
         this->loadImage("output.jpg");
 
@@ -1084,10 +1081,10 @@ void GLWidget3D::mousePressEvent(QMouseEvent *e) {
         camera.mouseDown(e->x(), e->y());
 //        camera.mousePress(e->x(), e->y());
     } else if (e->button() & Qt::LeftButton) {
-//        float scale = std::min((float) width() / imageOrig.width(), (float) height() / imageOrig.height());
-//        float screen_size = std::max(imageOrig.width(), imageOrig.height()) * scale;
-//        float x1 = (float) (e->x() - width() * 0.5) / screen_size;
-//        float y1 = (float) (e->y() - height() * 0.5) / screen_size;
+        float scale = std::min((float) width() / imageOrig.width(), (float) height() / imageOrig.height());
+        float screen_size = std::max(imageOrig.width(), imageOrig.height()) * scale;
+        float x1 = (float) (e->x() - width() * 0.5) / screen_size;
+        float y1 = (float) (e->y() - height() * 0.5) / screen_size;
 //
         if (shiftPressed) {
 //            silhouette.push_back(vp::VanishingLine(x1, y1, x1, y1, vp::VanishingLine::TYPE_HORIZONTAL_RIGHT));

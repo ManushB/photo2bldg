@@ -12,9 +12,9 @@ set(CMAKE_AUTOUIC ON)
 #set(OpenGL_GL_PREFERENCE GLVND)
 
 #if(IS_CLIENT)
-    add_subdirectory(client)
+#    add_subdirectory(client)
 #else()
-#    add_subdirectory(server)
+    add_subdirectory(server)
 #endif()
 
 #

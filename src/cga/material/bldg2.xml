@@ -5,7 +5,7 @@
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
-		<texture texturePath="material/bldg2/roof.tif"/>
+		<texture texturePath="material/bldg2/roof.png"/>
 	</rule>
 	<rule name="RoofLedge">
 		<color s="#c9b8a2"/>
@@ -27,7 +27,7 @@
 			<param name="texWidth" type="relative" value="1"/>
 			<param name="texHeight" type="relative" value="1"/>
 		</setupProjection>
-		<texture texturePath="material/bldg2/door_glass.tif"/>
+		<texture texturePath="material/bldg2/door_glass.png"/>
 	</rule>
 	<rule name="LedgeFace">
 		<color s="#c9b8a2"/>

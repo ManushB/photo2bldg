@@ -79,6 +79,8 @@ void Server::saveObj(const QString& filename) {
 }
 
 void Server::onBuildingReconstruction(BuildRec *buildRec) {
+
+    std::cout << "Starting Mass Reconstruction" << std::endl;
     glWidget->massReconstruction(buildRec->checkBoxMassGrammarAutomaticDetection, buildRec->spinBoxMassGrammarId - 1,
                                  227, 25, -40, 0, -70, -20,
                                  -10, 10, 20, 90, -0.8, 0.8, -0.8,
@@ -86,14 +88,18 @@ void Server::onBuildingReconstruction(BuildRec *buildRec) {
                                  3000, 0);
 
     glWidget->grammar_type = GL3D::GRAMMAR_TYPE_FACADE;
+    std::cout << "Finished Mass Reconstruction" << std::endl;
+    std::cout << "Starting Facade Reconstruction" << std::endl;
     glWidget->facadeReconstruction(buildRec->checkBoxFacadeGrammarAutomaticDetection, buildRec->spinBoxFacadeGrammarId,
             buildRec->checkBoxAdjustContrast, buildRec->checkBoxUseMultipleColors);
 
     glWidget->renderManager.renderingMode = RenderManager::RENDERING_MODE_SSAO;
+    std::cout << "Finished Facade Reconstruction" << std::endl;
     
     glBindFramebuffer(GL_FRAMEBUFFER, glWidget->default_fb);
     glWidget->update();
     glWidget->output = glWidget->grabFrameBuffer();
+    std::cout << "Finished Building Reconstruction" << std::endl;
 
     return;
 }
@@ -285,13 +291,16 @@ GL3D::GL3D() {
     output = QImage(width(), height(), QImage::Format_RGB32);
     initializeGL();
     resizeGL(width(), height());
+    std::cout << "Network Initialization Complete" << std::endl;
+
 }
 
+// Default window size used by the PC version of the app 798 * 792
 int GL3D::height() {
-    return 500;
+    return 792;
 }
 int GL3D::width() {
-    return 500;
+    return 798;
 }
 
 int GL3D::update(){

@@ -77,7 +77,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3.tar.gz
 
 RUN tar -xf cmake-3.14.3.tar.gz
-
 WORKDIR /tmp/cmake-3.14.3
 
 RUN mkdir build
@@ -146,18 +145,53 @@ RUN protoc src/caffe/proto/caffe.proto --cpp_out=. && \
 
 ENV LD_LIBRARY_PATH=/tmp/caffe/build/lib:$LD_LIBRARY_PATH
 
+# Install hiredis
+WORKDIR /tmp
+
+RUN git clone https://github.com/redis/hiredis.git
+
+WORKDIR /tmp/hiredis
+
+RUN mkdir build
+
+WORKDIR /tmp/hiredis/build
+
+RUN cmake ..
+
+RUN make install -j4
+
+# Install cjson
+WORKDIR /tmp
+
+RUN git clone https://github.com/DaveGamble/cJSON.git
+
+WORKDIR /tmp/cJSON
+
+RUN mkdir build
+
+WORKDIR /tmp/cJSON/build
+
+RUN cmake ..
+
+RUN make install -j4
+
 WORKDIR /srv/app/
 RUN mkdir -p /srv/app/photo2bldg
 COPY server /srv/app/photo2bldg/server
 COPY src /srv/app/photo2bldg/src
 COPY CMakeLists.txt /srv/app/photo2bldg
 COPY extras/FindEGL.cmake /usr/local/share/cmake-3.14/Modules
-#RUN git clone https://github.com/may5694/photo2bldg.git
+
 WORKDIR /srv/app/photo2bldg
 RUN mkdir -p build
 WORKDIR /srv/app/photo2bldg/build
 RUN cmake ..
 RUN make -j4
+
+ENV GLOG_minloglevel=1
+WORKDIR /srv/app/photo2bldg/src
+#RUN ../build/server/photo2bldg_server data/04.jpg data/04.ctr /data/parameters.json tmp.jpg tmp.obj -platform offscreen
+#sudo docker run --gpus all --mount type=bind,source=/data,target=/data -it  --network host p2b
 
 
 #CMD ["/usr/bin/vncserver", "-fg"]
